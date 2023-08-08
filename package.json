@@ -30,5 +30,9 @@
   "dependencies": {
     "xmldom": "^0.6.0"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/krestaino/podcast-xml-parser.git"
+  }
 }
