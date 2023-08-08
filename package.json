@@ -1,7 +1,7 @@
 {
   "name": "podcast-xml-parser",
   "main": "dist/index.js",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "keywords": [
     "podcast",
     "xml",
@@ -45,5 +45,6 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/krestaino/podcast-xml-parser.git"
-  }
+  },
+  "homepage": "https://podcast-xml-parser.kmr.io"
 }
