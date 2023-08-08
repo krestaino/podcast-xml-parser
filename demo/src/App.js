@@ -138,11 +138,11 @@ function App() {
       <section>
         {loading ? (
           <pre className="bg-blue-400">
-            <div className="max-w-5xl mx-auto text-neutral-900 py-2 mb-4">Loading...</div>
+            <div className="max-w-5xl mx-auto text-neutral-900 py-2">Loading...</div>
           </pre>
         ) : error ? (
           <pre className="bg-red-400">
-            <div className="max-w-5xl mx-auto text-neutral-900 py-2 mb-4">{error.message}</div>
+            <div className="max-w-5xl mx-auto text-neutral-900 py-2">{error.message}</div>
           </pre>
         ) : podcast.feedUrl ? (
           <section className="font-mono mt-8 max-w-5xl mx-auto">
@@ -164,7 +164,7 @@ function App() {
               </tbody>
             </table>
             <h2 className="text-2xl font-bold mt-4">Episodes ({episodes.length})</h2>
-            <div className="overflow-scroll h-[35vh]">
+            <div className="overflow-scroll h-[35vh] mb-8">
               {episodes.map((episode, episodeIdx) => (
                 <table className="mt-4 w-full bg-neutral-800 block" key={episodeIdx}>
                   <thead className="bg-neutral-700">
@@ -189,7 +189,7 @@ function App() {
       </section>
 
       <section className={podcast.feedUrl ? "bg-neutral-800" : ""}>
-        <div className="max-w-5xl mx-auto mt-8 py-8">
+        <div className="max-w-5xl mx-auto py-8">
           <div
             className="prose prose-neutral dark:prose-invert max-w-5xl"
             dangerouslySetInnerHTML={{ __html: preprocessReadmeContent(readmeContent) }}
