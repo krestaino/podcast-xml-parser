@@ -288,6 +288,28 @@ describe("podcastXmlParser", () => {
     episodes.forEach((episode) => assertEpisodeProperties(episode));
   });
 
+  it('should throw an error if fetch fails', async () => {
+    const url = new URL('hxxps://example.com/podcast.xml');
+    await expect(podcastXmlParser(url)).rejects.toThrow('fetch failed');
+  });
+
+  it('should have an empty feedUrl when xmlSource is a string and XML lacks <atom:link>', async () => {
+    const xmlSource = 'not_a_url_but_a_string';
+    const result = await podcastXmlParser(xmlSource);
+    expect(result.podcast.feedUrl).toBe('');
+  });
+
+  it('should fetch feedUrl from <atom:link> tag when xmlSource is a string', async () => {
+    const xmlSource = `
+      <channel>
+        <atom:link href="https://example.com/rss_feed.xml" rel="self" type="application/rss+xml" />
+      </channel>
+    `;
+
+    const result = await podcastXmlParser(xmlSource);
+    expect(result.podcast.feedUrl).toBe('https://example.com/rss_feed.xml');
+  });
+
   // NOTE: To run this test, ensure that you set the environment variable FEED_URLS to a comma-separated list
   // of URLs of the XML feeds that you want to test. You can create an .env file to do this.
   const { FEED_URLS = "" } = process.env;
@@ -299,7 +321,7 @@ describe("podcastXmlParser", () => {
       test(`should parse the XML feed of URL: ${FEED_URL}`, async () => {
         const { podcast, episodes } = await podcastXmlParser(new URL(FEED_URL));
         expect(podcast.feedUrl).toBe(FEED_URL);
-        
+
         assertPodcastProperties(podcast);
         episodes.forEach((episode) => assertEpisodeProperties(episode));
       });
