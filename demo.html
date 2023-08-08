@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Podcast XML Parser Demo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-neutral-800 text-neutral-100 p-4">
+  <h1 class="text-2xl font-bold mb-4">Podcast XML Parser</h1>
+  <label for="urlInput" class="block mb-2">Enter Podcast XML URL:</label>
+  <div class="flex items-center">
+    <input type="url" id="urlInput" class="bg-neutral-700 border-neutral-500 min-w-max p-2 rounded border" value="" />
+    <button onclick="parsePodcast()" class="ml-2 px-4 py-2 bg-blue-500 text-white rounded">Parse</button>
+  </div>
+  <h2 class="text-xl font-bold mb-2 mt-4">Podcast:</h2>
+  <ul class="bg-neutral-700 p-4 rounded" id="podcastInfo"></ul>
+
+  <h2 class="text-xl font-bold mb-2 mt-4">Episodes:</h2>
+  <ul class="bg-neutral-700 p-4 rounded" id="episodeList"></ul>
+
+  <script src="./dist/bundle.js"></script>
+  <script>
+    async function parsePodcast() {
+      const urlInput = document.getElementById('urlInput').value;
+
+      try {
+        const {
+          podcast,
+          episodes
+        } = await podcastXmlParser(new URL(urlInput));
+        displayPodcastInfo(podcast);
+        displayEpisodes(episodes);
+      } catch (error) {
+        console.error('Error parsing podcast:', error);
+      }
+    }
+
+    function displayPodcastInfo(podcast) {
+      const infoList = document.getElementById('podcastInfo');
+      infoList.innerHTML = ''; // Clear any existing podcast info
+
+      for (let key in podcast) {
+        const li = document.createElement('li');
+        li.classList.add('mb-4', 'pb-4', 'border-b', 'border-neutral-500');
+
+        const keyElement = document.createElement('span');
+        keyElement.classList.add('bg-neutral-600', 'p-1', 'rounded');
+        keyElement.textContent = `${key}: `;
+        li.appendChild(keyElement);
+
+        const valueElement = document.createElement('pre');
+        valueElement.classList.add('whitespace-normal', 'mt-2');
+        valueElement.textContent = JSON.stringify(podcast[key]);
+        li.appendChild(valueElement);
+
+        infoList.appendChild(li);
+      }
+    }
+
+    function displayEpisodes(episodes) {
+      const episodeList = document.getElementById('episodeList');
+      episodeList.innerHTML = ''; // Clear any existing episodes
+
+      episodes.forEach((episode, index) => {
+        const li = document.createElement('li');
+        li.classList.add('bg-neutral-700', 'p-4', 'rounded');
+
+        for (let key in episode) {
+          const div = document.createElement('div');
+          div.classList.add('mb-4', 'pb-4', 'border-b', 'border-neutral-500');
+
+          const keyElement = document.createElement('span');
+          keyElement.classList.add('bg-neutral-600', 'p-1', 'rounded');
+          keyElement.textContent = `${key}: `;
+          div.appendChild(keyElement);
+
+          const valueElement = document.createElement('pre');
+          valueElement.classList.add('whitespace-normal', 'mt-2');
+          valueElement.textContent = JSON.stringify(episode[key]);
+          div.appendChild(valueElement);
+
+          li.appendChild(div);
+        }
+
+        episodeList.appendChild(li);
+      });
+    }
+  </script>
+</body>
+
+</html>
