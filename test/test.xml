@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+  xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd"
+  xmlns:googleplay="http://www.google.com/schemas/play-podcasts/1.0"
+  xmlns:atom="http://www.w3.org/2005/Atom"
+  xmlns:media="http://search.yahoo.com/mrss/"
+  xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>My Test Podcast</title>
+    <link>https://www.example.com/podcast</link>
+    <language>en-US</language>
+    <copyright>2023 My Test Podcast</copyright>
+    <description>This is a test podcast for demonstration purposes.</description>
+    <image>
+      <url>https://www.example.com/podcast-image.png</url>
+      <title>Podcast Image Title</title>
+      <link>https://www.example.com/podcast-image-link</link>
+    </image>
+    <itunes:explicit>no</itunes:explicit>
+    <itunes:type>episodic</itunes:type>
+    <itunes:subtitle>Test Podcast Subtitle</itunes:subtitle>
+    <itunes:author>John Doe</itunes:author>
+    <itunes:summary>Summary of the test podcast.</itunes:summary>
+    <content:encoded><![CDATA[ <p>This is the content encoded description.</p> ]]></content:encoded>
+    <itunes:owner>
+      <itunes:name>Podcast Owner Name</itunes:name>
+      <itunes:email>owner@example.com</itunes:email>
+    </itunes:owner>
+    <itunes:image href="https://www.example.com/podcast-itunes-image.png"/>
+    <itunes:category text="Technology">
+      <itunes:category text="Software How-To"/>
+    </itunes:category>
+    <item>
+      <author>Episode Author 1</author>
+      <content:encoded><![CDATA[ <p>This is the content encoded description of Episode 1.</p> ]]></content:encoded>
+      <description>Episode 1 description.</description>
+      <enclosure url="https://www.example.com/episode1.mp3" type="audio/mpeg"/>
+      <guid>episode-1-guid</guid>
+      <itunes:author>Episode Author 1 iTunes</itunes:author>
+      <itunes:duration>3600</itunes:duration>
+      <itunes:episode>1</itunes:episode>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:explicit>no</itunes:explicit>
+      <itunes:subtitle>Episode 1 Subtitle</itunes:subtitle>
+      <itunes:summary>Summary of Episode 1.</itunes:summary>
+      <itunes:title>Episode 1 Title</itunes:title>
+      <link>https://www.example.com/episode1</link>
+      <pubDate>Fri, 07 Aug 2023 12:00:00 GMT</pubDate>
+      <title>Episode 1 Title</title>
+    </item>
+    <item>
+      <author>Episode Author 2</author>
+      <content:encoded><![CDATA[ <p>This is the content encoded description of Episode 2.</p> ]]></content:encoded>
+      <description>Episode 2 description.</description>
+      <enclosure url="https://www.example.com/episode2.mp3" type="audio/mpeg"/>
+      <guid>episode-2-guid</guid>
+      <itunes:author>Episode Author 2 iTunes</itunes:author>
+      <itunes:duration>2400</itunes:duration>
+      <itunes:episode>2</itunes:episode>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:explicit>yes</itunes:explicit>
+      <itunes:subtitle>Episode 2 Subtitle</itunes:subtitle>
+      <itunes:summary>Summary of Episode 2.</itunes:summary>
+      <itunes:title>Episode 2 Title</itunes:title>
+      <link>https://www.example.com/episode2</link>
+      <pubDate>Sat, 08 Aug 2023 12:00:00 GMT</pubDate>
+      <title>Episode 2 Title</title>
+    </item>
+  </channel>
+</rss>
