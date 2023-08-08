@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import podcastXmlParser from "podcast-xml-parser";
-import ReactMarkdown from 'react-markdown'
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
-import {a11yDark} from 'react-syntax-highlighter/dist/esm/styles/prism'
+import ReactMarkdown from "react-markdown";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { a11yDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 const PODCAST_FEEDS = [
   "https://feeds.megaphone.fm/climbinggold",
@@ -192,16 +192,27 @@ function App() {
 
       <section className={podcast.feedUrl ? "bg-neutral-800" : ""}>
         <div className="prose prose-neutral dark:prose-invert max-w-5xl mx-auto py-8">
-          {/* <ReactMarkdown children={preprocessReadmeContent(readmeContent)} remarkPlugins={[remarkGfm]} /> */}
+          <div className="flex mb-4">
+            <a href="https://github.com/krestaino/podcast-xml-parser">
+              <img
+                src="https://img.shields.io/github/package-json/v/krestaino/podcast-xml-parser/main?label=GitHub"
+                className="m-0"
+              />
+            </a>
+            <a href="https://www.npmjs.com/package/podcast-xml-parser">
+              <img src="https://img.shields.io/npm/v/podcast-xml-parser?color=red" className="m-0 ml-2" />
+            </a>
+            <img src="https://img.shields.io/github/license/krestaino/podcast-xml-parser.svg" className="m-0 ml-2" />
+          </div>
           <ReactMarkdown
             children={preprocessReadmeContent(readmeContent)}
             components={{
               code({ node, inline, className, children, ...props }) {
-                const match = /language-(\w+)/.exec(className || '')
+                const match = /language-(\w+)/.exec(className || "");
                 return !inline && match ? (
                   <SyntaxHighlighter
                     {...props}
-                    children={String(children).replace(/\n$/, '')}
+                    children={String(children).replace(/\n$/, "")}
                     style={a11yDark}
                     language={match[1]}
                     PreTag="div"
@@ -210,8 +221,8 @@ function App() {
                   <code {...props} className={className}>
                     {children}
                   </code>
-                )
-              }
+                );
+              },
             }}
           />
         </div>
