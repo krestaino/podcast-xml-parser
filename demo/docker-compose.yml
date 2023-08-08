@@ -4,6 +4,4 @@ services:
   react-app:
     build: .
     ports:
-      - "${PORT:-42069}:42069"
-    environment:
-      - PORT=42069
+      - "42069:3000"
