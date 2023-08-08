@@ -10,7 +10,7 @@ A library for parsing XML podcast feeds, designed to work in Node.js, browser en
 - **Graceful Handling:** In cases of missing elements in the XML feed, the parser returns empty strings instead of throwing errors.
 
 ## Live Demo
-Want to see the library in action? Check the [demo](https://htmlpreview.github.io/?https://github.com/krestaino/podcast-xml-parser/blob/main/demo.html) and test out `podcast-xml-parser` with various XML podcast feeds.
+Want to see the library in action? Check the [demo](https://podcast-xml-parser.kmr.io/) and test out `podcast-xml-parser` with various XML podcast feeds.
 
 ## Installation
 
