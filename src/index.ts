@@ -3,6 +3,8 @@ import { DOMParser, XMLSerializer } from "xmldom";
 import { type Podcast, type Episode } from "./types";
 export type { Podcast, Episode };
 
+const parser = new DOMParser();
+
 /**
  * Preprocesses an XML string to handle entities and unclosed tags.
  *
@@ -10,16 +12,10 @@ export type { Podcast, Episode };
  * @returns The preprocessed XML string.
  */
 function preprocessXml(xmlString: string): string {
-  // Check if the XML string has a root node
   if (!xmlString.startsWith("<")) {
-    // Add a root node to the XML string
     xmlString = `<root>${xmlString}</root>`;
   }
-
-  const parser = new DOMParser();
   const doc = parser.parseFromString(xmlString, "text/xml");
-
-  // Convert the document back to a string to handle undefined entities gracefully
   return new XMLSerializer().serializeToString(doc);
 }
 
@@ -93,7 +89,7 @@ export default async function podcastXmlParser(
   if (typeof xmlSource === "string" && xmlSource.trim() === "") {
     throw new Error("Empty XML feed. Please provide valid XML content.");
   }
-
+  
   let xmlString: string;
 
   // Check if xmlSource is a URL
@@ -104,16 +100,14 @@ export default async function podcastXmlParser(
   }
 
   const preprocessedXml = preprocessXml(xmlString);
-  const parser = new DOMParser();
   const doc = parser.parseFromString(preprocessedXml, "text/xml");
-  const items = Array.from(doc.getElementsByTagName("item"));
+  const docElement = doc.documentElement;
 
-  // Map through items to create episodes array
-  const episodes = items.map(createEpisodeFromItem);
+  const episodes = Array.from(doc.getElementsByTagName("item")).map(createEpisodeFromItem);
 
-  const imageElem = doc.getElementsByTagName("image")[0];
+  const imageElem = docElement.getElementsByTagName("image")[0];
   const podcast: Podcast = {
-    copyright: getText(doc.documentElement, "copyright"),
+    copyright: getText(docElement, "copyright"),
     contentEncoded: getText(doc.documentElement, "content:encoded"),
     description: getText(doc.documentElement, "description"),
     feedUrl:
