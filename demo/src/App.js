@@ -144,9 +144,9 @@ function App() {
         ) : null}
       </section>
 
-      <section className="max-w-5xl mx-auto mt-8">
+      <section className="max-w-5xl mx-auto my-8">
         <div
-          className="prose prose-neutral dark:prose-invert"
+          className="prose prose-neutral dark:prose-invert max-w-5xl"
           dangerouslySetInnerHTML={{ __html: readmeContent }}
         />
       </section>
