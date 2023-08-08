@@ -172,7 +172,7 @@ interface Episode {
 
 To run the test suite, execute the following command:
 
-```
+```bash
 npm test
 
 # or

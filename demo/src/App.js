@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import podcastXmlParser from "podcast-xml-parser";
-import { marked } from "marked";
+import ReactMarkdown from 'react-markdown'
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import {a11yDark} from 'react-syntax-highlighter/dist/esm/styles/prism'
 
 const PODCAST_FEEDS = [
   "https://feeds.megaphone.fm/climbinggold",
@@ -47,7 +49,7 @@ function App() {
       const readmeUrl = "https://raw.githubusercontent.com/krestaino/podcast-xml-parser/main/README.md";
       const response = await fetch(readmeUrl);
       const readmeText = await response.text();
-      setReadmeContent(marked(readmeText));
+      setReadmeContent(readmeText);
     } catch (error) {
       console.error("Error fetching README.md:", error);
     }
@@ -189,10 +191,28 @@ function App() {
       </section>
 
       <section className={podcast.feedUrl ? "bg-neutral-800" : ""}>
-        <div className="max-w-5xl mx-auto py-8">
-          <div
-            className="prose prose-neutral dark:prose-invert max-w-5xl"
-            dangerouslySetInnerHTML={{ __html: preprocessReadmeContent(readmeContent) }}
+        <div className="prose prose-neutral dark:prose-invert max-w-5xl mx-auto py-8">
+          {/* <ReactMarkdown children={preprocessReadmeContent(readmeContent)} remarkPlugins={[remarkGfm]} /> */}
+          <ReactMarkdown
+            children={preprocessReadmeContent(readmeContent)}
+            components={{
+              code({ node, inline, className, children, ...props }) {
+                const match = /language-(\w+)/.exec(className || '')
+                return !inline && match ? (
+                  <SyntaxHighlighter
+                    {...props}
+                    children={String(children).replace(/\n$/, '')}
+                    style={a11yDark}
+                    language={match[1]}
+                    PreTag="div"
+                  />
+                ) : (
+                  <code {...props} className={className}>
+                    {children}
+                  </code>
+                )
+              }
+            }}
           />
         </div>
       </section>
