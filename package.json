@@ -1,7 +1,7 @@
 {
   "name": "podcast-xml-parser",
   "main": "dist/index.js",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "keywords": [
     "podcast",
     "xml",
