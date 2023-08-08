@@ -54,13 +54,15 @@ function getText(element: Element, tagName: string): string {
  * @returns The created `Episode` object.
  */
 function createEpisodeFromItem(item: Element): Episode {
-  const episode: Episode = {
+  const enclosureElem = item.getElementsByTagName("enclosure")[0];
+
+  return {
     author: getText(item, "author"),
     contentEncoded: getText(item, "content:encoded"),
     description: getText(item, "description"),
     enclosure: {
-      url: item.getElementsByTagName("enclosure")[0]?.getAttribute("url") ?? "",
-      type: item.getElementsByTagName("enclosure")[0]?.getAttribute("type") ?? "",
+      url: enclosureElem?.getAttribute("url") ?? "",
+      type: enclosureElem?.getAttribute("type") ?? "",
     },
     guid: getText(item, "guid"),
     itunesAuthor: getText(item, "itunes:author"),
@@ -75,8 +77,6 @@ function createEpisodeFromItem(item: Element): Episode {
     pubDate: getText(item, "pubDate"),
     title: getText(item, "title"),
   };
-
-  return episode;
 }
 
 /**
@@ -96,27 +96,22 @@ export default async function podcastXmlParser(
 
   let xmlString: string;
 
-  // Check if xmlSource is a URL (by checking its constructor)
+  // Check if xmlSource is a URL
   if (xmlSource instanceof URL) {
-    // If it's a URL, fetch the XML content from the URL
     xmlString = await fetchXmlFromUrl(xmlSource.toString());
   } else {
-    // If it's a string, use it directly as the XML content
     xmlString = xmlSource;
   }
 
   const preprocessedXml = preprocessXml(xmlString);
   const parser = new DOMParser();
   const doc = parser.parseFromString(preprocessedXml, "text/xml");
-  const items = doc.getElementsByTagName("item");
-  const episodes: Episode[] = [];
+  const items = Array.from(doc.getElementsByTagName("item"));
 
-  for (let i = 0; i < items.length; i++) {
-    const item = items[i];
-    const episode = createEpisodeFromItem(item);
-    episodes.push(episode);
-  }
+  // Map through items to create episodes array
+  const episodes = items.map(createEpisodeFromItem);
 
+  const imageElem = doc.getElementsByTagName("image")[0];
   const podcast: Podcast = {
     copyright: getText(doc.documentElement, "copyright"),
     contentEncoded: getText(doc.documentElement, "content:encoded"),
@@ -126,9 +121,9 @@ export default async function podcastXmlParser(
         ? xmlSource.toString()
         : doc.getElementsByTagName("atom:link")[0]?.getAttribute("href") ?? "",
     image: {
-      link: getText(doc.getElementsByTagName("image")[0], "link"),
-      title: getText(doc.getElementsByTagName("image")[0], "title"),
-      url: getText(doc.getElementsByTagName("image")[0], "url"),
+      link: getText(imageElem, "link"),
+      title: getText(imageElem, "title"),
+      url: getText(imageElem, "url"),
     },
     itunesAuthor: getText(doc.documentElement, "itunes:author"),
     itunesCategory: doc.getElementsByTagName("itunes:category")[0]?.getAttribute("text") ?? "",
