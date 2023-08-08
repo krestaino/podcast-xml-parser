@@ -89,7 +89,7 @@ export default async function podcastXmlParser(
   if (typeof xmlSource === "string" && xmlSource.trim() === "") {
     throw new Error("Empty XML feed. Please provide valid XML content.");
   }
-  
+
   let xmlString: string;
 
   // Check if xmlSource is a URL

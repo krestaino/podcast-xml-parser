@@ -37,6 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var xmldom_1 = require("xmldom");
+var parser = new xmldom_1.DOMParser();
 /**
  * Preprocesses an XML string to handle entities and unclosed tags.
  *
@@ -44,14 +45,10 @@ var xmldom_1 = require("xmldom");
  * @returns The preprocessed XML string.
  */
 function preprocessXml(xmlString) {
-    // Check if the XML string has a root node
     if (!xmlString.startsWith("<")) {
-        // Add a root node to the XML string
         xmlString = "<root>".concat(xmlString, "</root>");
     }
-    var parser = new xmldom_1.DOMParser();
     var doc = parser.parseFromString(xmlString, "text/xml");
-    // Convert the document back to a string to handle undefined entities gracefully
     return new xmldom_1.XMLSerializer().serializeToString(doc);
 }
 /**
@@ -94,14 +91,15 @@ function getText(element, tagName) {
  * @returns The created `Episode` object.
  */
 function createEpisodeFromItem(item) {
-    var _a, _b, _c, _d;
-    var episode = {
+    var _a, _b;
+    var enclosureElem = item.getElementsByTagName("enclosure")[0];
+    return {
         author: getText(item, "author"),
         contentEncoded: getText(item, "content:encoded"),
         description: getText(item, "description"),
         enclosure: {
-            url: (_b = (_a = item.getElementsByTagName("enclosure")[0]) === null || _a === void 0 ? void 0 : _a.getAttribute("url")) !== null && _b !== void 0 ? _b : "",
-            type: (_d = (_c = item.getElementsByTagName("enclosure")[0]) === null || _c === void 0 ? void 0 : _c.getAttribute("type")) !== null && _d !== void 0 ? _d : "",
+            url: (_a = enclosureElem === null || enclosureElem === void 0 ? void 0 : enclosureElem.getAttribute("url")) !== null && _a !== void 0 ? _a : "",
+            type: (_b = enclosureElem === null || enclosureElem === void 0 ? void 0 : enclosureElem.getAttribute("type")) !== null && _b !== void 0 ? _b : "",
         },
         guid: getText(item, "guid"),
         itunesAuthor: getText(item, "itunes:author"),
@@ -116,7 +114,6 @@ function createEpisodeFromItem(item) {
         pubDate: getText(item, "pubDate"),
         title: getText(item, "title"),
     };
-    return episode;
 }
 /**
  * Parses an XML podcast feed and returns a `Podcast` object.
@@ -129,7 +126,7 @@ function createEpisodeFromItem(item) {
 function podcastXmlParser(xmlSource) {
     var _a, _b, _c, _d, _e, _f;
     return __awaiter(this, void 0, void 0, function () {
-        var xmlString, preprocessedXml, parser, doc, items, episodes, i, item, episode, podcast;
+        var xmlString, preprocessedXml, doc, docElement, episodes, imageElem, podcast;
         return __generator(this, function (_g) {
             switch (_g.label) {
                 case 0:
@@ -139,35 +136,28 @@ function podcastXmlParser(xmlSource) {
                     if (!(xmlSource instanceof URL)) return [3 /*break*/, 2];
                     return [4 /*yield*/, fetchXmlFromUrl(xmlSource.toString())];
                 case 1:
-                    // If it's a URL, fetch the XML content from the URL
                     xmlString = _g.sent();
                     return [3 /*break*/, 3];
                 case 2:
-                    // If it's a string, use it directly as the XML content
                     xmlString = xmlSource;
                     _g.label = 3;
                 case 3:
                     preprocessedXml = preprocessXml(xmlString);
-                    parser = new xmldom_1.DOMParser();
                     doc = parser.parseFromString(preprocessedXml, "text/xml");
-                    items = doc.getElementsByTagName("item");
-                    episodes = [];
-                    for (i = 0; i < items.length; i++) {
-                        item = items[i];
-                        episode = createEpisodeFromItem(item);
-                        episodes.push(episode);
-                    }
+                    docElement = doc.documentElement;
+                    episodes = Array.from(doc.getElementsByTagName("item")).map(createEpisodeFromItem);
+                    imageElem = docElement.getElementsByTagName("image")[0];
                     podcast = {
-                        copyright: getText(doc.documentElement, "copyright"),
+                        copyright: getText(docElement, "copyright"),
                         contentEncoded: getText(doc.documentElement, "content:encoded"),
                         description: getText(doc.documentElement, "description"),
                         feedUrl: xmlSource instanceof URL
                             ? xmlSource.toString()
                             : (_b = (_a = doc.getElementsByTagName("atom:link")[0]) === null || _a === void 0 ? void 0 : _a.getAttribute("href")) !== null && _b !== void 0 ? _b : "",
                         image: {
-                            link: getText(doc.getElementsByTagName("image")[0], "link"),
-                            title: getText(doc.getElementsByTagName("image")[0], "title"),
-                            url: getText(doc.getElementsByTagName("image")[0], "url"),
+                            link: getText(imageElem, "link"),
+                            title: getText(imageElem, "title"),
+                            url: getText(imageElem, "url"),
                         },
                         itunesAuthor: getText(doc.documentElement, "itunes:author"),
                         itunesCategory: (_d = (_c = doc.getElementsByTagName("itunes:category")[0]) === null || _c === void 0 ? void 0 : _c.getAttribute("text")) !== null && _d !== void 0 ? _d : "",
