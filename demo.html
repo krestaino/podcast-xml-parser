@@ -16,11 +16,16 @@
     <input type="url" id="urlInput" class="bg-gray-700 border-gray-500 min-w-max p-2 rounded border" value="" />
     <button onclick="parsePodcast()" class="ml-2 px-4 py-2 bg-blue-500 text-white rounded">Parse</button>
   </div>
-  <h2 class="text-xl font-bold mb-2 mt-4">Podcast:</h2>
-  <ul class="bg-gray-700 p-4 rounded" id="podcastInfo"></ul>
 
-  <h2 class="text-xl font-bold mb-2 mt-4">Episodes:</h2>
-  <ul class="bg-gray-700 p-4 rounded" id="episodeList"></ul>
+  <div class="hidden" id="podcast">
+    <h2 class="text-xl font-bold mb-2 mt-4" id="podcastHeader">Podcast:</h2>
+    <ul class="bg-gray-700 p-4 rounded" id="podcastInfo"></ul>
+  </div>
+
+  <div class="hidden" id="episodes">
+    <h2 class="text-xl font-bold mb-2 mt-4" id="episodesHeader">Episodes: (<span></span>)</h2>
+    <ul id="episodeList"></ul>
+  </div>
 
   <script src="./dist/bundle.js"></script>
   <script>
@@ -32,10 +37,16 @@
           podcast,
           episodes
         } = await podcastXmlParser(new URL(urlInput));
+        document.getElementById('podcast').classList.remove('hidden');
+        document.getElementById('episodes').classList.remove('hidden');
+        const episodesHeaderSpan = document.querySelector('#episodesHeader > span');
+        if (episodesHeaderSpan) {
+          episodesHeaderSpan.textContent = episodes.length.toString();
+        }
         displayPodcastInfo(podcast);
         displayEpisodes(episodes);
       } catch (error) {
-        console.error('Error parsing podcast:', error);
+        console.error(error);
       }
     }
 
@@ -67,7 +78,7 @@
 
       episodes.forEach((episode, index) => {
         const li = document.createElement('li');
-        li.classList.add('bg-gray-700', 'p-4', 'rounded');
+        li.classList.add('bg-gray-700', 'p-4', 'rounded', 'mb-4');
 
         for (let key in episode) {
           const div = document.createElement('div');
