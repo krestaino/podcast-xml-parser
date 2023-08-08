@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  react-app:
+    build: .
+    ports:
+      - "${PORT:-42069}:42069"
+    environment:
+      - PORT=42069
