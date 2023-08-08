@@ -60,6 +60,22 @@ function App() {
     return url;
   }
 
+  function preprocessReadmeContent(content) {
+    const hideSectionStartTag = "<!-- HIDE_SECTION_START -->";
+    const hideSectionEndTag = "<!-- HIDE_SECTION_END -->";
+
+    const hiddenSectionStart = content.indexOf(hideSectionStartTag);
+    const hiddenSectionEnd = content.indexOf(hideSectionEndTag);
+
+    if (hiddenSectionStart !== -1 && hiddenSectionEnd !== -1) {
+      const beforeHidden = content.substring(0, hiddenSectionStart);
+      const afterHidden = content.substring(hiddenSectionEnd + hideSectionEndTag.length);
+      return beforeHidden + afterHidden;
+    }
+
+    return content;
+  }
+
   useEffect(() => {
     fetchReadme();
   }, []);
@@ -173,10 +189,10 @@ function App() {
       </section>
 
       <section className={podcast.feedUrl ? "bg-neutral-800" : ""}>
-        <div className="max-w-5xl mx-auto my-8 pt-8">
+        <div className="max-w-5xl mx-auto mt-8 py-8">
           <div
             className="prose prose-neutral dark:prose-invert max-w-5xl"
-            dangerouslySetInnerHTML={{ __html: readmeContent }}
+            dangerouslySetInnerHTML={{ __html: preprocessReadmeContent(readmeContent) }}
           />
         </div>
       </section>

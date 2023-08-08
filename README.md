@@ -9,8 +9,10 @@ A library for parsing XML podcast feeds, designed to work in Node.js, browser en
 - **Cross-platform:** Designed to be compatible across Node.js, browsers, and React Native.
 - **Graceful Handling:** In cases of missing elements in the XML feed, the parser returns empty strings instead of throwing errors.
 
+<!-- HIDE_SECTION_START -->
 ## Live Demo
 Want to see the library in action? Check the [demo](https://podcast-xml-parser.kmr.io/) and test out `podcast-xml-parser` with various XML podcast feeds.
+<!-- HIDE_SECTION_END -->
 
 ## Installation
 
