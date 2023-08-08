@@ -63,20 +63,14 @@ function preprocessXml(xmlString) {
  */
 function fetchXmlFromUrl(url) {
     return __awaiter(this, void 0, void 0, function () {
-        var response, error_1;
+        var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, fetch(url)];
+                case 0: return [4 /*yield*/, fetch(url)];
                 case 1:
                     response = _a.sent();
                     return [4 /*yield*/, response.text()];
                 case 2: return [2 /*return*/, _a.sent()];
-                case 3:
-                    error_1 = _a.sent();
-                    throw error_1;
-                case 4: return [2 /*return*/];
             }
         });
     });
@@ -89,8 +83,9 @@ function fetchXmlFromUrl(url) {
  * @returns The text content of the specified element's tag or an empty string if not found.
  */
 function getText(element, tagName) {
+    var _a;
     var node = element === null || element === void 0 ? void 0 : element.getElementsByTagName(tagName)[0];
-    return node ? node.textContent || "" : "";
+    return (_a = node === null || node === void 0 ? void 0 : node.textContent) !== null && _a !== void 0 ? _a : "";
 }
 /**
  * Helper function to create an `Episode` instance from an XML item element.
@@ -99,14 +94,14 @@ function getText(element, tagName) {
  * @returns The created `Episode` object.
  */
 function createEpisodeFromItem(item) {
-    var _a, _b;
+    var _a, _b, _c, _d;
     var episode = {
         author: getText(item, "author"),
         contentEncoded: getText(item, "content:encoded"),
         description: getText(item, "description"),
         enclosure: {
-            url: ((_a = item.getElementsByTagName("enclosure")[0]) === null || _a === void 0 ? void 0 : _a.getAttribute("url")) || "",
-            type: ((_b = item.getElementsByTagName("enclosure")[0]) === null || _b === void 0 ? void 0 : _b.getAttribute("type")) || "",
+            url: (_b = (_a = item.getElementsByTagName("enclosure")[0]) === null || _a === void 0 ? void 0 : _a.getAttribute("url")) !== null && _b !== void 0 ? _b : "",
+            type: (_d = (_c = item.getElementsByTagName("enclosure")[0]) === null || _c === void 0 ? void 0 : _c.getAttribute("type")) !== null && _d !== void 0 ? _d : "",
         },
         guid: getText(item, "guid"),
         itunesAuthor: getText(item, "itunes:author"),
@@ -132,11 +127,11 @@ function createEpisodeFromItem(item) {
  * @returns The parsed `Podcast` object.
  */
 function podcastXmlParser(xmlSource) {
-    var _a, _b, _c;
+    var _a, _b, _c, _d, _e, _f;
     return __awaiter(this, void 0, void 0, function () {
         var xmlString, preprocessedXml, parser, doc, items, episodes, i, item, episode, podcast;
-        return __generator(this, function (_d) {
-            switch (_d.label) {
+        return __generator(this, function (_g) {
+            switch (_g.label) {
                 case 0:
                     if (typeof xmlSource === "string" && xmlSource.trim() === "") {
                         throw new Error("Empty XML feed. Please provide valid XML content.");
@@ -145,12 +140,12 @@ function podcastXmlParser(xmlSource) {
                     return [4 /*yield*/, fetchXmlFromUrl(xmlSource.toString())];
                 case 1:
                     // If it's a URL, fetch the XML content from the URL
-                    xmlString = _d.sent();
+                    xmlString = _g.sent();
                     return [3 /*break*/, 3];
                 case 2:
                     // If it's a string, use it directly as the XML content
                     xmlString = xmlSource;
-                    _d.label = 3;
+                    _g.label = 3;
                 case 3:
                     preprocessedXml = preprocessXml(xmlString);
                     parser = new xmldom_1.DOMParser();
@@ -166,16 +161,18 @@ function podcastXmlParser(xmlSource) {
                         copyright: getText(doc.documentElement, "copyright"),
                         contentEncoded: getText(doc.documentElement, "content:encoded"),
                         description: getText(doc.documentElement, "description"),
-                        feedUrl: xmlSource instanceof URL ? xmlSource.toString() : ((_a = doc.getElementsByTagName("atom:link")[0]) === null || _a === void 0 ? void 0 : _a.getAttribute("href")) || "",
+                        feedUrl: xmlSource instanceof URL
+                            ? xmlSource.toString()
+                            : (_b = (_a = doc.getElementsByTagName("atom:link")[0]) === null || _a === void 0 ? void 0 : _a.getAttribute("href")) !== null && _b !== void 0 ? _b : "",
                         image: {
                             link: getText(doc.getElementsByTagName("image")[0], "link"),
                             title: getText(doc.getElementsByTagName("image")[0], "title"),
                             url: getText(doc.getElementsByTagName("image")[0], "url"),
                         },
                         itunesAuthor: getText(doc.documentElement, "itunes:author"),
-                        itunesCategory: ((_b = doc.getElementsByTagName("itunes:category")[0]) === null || _b === void 0 ? void 0 : _b.getAttribute("text")) || "",
+                        itunesCategory: (_d = (_c = doc.getElementsByTagName("itunes:category")[0]) === null || _c === void 0 ? void 0 : _c.getAttribute("text")) !== null && _d !== void 0 ? _d : "",
                         itunesExplicit: getText(doc.documentElement, "itunes:explicit"),
-                        itunesImage: ((_c = doc.getElementsByTagName("itunes:image")[0]) === null || _c === void 0 ? void 0 : _c.getAttribute("href")) || "",
+                        itunesImage: (_f = (_e = doc.getElementsByTagName("itunes:image")[0]) === null || _e === void 0 ? void 0 : _e.getAttribute("href")) !== null && _f !== void 0 ? _f : "",
                         itunesOwner: {
                             email: getText(doc.documentElement, "itunes:email"),
                             name: getText(doc.documentElement, "itunes:name"),

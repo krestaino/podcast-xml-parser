@@ -1,5 +1,5 @@
-import { Podcast, Episode } from "./types";
-export { Podcast, Episode };
+import { type Podcast, type Episode } from "./types";
+export type { Podcast, Episode };
 /**
  * Parses an XML podcast feed and returns a `Podcast` object.
  *

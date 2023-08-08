@@ -1,7 +1,7 @@
 import { DOMParser, XMLSerializer } from "xmldom";
 
-import { Podcast, Episode } from "./types";
-export { Podcast, Episode };
+import { type Podcast, type Episode } from "./types";
+export type { Podcast, Episode };
 
 /**
  * Preprocesses an XML string to handle entities and unclosed tags.
@@ -31,12 +31,8 @@ function preprocessXml(xmlString: string): string {
  * @throws {Error} If there is an error fetching the XML content from the URL.
  */
 async function fetchXmlFromUrl(url: string): Promise<string> {
-  try {
-    const response = await fetch(url);
-    return await response.text();
-  } catch (error) {
-    throw error;
-  }
+  const response = await fetch(url);
+  return await response.text();
 }
 
 /**
@@ -48,7 +44,7 @@ async function fetchXmlFromUrl(url: string): Promise<string> {
  */
 function getText(element: Element, tagName: string): string {
   const node = element?.getElementsByTagName(tagName)[0];
-  return node ? node.textContent || "" : "";
+  return node?.textContent ?? "";
 }
 
 /**
@@ -63,8 +59,8 @@ function createEpisodeFromItem(item: Element): Episode {
     contentEncoded: getText(item, "content:encoded"),
     description: getText(item, "description"),
     enclosure: {
-      url: item.getElementsByTagName("enclosure")[0]?.getAttribute("url") || "",
-      type: item.getElementsByTagName("enclosure")[0]?.getAttribute("type") || "",
+      url: item.getElementsByTagName("enclosure")[0]?.getAttribute("url") ?? "",
+      type: item.getElementsByTagName("enclosure")[0]?.getAttribute("type") ?? "",
     },
     guid: getText(item, "guid"),
     itunesAuthor: getText(item, "itunes:author"),
@@ -91,7 +87,9 @@ function createEpisodeFromItem(item: Element): Episode {
  *                    If a URL is provided, the XML content will be fetched from the URL before parsing.
  * @returns The parsed `Podcast` object.
  */
-export default async function podcastXmlParser(xmlSource: string | URL): Promise<{ podcast: Podcast; episodes: Episode[] }> {
+export default async function podcastXmlParser(
+  xmlSource: string | URL,
+): Promise<{ podcast: Podcast; episodes: Episode[] }> {
   if (typeof xmlSource === "string" && xmlSource.trim() === "") {
     throw new Error("Empty XML feed. Please provide valid XML content.");
   }
@@ -123,16 +121,19 @@ export default async function podcastXmlParser(xmlSource: string | URL): Promise
     copyright: getText(doc.documentElement, "copyright"),
     contentEncoded: getText(doc.documentElement, "content:encoded"),
     description: getText(doc.documentElement, "description"),
-    feedUrl: xmlSource instanceof URL ? xmlSource.toString() : doc.getElementsByTagName("atom:link")[0]?.getAttribute("href") || "",
+    feedUrl:
+      xmlSource instanceof URL
+        ? xmlSource.toString()
+        : doc.getElementsByTagName("atom:link")[0]?.getAttribute("href") ?? "",
     image: {
       link: getText(doc.getElementsByTagName("image")[0], "link"),
       title: getText(doc.getElementsByTagName("image")[0], "title"),
       url: getText(doc.getElementsByTagName("image")[0], "url"),
     },
     itunesAuthor: getText(doc.documentElement, "itunes:author"),
-    itunesCategory: doc.getElementsByTagName("itunes:category")[0]?.getAttribute("text") || "",
+    itunesCategory: doc.getElementsByTagName("itunes:category")[0]?.getAttribute("text") ?? "",
     itunesExplicit: getText(doc.documentElement, "itunes:explicit"),
-    itunesImage: doc.getElementsByTagName("itunes:image")[0]?.getAttribute("href") || "",
+    itunesImage: doc.getElementsByTagName("itunes:image")[0]?.getAttribute("href") ?? "",
     itunesOwner: {
       email: getText(doc.documentElement, "itunes:email"),
       name: getText(doc.documentElement, "itunes:name"),
