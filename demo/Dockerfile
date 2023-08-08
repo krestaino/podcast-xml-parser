@@ -18,4 +18,4 @@ COPY . .
 RUN npm run build
 
 # Command to serve the built app
-CMD ["serve", "-s", "build", "-p", "3000"]
+CMD ["serve", "-s", "build", "-l", "3000"]
