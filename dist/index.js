@@ -121,14 +121,16 @@ function createEpisodeFromItem(item) {
  * @param xmlSource - The XML string or URL representing the podcast feed.
  *                    If an XML string is provided, it will be directly parsed as the XML content.
  *                    If a URL is provided, the XML content will be fetched from the URL before parsing.
+ * @param config - A configuration object to specify pagination and other options.
  * @returns The parsed `Podcast` object.
  */
-function podcastXmlParser(xmlSource) {
+function podcastXmlParser(xmlSource, config) {
     var _a, _b, _c, _d, _e, _f;
+    if (config === void 0) { config = {}; }
     return __awaiter(this, void 0, void 0, function () {
-        var xmlString, preprocessedXml, doc, docElement, episodes, imageElem, podcast;
-        return __generator(this, function (_g) {
-            switch (_g.label) {
+        var xmlString, preprocessedXml, doc, docElement, _g, start, limit, episodeElements, paginatedElements, episodes, imageElem, podcast;
+        return __generator(this, function (_h) {
+            switch (_h.label) {
                 case 0:
                     if (typeof xmlSource === "string" && xmlSource.trim() === "") {
                         throw new Error("Empty XML feed. Please provide valid XML content.");
@@ -136,16 +138,19 @@ function podcastXmlParser(xmlSource) {
                     if (!(xmlSource instanceof URL)) return [3 /*break*/, 2];
                     return [4 /*yield*/, fetchXmlFromUrl(xmlSource.toString())];
                 case 1:
-                    xmlString = _g.sent();
+                    xmlString = _h.sent();
                     return [3 /*break*/, 3];
                 case 2:
                     xmlString = xmlSource;
-                    _g.label = 3;
+                    _h.label = 3;
                 case 3:
                     preprocessedXml = preprocessXml(xmlString);
                     doc = parser.parseFromString(preprocessedXml, "text/xml");
                     docElement = doc.documentElement;
-                    episodes = Array.from(doc.getElementsByTagName("item")).map(createEpisodeFromItem);
+                    _g = config.start, start = _g === void 0 ? 0 : _g, limit = config.limit;
+                    episodeElements = Array.from(doc.getElementsByTagName("item"));
+                    paginatedElements = limit !== undefined ? episodeElements.slice(start, start + limit) : episodeElements;
+                    episodes = paginatedElements.map(createEpisodeFromItem);
                     imageElem = docElement.getElementsByTagName("image")[0];
                     podcast = {
                         copyright: getText(docElement, "copyright"),

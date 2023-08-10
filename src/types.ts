@@ -41,3 +41,11 @@ export interface Podcast {
   link: string;
   title: string;
 }
+
+/**
+ * Represents the config.
+ */
+export interface Config {
+  start?: number;
+  limit?: number;
+};

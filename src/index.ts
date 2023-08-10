@@ -1,7 +1,7 @@
 import { DOMParser, XMLSerializer } from "xmldom";
 
-import { type Podcast, type Episode } from "./types";
-export type { Podcast, Episode };
+import { type Podcast, type Episode, type Config } from "./types";
+export type { Podcast, Episode, Config };
 
 const parser = new DOMParser();
 
@@ -81,10 +81,12 @@ function createEpisodeFromItem(item: Element): Episode {
  * @param xmlSource - The XML string or URL representing the podcast feed.
  *                    If an XML string is provided, it will be directly parsed as the XML content.
  *                    If a URL is provided, the XML content will be fetched from the URL before parsing.
+ * @param config - A configuration object to specify pagination and other options.
  * @returns The parsed `Podcast` object.
  */
 export default async function podcastXmlParser(
   xmlSource: string | URL,
+  config: Config = {},
 ): Promise<{ podcast: Podcast; episodes: Episode[] }> {
   if (typeof xmlSource === "string" && xmlSource.trim() === "") {
     throw new Error("Empty XML feed. Please provide valid XML content.");
@@ -103,7 +105,11 @@ export default async function podcastXmlParser(
   const doc = parser.parseFromString(preprocessedXml, "text/xml");
   const docElement = doc.documentElement;
 
-  const episodes = Array.from(doc.getElementsByTagName("item")).map(createEpisodeFromItem);
+  const { start = 0, limit } = config;
+
+  const episodeElements = Array.from(doc.getElementsByTagName("item"));
+  const paginatedElements = limit !== undefined ? episodeElements.slice(start, start + limit) : episodeElements;
+  const episodes = paginatedElements.map(createEpisodeFromItem);
 
   const imageElem = docElement.getElementsByTagName("image")[0];
   const podcast: Podcast = {
