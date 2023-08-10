@@ -58,14 +58,23 @@ function preprocessXml(xmlString) {
  * @returns {Promise<string>} A Promise that resolves to the XML content as a string.
  * @throws {Error} If there is an error fetching the XML content from the URL.
  */
-function fetchXmlFromUrl(url) {
+function fetchXmlFromUrl(url, range, fetchEnd) {
     return __awaiter(this, void 0, void 0, function () {
-        var response;
+        var headers, response;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, fetch(url)];
+                case 0:
+                    headers = {};
+                    if (range) {
+                        headers['Range'] = range;
+                    }
+                    return [4 /*yield*/, fetch(url, { headers: headers })];
                 case 1:
                     response = _a.sent();
+                    // You may want to check if partial content is returned
+                    if ((range || fetchEnd) && response.status !== 206) {
+                        throw new Error('Server does not support byte range requests.');
+                    }
                     return [4 /*yield*/, response.text()];
                 case 2: return [2 /*return*/, _a.sent()];
             }
@@ -128,22 +137,29 @@ function podcastXmlParser(xmlSource, config) {
     var _a, _b, _c, _d, _e, _f;
     if (config === void 0) { config = {}; }
     return __awaiter(this, void 0, void 0, function () {
-        var xmlString, preprocessedXml, doc, docElement, _g, start, limit, episodeElements, paginatedElements, episodes, imageElem, podcast;
+        var xmlString, startChunk, preprocessedXml, doc, docElement, _g, start, limit, episodeElements, paginatedElements, episodes, imageElem, podcast;
         return __generator(this, function (_h) {
             switch (_h.label) {
                 case 0:
                     if (typeof xmlSource === "string" && xmlSource.trim() === "") {
                         throw new Error("Empty XML feed. Please provide valid XML content.");
                     }
-                    if (!(xmlSource instanceof URL)) return [3 /*break*/, 2];
-                    return [4 /*yield*/, fetchXmlFromUrl(xmlSource.toString())];
+                    if (!(xmlSource instanceof URL)) return [3 /*break*/, 5];
+                    if (!config.requestSizeLimit) return [3 /*break*/, 2];
+                    return [4 /*yield*/, fetchXmlFromUrl(xmlSource.toString(), "bytes=0-".concat(config.requestSizeLimit))];
                 case 1:
-                    xmlString = _h.sent();
-                    return [3 /*break*/, 3];
-                case 2:
-                    xmlString = xmlSource;
-                    _h.label = 3;
+                    startChunk = _h.sent();
+                    xmlString = startChunk;
+                    return [3 /*break*/, 4];
+                case 2: return [4 /*yield*/, fetchXmlFromUrl(xmlSource.toString())];
                 case 3:
+                    xmlString = _h.sent();
+                    _h.label = 4;
+                case 4: return [3 /*break*/, 6];
+                case 5:
+                    xmlString = xmlSource;
+                    _h.label = 6;
+                case 6:
                     preprocessedXml = preprocessXml(xmlString);
                     doc = parser.parseFromString(preprocessedXml, "text/xml");
                     docElement = doc.documentElement;

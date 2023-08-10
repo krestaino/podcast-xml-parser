@@ -26,8 +26,20 @@ function preprocessXml(xmlString: string): string {
  * @returns {Promise<string>} A Promise that resolves to the XML content as a string.
  * @throws {Error} If there is an error fetching the XML content from the URL.
  */
-async function fetchXmlFromUrl(url: string): Promise<string> {
-  const response = await fetch(url);
+async function fetchXmlFromUrl(url: string, range?: string, fetchEnd?: boolean): Promise<string> {
+  let headers: Record<string, string> = {};
+
+  if (range) {
+    headers['Range'] = range;
+  }
+
+  const response = await fetch(url, { headers });
+
+  // You may want to check if partial content is returned
+  if ((range || fetchEnd) && response.status !== 206) {
+    throw new Error('Server does not support byte range requests.');
+  }
+
   return await response.text();
 }
 
@@ -96,7 +108,12 @@ export default async function podcastXmlParser(
 
   // Check if xmlSource is a URL
   if (xmlSource instanceof URL) {
-    xmlString = await fetchXmlFromUrl(xmlSource.toString());
+    if (config.requestSizeLimit) {
+      const startChunk = await fetchXmlFromUrl(xmlSource.toString(), `bytes=0-${config.requestSizeLimit}`);
+      xmlString = startChunk;
+    } else {
+      xmlString = await fetchXmlFromUrl(xmlSource.toString());
+    }
   } else {
     xmlString = xmlSource;
   }
