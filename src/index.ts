@@ -35,7 +35,7 @@ function preprocessXml(xmlString: string): string {
 async function fetchXmlFromUrl(url: string, range?: string, fetchEnd?: boolean): Promise<string> {
   const headers: Record<string, string> = {};
 
-  if (range) {
+  if (range !== null && range !== undefined && range.trim() !== "") {
     headers.Range = range;
   }
 
