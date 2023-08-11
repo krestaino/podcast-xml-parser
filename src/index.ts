@@ -42,7 +42,7 @@ async function fetchXmlFromUrl(url: string, range?: string, fetchEnd?: boolean):
   const response = await fetch(url, { headers });
 
   // Check if partial content is returned
-  if ((range ?? fetchEnd) && response.status !== 206) {
+  if ((range ?? fetchEnd) !== undefined && response.status !== 206) {
     throw new Error("Server does not support byte range requests.");
   }
 
