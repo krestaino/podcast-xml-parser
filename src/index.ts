@@ -6,7 +6,7 @@ export type { Podcast, Episode, Config };
 const parser = new DOMParser();
 
 /**
- * Preprocesses an XML string to handle entities and unclosed tags.
+ * Preprocesses an XML string to handle possible XML inconsistencies like entities and unclosed tags.
  *
  * @param {string} xmlString - The XML string to preprocess.
  * @returns {string} The preprocessed XML string.
@@ -20,13 +20,14 @@ function preprocessXml(xmlString: string): string {
 }
 
 /**
- * Fetches XML content from a URL using Fetch API.
+ * Retrieves XML content from a given URL using the Fetch API.
+ * Supports optional byte range requests.
  *
  * @param {string} url - The URL from which to fetch the XML content.
- * @param {string} range - The optional range for byte requests.
- * @param {boolean} fetchEnd - Whether to fetch from the end of the range.
- * @returns {Promise<string>} A Promise that resolves to the XML content as a string.
- * @throws {Error} If there is an error fetching the XML content from the URL.
+ * @param {string} [range] - Optional range for byte requests.
+ * @param {boolean} [fetchEnd] - If true, fetch from the end of the range.
+ * @returns {Promise<string>} Resolves to the XML content as a string.
+ * @throws {Error} Throws an error if there's an issue fetching the XML content.
  */
 async function fetchXmlFromUrl(url: string, range?: string, fetchEnd?: boolean): Promise<string> {
   let headers: Record<string, string> = {};
@@ -46,11 +47,11 @@ async function fetchXmlFromUrl(url: string, range?: string, fetchEnd?: boolean):
 }
 
 /**
- * Retrieves the text content of a specified XML element.
+ * Extracts the text content from a specified XML element.
  *
- * @param {Element} element - The XML element to retrieve content from.
- * @param {string} tagName - The tag name whose content is to be retrieved.
- * @returns {string} The text content of the specified element's tag or an empty string if not found.
+ * @param {Element} element - The XML element to extract content from.
+ * @param {string} tagName - The name of the tag to retrieve content from.
+ * @returns {string} Text content of the tag, or an empty string if not found.
  */
 function getText(element: Element, tagName: string): string {
   const node = element?.getElementsByTagName(tagName)[0];
@@ -58,10 +59,10 @@ function getText(element: Element, tagName: string): string {
 }
 
 /**
- * Helper function to create an `Episode` instance from an XML item element.
+ * Constructs an Episode object based on the provided XML item element.
  *
- * @param {Element} item - The XML element representing an episode.
- * @returns {Episode} The created `Episode` object.
+ * @param {Element} item - The XML element that represents an episode.
+ * @returns {Episode} The created Episode object with parsed values.
  */
 function createEpisodeFromItem(item: Element): Episode {
   const enclosureElem = item.getElementsByTagName("enclosure")[0];
@@ -90,10 +91,10 @@ function createEpisodeFromItem(item: Element): Episode {
 }
 
 /**
- * Searches iTunes for podcast information based on the podcast ID.
+ * Fetches podcast information from iTunes based on the provided podcast ID.
  *
- * @param {number} id - The podcast ID to search for.
- * @returns {Promise<any | undefined>} The iTunes search results for the podcast.
+ * @param {number} id - The podcast ID for iTunes search.
+ * @returns {Promise<any | undefined>} The search results for the podcast from iTunes or undefined on error.
  */
 export async function itunesSearch(id: number): Promise<any | undefined> {
   try {
@@ -109,11 +110,13 @@ export async function itunesSearch(id: number): Promise<any | undefined> {
 }
 
 /**
- * Parses an XML podcast feed and returns a `Podcast` object.
+ * Parses a podcast's XML feed and returns structured data about the podcast and its episodes.
+ * Supports optional iTunes integration to retrieve additional details.
  *
- * @param {string | URL} xmlSource - The XML string or URL representing the podcast feed.
- * @param {Config} config - A configuration object to specify pagination and other options.
- * @returns {Promise<{ podcast: Podcast; episodes: Episode[]; itunes?: any }>} The parsed `Podcast` object.
+ * @param {string | URL} xmlSource - XML content or a URL pointing to the podcast feed.
+ * @param {Config} [config] - Configuration options for parsing, like pagination or iTunes integration.
+ * @returns {Promise<{ podcast: Podcast; episodes: Episode[]; itunes?: any }>} Parsed podcast data.
+ * @throws {Error} Throws an error for invalid or empty XML feeds.
  */
 export default async function podcastXmlParser(
   xmlSource: string | URL,
