@@ -155,25 +155,25 @@ async function itunesLookup(id: number): Promise<any | undefined> {
  * @throws {Error} Throws an error for invalid or empty XML feeds.
  */
 export default async function podcastXmlParser(
-  xmlSource: string | URL | number,
+  xmlSource: string | URL | number | any,
   config: Config = {},
 ): Promise<{ podcast: Podcast; episodes: Episode[]; itunes?: any }> {
   let itunes: any;
-  let xmlString: string = "";
+  let xmlString: any;
 
   // Check if xmlSource is a URL
-  if (xmlSource !== "" && xmlSource !== 0 && xmlSource instanceof URL) {
+  if (xmlSource instanceof URL) {
     if (config.requestSizeLimit !== null && config.requestSizeLimit !== undefined) {
       const startChunk = await fetchXmlFromUrl(xmlSource.toString(), `bytes=0-${config.requestSizeLimit}`);
       xmlString = startChunk + "</channel></rss>";
     } else {
       xmlString = await fetchXmlFromUrl(xmlSource.toString());
     }
-  // Check if xmlSource is a number (iTunes ID)
+    // Check if xmlSource is a number (iTunes ID)
   } else if (typeof xmlSource === "number") {
     itunes = await itunesLookup(xmlSource);
     xmlString = await fetchXmlFromUrl(itunes.feedUrl);
-  // Check if xmlSource is a string
+    // Check if xmlSource is a string
   } else if (typeof xmlSource === "string") {
     xmlString = xmlSource;
   }
