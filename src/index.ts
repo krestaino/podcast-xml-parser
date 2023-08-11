@@ -184,7 +184,7 @@ export default async function podcastXmlParser(
       itunes = itunes.results.find((result: any) => result.feedUrl === podcast.feedUrl);
       return { itunes, podcast, episodes };
     } catch (err) {
-      // return { podcast, episodes };
+      throw new Error('Error fetching from iTunes.');
     }
   }
 
