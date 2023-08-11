@@ -145,6 +145,22 @@ async function itunesLookup(id: number): Promise<any | undefined> {
   }
 }
 
+async function retrieveXmlFromSource(xmlSource: string | URL | number): Promise<string> {
+  if (xmlSource instanceof URL) {
+    return await fetchXmlFromUrl(xmlSource.toString());
+  } else if (typeof xmlSource === "number") {
+    const itunes = await itunesLookup(xmlSource);
+    if (itunes && itunes.feedUrl) {
+      return await fetchXmlFromUrl(itunes.feedUrl);
+    }
+    throw new Error("Invalid iTunes ID or unable to fetch associated feed URL.");
+  } else if (typeof xmlSource === "string") {
+    return xmlSource;
+  } else {
+    throw new Error("Invalid xmlSource type. Please provide a valid URL, iTunes ID, or XML string.");
+  }
+}
+
 /**
  * Parses a podcast's XML feed and returns structured data about the podcast and its episodes.
  * Supports optional iTunes integration to retrieve additional details.
@@ -161,22 +177,8 @@ export default async function podcastXmlParser(
   let itunes: any;
   let xmlString: any;
 
-  // Check if xmlSource is a URL
-  if (xmlSource instanceof URL) {
-    if (config.requestSizeLimit !== null && config.requestSizeLimit !== undefined) {
-      const startChunk = await fetchXmlFromUrl(xmlSource.toString(), `bytes=0-${config.requestSizeLimit}`);
-      xmlString = startChunk + "</channel></rss>";
-    } else {
-      xmlString = await fetchXmlFromUrl(xmlSource.toString());
-    }
-  // Check if xmlSource is a number (iTunes ID)
-  } else if (typeof xmlSource === "number") {
-    itunes = await itunesLookup(xmlSource);
-    xmlString = await fetchXmlFromUrl(itunes.feedUrl);
-  // Check if xmlSource is a string
-  } else if (typeof xmlSource === "string") {
-    xmlString = xmlSource;
-  }
+  // Retrieve XML based on the xmlSource
+  xmlString = await retrieveXmlFromSource(xmlSource);
 
   // Cleanup XML
   const preprocessedXml = preprocessXml(xmlString);
