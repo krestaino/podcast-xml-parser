@@ -169,11 +169,11 @@ export default async function podcastXmlParser(
     } else {
       xmlString = await fetchXmlFromUrl(xmlSource.toString());
     }
-    // Check if xmlSource is a number (iTunes ID)
+  // Check if xmlSource is a number (iTunes ID)
   } else if (typeof xmlSource === "number") {
     itunes = await itunesLookup(xmlSource);
     xmlString = await fetchXmlFromUrl(itunes.feedUrl);
-    // Check if xmlSource is a string
+  // Check if xmlSource is a string
   } else if (typeof xmlSource === "string") {
     xmlString = xmlSource;
   }
