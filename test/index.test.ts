@@ -1,7 +1,7 @@
 import "dotenv/config";
 import fs from 'fs';
 
-import podcastXmlParser, { itunesSearch, Podcast, Episode } from "../src";
+import podcastXmlParser, { Podcast, Episode } from "../src";
 
 // Helper function to assert properties of a Podcast object
 const assertPodcastProperties = (podcast: Podcast) => {
@@ -311,9 +311,9 @@ describe("podcastXmlParser", () => {
   });
 
   it('should return correct itunes data', async () => {
-    const { itunes, podcast, episodes } = await itunesSearch(1559139153);
+    const { podcast, episodes } = await podcastXmlParser(1559139153);   
 
-    expect(itunes.feedUrl).toBe('https://feeds.megaphone.fm/climbinggold');
+    expect(podcast.feedUrl).toBe('https://feeds.megaphone.fm/climbinggold');
     expect(podcast.title).toBe("Climbing Gold");
     expect(episodes[episodes.length  - 1].title).toBe("Coming Soon");
   });

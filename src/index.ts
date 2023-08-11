@@ -13,6 +13,10 @@ const parser = new DOMParser();
  * @returns {string} The preprocessed XML string.
  */
 function preprocessXml(xmlString: string): string {
+  // Check if xmlSource is a valid XML string
+  if (xmlString.trim() === "") {
+    throw new Error("Empty XML feed. Please provide valid XML content.");
+  }
   const wrappedString = xmlString.startsWith("<") ? xmlString : `<root>${xmlString}</root>`;
   const doc = parser.parseFromString(wrappedString, "text/xml");
   return new XMLSerializer().serializeToString(doc);
@@ -131,14 +135,11 @@ function createEpisode(item: Element): Episode {
  * @param {number} id - The podcast ID for iTunes search.
  * @returns {Promise<any | undefined>} The search results for the podcast from iTunes or undefined on error.
  */
-export async function itunesSearch(id: number): Promise<any | undefined> {
+async function itunesLookup(id: number): Promise<any | undefined> {
   try {
     const itunesResponse = await fetch(`https://itunes.apple.com/lookup?id=${id}&entity=podcast`);
     const itunesData = await itunesResponse.json();
-    const itunes = itunesData.results[0];
-    const { podcast, episodes } = await podcastXmlParser(new URL(itunes.feedUrl));
-
-    return { itunes, podcast, episodes };
+    return itunesData.results[0];
   } catch (err) {
     return undefined;
   }
@@ -148,21 +149,18 @@ export async function itunesSearch(id: number): Promise<any | undefined> {
  * Parses a podcast's XML feed and returns structured data about the podcast and its episodes.
  * Supports optional iTunes integration to retrieve additional details.
  *
- * @param {string | URL} xmlSource - XML content or a URL pointing to the podcast feed.
+ * @param {string | URL | number} xmlSource - XML content, a URL pointing to the podcast feed, or an iTunes collectionId.
  * @param {Config} [config] - Configuration options for parsing, like pagination or iTunes integration.
  * @returns {Promise<{ podcast: Podcast; episodes: Episode[]; itunes?: any }>} Parsed podcast data.
  * @throws {Error} Throws an error for invalid or empty XML feeds.
  */
 export default async function podcastXmlParser(
-  xmlSource: string | URL,
+  xmlSource: string | URL | number,
   config: Config = {}
 ): Promise<{ podcast: Podcast; episodes: Episode[]; itunes?: any }> {
-  // Check if xmlSource is a valid XML string
-  if (typeof xmlSource === "string" && xmlSource.trim() === "") {
-    throw new Error("Empty XML feed. Please provide valid XML content.");
-  }
 
-  let xmlString: string;
+  let itunes: any;
+  let xmlString: string = "";
 
   // Check if xmlSource is a URL
   if (xmlSource instanceof URL) {
@@ -172,7 +170,12 @@ export default async function podcastXmlParser(
     } else {
       xmlString = await fetchXmlFromUrl(xmlSource.toString());
     }
-  } else {
+  // Check if xmlSource is a number (iTunes ID)
+  } else if (typeof xmlSource === "number") {
+    itunes = await itunesLookup(xmlSource);
+    xmlString = await fetchXmlFromUrl(itunes.feedUrl);
+  // Check if xmlSource is a string
+  } else if (typeof xmlSource === "string") {
     xmlString = xmlSource;
   }
 
@@ -188,7 +191,7 @@ export default async function podcastXmlParser(
   // Grab episodes from XML
   const episodeElements = Array.from(doc.getElementsByTagName("item"));
 
-  // Optionally paginate episodes, otherwise use all episodes
+  // Optionally paginate episodes using config, otherwise use all episodes
   const { start = 0, limit } = config;
   const paginatedElements = limit !== undefined ? episodeElements.slice(start, start + limit) : episodeElements;
 
@@ -198,10 +201,13 @@ export default async function podcastXmlParser(
   // Optionally set itunes data
   if (config.itunes) {
     try {
-      const itunesResponse = await fetch(`https://itunes.apple.com/search?term=${podcast.title}&entity=podcast`);
-      let itunes: any = await itunesResponse.json();
-      // Set podcast if the feedUrl is equal on iTunes and in the XML
-      itunes = itunes.results.find((result: any) => result.feedUrl === podcast.feedUrl);
+      if (!itunes) {
+        const itunesResponse = await fetch(`https://itunes.apple.com/search?term=${podcast.title}&entity=podcast`);
+        itunes = await itunesResponse.json();
+        // Set podcast if the feedUrl is equal on iTunes and in the XML
+        itunes = itunes.results.find((result: any) => result.feedUrl === podcast.feedUrl);
+      }
+
       // All done, return data
       return { itunes, podcast, episodes };
     } catch (err) {
