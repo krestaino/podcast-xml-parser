@@ -149,7 +149,7 @@ function podcastXmlParser(xmlSource, config) {
                     return [4 /*yield*/, fetchXmlFromUrl(xmlSource.toString(), "bytes=0-".concat(config.requestSizeLimit))];
                 case 1:
                     startChunk = _h.sent();
-                    xmlString = startChunk;
+                    xmlString = startChunk + "</channel></rss>";
                     return [3 /*break*/, 4];
                 case 2: return [4 /*yield*/, fetchXmlFromUrl(xmlSource.toString())];
                 case 3:

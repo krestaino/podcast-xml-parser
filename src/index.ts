@@ -110,7 +110,7 @@ export default async function podcastXmlParser(
   if (xmlSource instanceof URL) {
     if (config.requestSizeLimit) {
       const startChunk = await fetchXmlFromUrl(xmlSource.toString(), `bytes=0-${config.requestSizeLimit}`);
-      xmlString = startChunk;
+      xmlString = startChunk + "</channel></rss>";
     } else {
       xmlString = await fetchXmlFromUrl(xmlSource.toString());
     }
