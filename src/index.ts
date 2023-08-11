@@ -6,16 +6,15 @@ export type { Podcast, Episode, Config };
 const parser = new DOMParser();
 
 /**
- * Preprocesses an XML string to handle possible XML inconsistencies like entities and unclosed tags.
- *
+ * Preprocesses an XML string to handle possible XML inconsistencies.
+ * Wraps content in a root tag if it doesn't start with one.
+ * 
  * @param {string} xmlString - The XML string to preprocess.
  * @returns {string} The preprocessed XML string.
  */
 function preprocessXml(xmlString: string): string {
-  if (!xmlString.startsWith("<")) {
-    xmlString = `<root>${xmlString}</root>`;
-  }
-  const doc = parser.parseFromString(xmlString, "text/xml");
+  const wrappedString = xmlString.startsWith("<") ? xmlString : `<root>${xmlString}</root>`;
+  const doc = parser.parseFromString(wrappedString, "text/xml");
   return new XMLSerializer().serializeToString(doc);
 }
 
@@ -61,36 +60,36 @@ function getText(element: Element, tagName: string): string {
 /**
  * Constructs a Podcast object based on the provided XML item element.
  *
- * @param {Element} item - The XML element that represents a podcast.
+ * @param {Element} document - The XML element that represents a podcast.
  * @returns {Podcast} The created Podcast object with parsed values.
  */
-function createPodcast(item: Element): Podcast {
-  const imageElem = item.getElementsByTagName("image")[0];
+function createPodcast(document: Element): Podcast {
+  const imageElem = document.getElementsByTagName("image")[0];
 
   return {
-    copyright: getText(item, "copyright"),
-    contentEncoded: getText(item, "content:encoded"),
-    description: getText(item, "description"),
-    feedUrl: item.getElementsByTagName("atom:link")[0]?.getAttribute("href") ?? "",
+    copyright: getText(document, "copyright"),
+    contentEncoded: getText(document, "content:encoded"),
+    description: getText(document, "description"),
+    feedUrl: document.getElementsByTagName("atom:link")[0]?.getAttribute("href") ?? "",
     image: {
       link: getText(imageElem, "link"),
       title: getText(imageElem, "title"),
       url: getText(imageElem, "url"),
     },
-    itunesAuthor: getText(item, "itunes:author"),
-    itunesCategory: item.getElementsByTagName("itunes:category")[0]?.getAttribute("text") ?? "",
-    itunesExplicit: getText(item, "itunes:explicit"),
-    itunesImage: item.getElementsByTagName("itunes:image")[0]?.getAttribute("href") ?? "",
+    itunesAuthor: getText(document, "itunes:author"),
+    itunesCategory: document.getElementsByTagName("itunes:category")[0]?.getAttribute("text") ?? "",
+    itunesExplicit: getText(document, "itunes:explicit"),
+    itunesImage: document.getElementsByTagName("itunes:image")[0]?.getAttribute("href") ?? "",
     itunesOwner: {
-      email: getText(item, "itunes:email"),
-      name: getText(item, "itunes:name"),
+      email: getText(document, "itunes:email"),
+      name: getText(document, "itunes:name"),
     },
-    itunesSubtitle: getText(item, "itunes:subtitle"),
-    itunesSummary: getText(item, "itunes:summary"),
-    itunesType: getText(item, "itunes:type"),
-    language: getText(item, "language"),
-    link: getText(item, "link"),
-    title: getText(item, "title"),
+    itunesSubtitle: getText(document, "itunes:subtitle"),
+    itunesSummary: getText(document, "itunes:summary"),
+    itunesType: getText(document, "itunes:type"),
+    language: getText(document, "language"),
+    link: getText(document, "link"),
+    title: getText(document, "title"),
   };
 }
 
@@ -187,9 +186,9 @@ export default async function podcastXmlParser(
   const podcast = createPodcast(doc.documentElement);
 
   // Grab episodes from XML
-  const episodeElements = Array.from(doc.getElementsByTagName("item")); 
+  const episodeElements = Array.from(doc.getElementsByTagName("item"));
 
-  // Optionally paginate episodes, otherwise grab all
+  // Optionally paginate episodes, otherwise use all episodes
   const { start = 0, limit } = config;
   const paginatedElements = limit !== undefined ? episodeElements.slice(start, start + limit) : episodeElements;
 
@@ -201,7 +200,7 @@ export default async function podcastXmlParser(
     try {
       const itunesResponse = await fetch(`https://itunes.apple.com/search?term=${podcast.title}&entity=podcast`);
       let itunes: any = await itunesResponse.json();
-      // Only set podcast if the feedUrl is the same on iTunes and in the XML
+      // Set podcast if the feedUrl is equal on iTunes and in the XML
       itunes = itunes.results.find((result: any) => result.feedUrl === podcast.feedUrl);
       // All done, return data
       return { itunes, podcast, episodes };
