@@ -12,4 +12,5 @@ export type { Podcast, Episode, Config };
 export default function podcastXmlParser(xmlSource: string | URL, config?: Config): Promise<{
     podcast: Podcast;
     episodes: Episode[];
+    itunes?: any;
 }>;

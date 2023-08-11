@@ -310,7 +310,7 @@ describe("podcastXmlParser", () => {
     expect(result.podcast.feedUrl).toBe('https://example.com/rss_feed.xml');
   });
 
-  // NOTE: To run this test, ensure that you set the environment variable FEED_URLS to a comma-separated list
+  // NOTE: To run these tests, ensure that you set the environment variable FEED_URLS to a comma-separated list
   // of URLs of the XML feeds that you want to test. You can create an .env file to do this.
   const { FEED_URLS = "" } = process.env;
 
@@ -318,13 +318,19 @@ describe("podcastXmlParser", () => {
     const feedUrlsArray = FEED_URLS.split(",");
 
     feedUrlsArray.forEach((FEED_URL) => {
-      test(`should parse the XML feed of URL: ${FEED_URL}`, async () => {
+      it(`should parse the XML feed of URL: ${FEED_URL}`, async () => {
         const { podcast, episodes } = await podcastXmlParser(new URL(FEED_URL));
         expect(podcast.feedUrl).toBe(FEED_URL);
 
         assertPodcastProperties(podcast);
         episodes.forEach((episode) => assertEpisodeProperties(episode));
       });
+    });
+
+    it('return itunes when config.itunes is set to true', async () => {
+      const { podcast, itunes } = await podcastXmlParser(new URL(feedUrlsArray[0]), { itunes: true });
+      expect(podcast.feedUrl).toBe(feedUrlsArray[0]);
+      expect(typeof itunes).toBe("object");
     });
   }
 });

@@ -137,7 +137,7 @@ function podcastXmlParser(xmlSource, config) {
     var _a, _b, _c, _d, _e, _f;
     if (config === void 0) { config = {}; }
     return __awaiter(this, void 0, void 0, function () {
-        var xmlString, startChunk, preprocessedXml, doc, docElement, _g, start, limit, episodeElements, paginatedElements, episodes, imageElem, podcast;
+        var xmlString, startChunk, preprocessedXml, doc, docElement, _g, start, limit, episodeElements, paginatedElements, episodes, imageElem, podcast, itunesResponse, itunes, err_1;
         return __generator(this, function (_h) {
             switch (_h.label) {
                 case 0:
@@ -195,7 +195,22 @@ function podcastXmlParser(xmlSource, config) {
                         link: getText(doc.documentElement, "link"),
                         title: getText(doc.documentElement, "title"),
                     };
-                    return [2 /*return*/, { podcast: podcast, episodes: episodes }];
+                    if (!config.itunes) return [3 /*break*/, 11];
+                    _h.label = 7;
+                case 7:
+                    _h.trys.push([7, 10, , 11]);
+                    return [4 /*yield*/, fetch("https://itunes.apple.com/search?term=".concat(podcast.title, "&entity=podcast"))];
+                case 8:
+                    itunesResponse = _h.sent();
+                    return [4 /*yield*/, itunesResponse.json()];
+                case 9:
+                    itunes = _h.sent();
+                    itunes = itunes.results.find(function (result) { return result.feedUrl === podcast.feedUrl; });
+                    return [2 /*return*/, { itunes: itunes, podcast: podcast, episodes: episodes }];
+                case 10:
+                    err_1 = _h.sent();
+                    return [3 /*break*/, 11];
+                case 11: return [2 /*return*/, { podcast: podcast, episodes: episodes }];
             }
         });
     });

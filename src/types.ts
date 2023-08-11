@@ -49,4 +49,5 @@ export interface Config {
   start?: number;
   limit?: number;
   requestSizeLimit?: number;
+  itunes?: boolean;
 };

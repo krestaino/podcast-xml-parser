@@ -99,7 +99,7 @@ function createEpisodeFromItem(item: Element): Episode {
 export default async function podcastXmlParser(
   xmlSource: string | URL,
   config: Config = {},
-): Promise<{ podcast: Podcast; episodes: Episode[] }> {
+): Promise<{ podcast: Podcast; episodes: Episode[]; itunes?: any }> {
   if (typeof xmlSource === "string" && xmlSource.trim() === "") {
     throw new Error("Empty XML feed. Please provide valid XML content.");
   }
@@ -157,6 +157,17 @@ export default async function podcastXmlParser(
     link: getText(doc.documentElement, "link"),
     title: getText(doc.documentElement, "title"),
   };
+
+  if (config.itunes) {
+    try {
+      const itunesResponse = await fetch(`https://itunes.apple.com/search?term=${podcast.title}&entity=podcast`);
+      let itunes: any = await itunesResponse.json();      
+      itunes = itunes.results.find((result: any) => result.feedUrl === podcast.feedUrl);
+      return { itunes, podcast, episodes };
+    } catch (err) {
+      // return { podcast, episodes };
+    }
+  }
 
   return { podcast, episodes };
 }
