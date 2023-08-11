@@ -122,6 +122,7 @@ export default async function podcastXmlParser(
   xmlSource: string | URL,
   config: Config = {}
 ): Promise<{ podcast: Podcast; episodes: Episode[]; itunes?: any }> {
+  // Check if xmlSource is a valid XML string
   if (typeof xmlSource === "string" && xmlSource.trim() === "") {
     throw new Error("Empty XML feed. Please provide valid XML content.");
   }
@@ -140,17 +141,25 @@ export default async function podcastXmlParser(
     xmlString = xmlSource;
   }
 
+  // Cleanup XML
   const preprocessedXml = preprocessXml(xmlString);
+
+  // Parse XML
   const doc = parser.parseFromString(preprocessedXml, "text/xml");
   const docElement = doc.documentElement;
 
+  // Optionally set pagination config
   const { start = 0, limit } = config;
 
+  // Grab episodes from XML
   const episodeElements = Array.from(doc.getElementsByTagName("item"));
   const paginatedElements = limit !== undefined ? episodeElements.slice(start, start + limit) : episodeElements;
   const episodes = paginatedElements.map(createEpisodeFromItem);
 
+  // Helper to grab image data
   const imageElem = docElement.getElementsByTagName("image")[0];
+
+  // Set podcast data
   const podcast: Podcast = {
     copyright: getText(docElement, "copyright"),
     contentEncoded: getText(doc.documentElement, "content:encoded"),
@@ -180,16 +189,20 @@ export default async function podcastXmlParser(
     title: getText(doc.documentElement, "title"),
   };
 
+  // Optionally grab itunes data
   if (config.itunes) {
     try {
       const itunesResponse = await fetch(`https://itunes.apple.com/search?term=${podcast.title}&entity=podcast`);
       let itunes: any = await itunesResponse.json();
+      // Only set podcast if the feedUrl is the same on iTunes and in the XML
       itunes = itunes.results.find((result: any) => result.feedUrl === podcast.feedUrl);
+      // All done, return data
       return { itunes, podcast, episodes };
     } catch (err) {
       throw new Error('Error fetching from iTunes.');
     }
   }
 
+  // All done, return data
   return { podcast, episodes };
 }
