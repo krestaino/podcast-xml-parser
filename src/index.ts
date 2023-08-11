@@ -42,7 +42,7 @@ async function fetchXmlFromUrl(url: string, range?: string, fetchEnd?: boolean):
   const response = await fetch(url, { headers });
 
   // Check if partial content is returned
-  if ((range || fetchEnd) && response.status !== 206) {
+  if ((range ?? fetchEnd) && response.status !== 206) {
     throw new Error("Server does not support byte range requests.");
   }
 
@@ -162,8 +162,8 @@ export default async function podcastXmlParser(
   let xmlString: string = "";
 
   // Check if xmlSource is a URL
-  if (xmlSource instanceof URL) {
-    if (config.requestSizeLimit) {
+  if (xmlSource && xmlSource instanceof URL) {
+    if (config.requestSizeLimit !== null && config.requestSizeLimit !== undefined) {
       const startChunk = await fetchXmlFromUrl(xmlSource.toString(), `bytes=0-${config.requestSizeLimit}`);
       xmlString = startChunk + "</channel></rss>";
     } else {
@@ -198,9 +198,9 @@ export default async function podcastXmlParser(
   const episodes = paginatedElements.map(createEpisode);
 
   // Optionally set itunes data
-  if (config.itunes) {
+  if (config.itunes === true) {
     try {
-      if (!itunes) {
+      if (itunes === null || itunes === undefined) {
         const itunesResponse = await fetch(`https://itunes.apple.com/search?term=${podcast.title}&entity=podcast`);
         itunes = await itunesResponse.json();
         // Set podcast if the feedUrl is equal on iTunes and in the XML
