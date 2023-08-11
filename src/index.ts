@@ -88,6 +88,27 @@ function createEpisodeFromItem(item: Element): Episode {
 }
 
 /**
+ * Searches iTunes for podcast information based on either the podcast title or the podcast ID.
+ *
+ * @param searchTerm - The title of the podcast or the ID.
+ * @param id - The podcast ID (number) to search for.
+ * @param feedUrl - The feed URL of the podcast.
+ * @returns The iTunes search results for the podcast.
+ */
+export async function itunesSearch(id: number): Promise<any | undefined> {
+  try {
+    const itunesResponse = await fetch(`https://itunes.apple.com/lookup?id=${id}&entity=podcast`);
+    const itunesData = await itunesResponse.json();
+    const itunes = itunesData.results[0];
+    const { podcast, episodes } = await podcastXmlParser(new URL(itunes.feedUrl));
+    
+    return { itunes, podcast, episodes };
+  } catch (err) {
+    return undefined;
+  }
+}
+
+/**
  * Parses an XML podcast feed and returns a `Podcast` object.
  *
  * @param xmlSource - The XML string or URL representing the podcast feed.

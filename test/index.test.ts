@@ -1,7 +1,7 @@
 import "dotenv/config";
 import fs from 'fs';
 
-import podcastXmlParser, { Podcast, Episode } from "../src";
+import podcastXmlParser, { itunesSearch, Podcast, Episode } from "../src";
 
 // Helper function to assert properties of a Podcast object
 const assertPodcastProperties = (podcast: Podcast) => {
@@ -308,6 +308,14 @@ describe("podcastXmlParser", () => {
 
     const result = await podcastXmlParser(xmlSource);
     expect(result.podcast.feedUrl).toBe('https://example.com/rss_feed.xml');
+  });
+
+  it('should return correct itunes data', async () => {
+    const { itunes, podcast, episodes } = await itunesSearch(1559139153);
+
+    expect(itunes.feedUrl).toBe('https://feeds.megaphone.fm/climbinggold');
+    expect(podcast.title).toBe("Climbing Gold");
+    expect(episodes[episodes.length  - 1].title).toBe("Coming Soon");
   });
 
   // NOTE: To run these tests, ensure that you set the environment variable FEED_URLS to a comma-separated list
