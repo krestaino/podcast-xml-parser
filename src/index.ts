@@ -59,12 +59,48 @@ function getText(element: Element, tagName: string): string {
 }
 
 /**
+ * Constructs a Podcast object based on the provided XML item element.
+ *
+ * @param {Element} item - The XML element that represents a podcast.
+ * @returns {Podcast} The created Podcast object with parsed values.
+ */
+function createPodcast(item: Element): Podcast {
+  const imageElem = item.getElementsByTagName("image")[0];
+
+  return {
+    copyright: getText(item, "copyright"),
+    contentEncoded: getText(item, "content:encoded"),
+    description: getText(item, "description"),
+    feedUrl: item.getElementsByTagName("atom:link")[0]?.getAttribute("href") ?? "",
+    image: {
+      link: getText(imageElem, "link"),
+      title: getText(imageElem, "title"),
+      url: getText(imageElem, "url"),
+    },
+    itunesAuthor: getText(item, "itunes:author"),
+    itunesCategory: item.getElementsByTagName("itunes:category")[0]?.getAttribute("text") ?? "",
+    itunesExplicit: getText(item, "itunes:explicit"),
+    itunesImage: item.getElementsByTagName("itunes:image")[0]?.getAttribute("href") ?? "",
+    itunesOwner: {
+      email: getText(item, "itunes:email"),
+      name: getText(item, "itunes:name"),
+    },
+    itunesSubtitle: getText(item, "itunes:subtitle"),
+    itunesSummary: getText(item, "itunes:summary"),
+    itunesType: getText(item, "itunes:type"),
+    language: getText(item, "language"),
+    link: getText(item, "link"),
+    title: getText(item, "title"),
+  };
+}
+
+/**
  * Constructs an Episode object based on the provided XML item element.
  *
  * @param {Element} item - The XML element that represents an episode.
  * @returns {Episode} The created Episode object with parsed values.
  */
-function createEpisodeFromItem(item: Element): Episode {
+function createEpisode(item: Element): Episode {
   const enclosureElem = item.getElementsByTagName("enclosure")[0];
 
   return {
@@ -146,50 +182,21 @@ export default async function podcastXmlParser(
 
   // Parse XML
   const doc = parser.parseFromString(preprocessedXml, "text/xml");
-  const docElement = doc.documentElement;
-
-  // Optionally set pagination config
-  const { start = 0, limit } = config;
-
-  // Grab episodes from XML
-  const episodeElements = Array.from(doc.getElementsByTagName("item"));
-  const paginatedElements = limit !== undefined ? episodeElements.slice(start, start + limit) : episodeElements;
-  const episodes = paginatedElements.map(createEpisodeFromItem);
-
-  // Helper to grab image data
-  const imageElem = docElement.getElementsByTagName("image")[0];
 
   // Set podcast data
-  const podcast: Podcast = {
-    copyright: getText(docElement, "copyright"),
-    contentEncoded: getText(doc.documentElement, "content:encoded"),
-    description: getText(doc.documentElement, "description"),
-    feedUrl:
-      xmlSource instanceof URL
-        ? xmlSource.toString()
-        : doc.getElementsByTagName("atom:link")[0]?.getAttribute("href") ?? "",
-    image: {
-      link: getText(imageElem, "link"),
-      title: getText(imageElem, "title"),
-      url: getText(imageElem, "url"),
-    },
-    itunesAuthor: getText(doc.documentElement, "itunes:author"),
-    itunesCategory: doc.getElementsByTagName("itunes:category")[0]?.getAttribute("text") ?? "",
-    itunesExplicit: getText(doc.documentElement, "itunes:explicit"),
-    itunesImage: doc.getElementsByTagName("itunes:image")[0]?.getAttribute("href") ?? "",
-    itunesOwner: {
-      email: getText(doc.documentElement, "itunes:email"),
-      name: getText(doc.documentElement, "itunes:name"),
-    },
-    itunesSubtitle: getText(doc.documentElement, "itunes:subtitle"),
-    itunesSummary: getText(doc.documentElement, "itunes:summary"),
-    itunesType: getText(doc.documentElement, "itunes:type"),
-    language: getText(doc.documentElement, "language"),
-    link: getText(doc.documentElement, "link"),
-    title: getText(doc.documentElement, "title"),
-  };
+  const podcast = createPodcast(doc.documentElement);
 
-  // Optionally grab itunes data
+  // Grab episodes from XML
+  const episodeElements = Array.from(doc.getElementsByTagName("item")); 
+
+  // Optionally paginate episodes, otherwise grab all
+  const { start = 0, limit } = config;
+  const paginatedElements = limit !== undefined ? episodeElements.slice(start, start + limit) : episodeElements;
+
+  // Set episodes data
+  const episodes = paginatedElements.map(createEpisode);
+
+  // Optionally set itunes data
   if (config.itunes) {
     try {
       const itunesResponse = await fetch(`https://itunes.apple.com/search?term=${podcast.title}&entity=podcast`);
