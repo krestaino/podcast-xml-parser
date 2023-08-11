@@ -50,4 +50,4 @@ export interface Config {
   limit?: number;
   requestSizeLimit?: number;
   itunes?: boolean;
-};
+}

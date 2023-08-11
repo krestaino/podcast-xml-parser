@@ -8,7 +8,7 @@ const parser = new DOMParser();
 /**
  * Preprocesses an XML string to handle possible XML inconsistencies.
  * Wraps content in a root tag if it doesn't start with one.
- * 
+ *
  * @param {string} xmlString - The XML string to preprocess.
  * @returns {string} The preprocessed XML string.
  */
@@ -33,17 +33,17 @@ function preprocessXml(xmlString: string): string {
  * @throws {Error} Throws an error if there's an issue fetching the XML content.
  */
 async function fetchXmlFromUrl(url: string, range?: string, fetchEnd?: boolean): Promise<string> {
-  let headers: Record<string, string> = {};
+  const headers: Record<string, string> = {};
 
   if (range) {
-    headers['Range'] = range;
+    headers.Range = range;
   }
 
   const response = await fetch(url, { headers });
 
   // Check if partial content is returned
   if ((range || fetchEnd) && response.status !== 206) {
-    throw new Error('Server does not support byte range requests.');
+    throw new Error("Server does not support byte range requests.");
   }
 
   return await response.text();
@@ -156,9 +156,8 @@ async function itunesLookup(id: number): Promise<any | undefined> {
  */
 export default async function podcastXmlParser(
   xmlSource: string | URL | number,
-  config: Config = {}
+  config: Config = {},
 ): Promise<{ podcast: Podcast; episodes: Episode[]; itunes?: any }> {
-
   let itunes: any;
   let xmlString: string = "";
 
@@ -170,11 +169,11 @@ export default async function podcastXmlParser(
     } else {
       xmlString = await fetchXmlFromUrl(xmlSource.toString());
     }
-  // Check if xmlSource is a number (iTunes ID)
+    // Check if xmlSource is a number (iTunes ID)
   } else if (typeof xmlSource === "number") {
     itunes = await itunesLookup(xmlSource);
     xmlString = await fetchXmlFromUrl(itunes.feedUrl);
-  // Check if xmlSource is a string
+    // Check if xmlSource is a string
   } else if (typeof xmlSource === "string") {
     xmlString = xmlSource;
   }
@@ -211,7 +210,7 @@ export default async function podcastXmlParser(
       // All done, return data
       return { itunes, podcast, episodes };
     } catch (err) {
-      throw new Error('Error fetching from iTunes.');
+      throw new Error("Error fetching from iTunes.");
     }
   }
 
