@@ -212,7 +212,7 @@ function App() {
               </thead>
               <tbody>
                 {Object.keys(podcast).map((key) => (
-                  <tr key={key}>
+                  <tr className="align-top" key={key}>
                     <td className="border border-neutral-600 p-2">{key}</td>
                     <td className="border border-neutral-600 p-2">{JSON.stringify(podcast[key])}</td>
                   </tr>
@@ -233,7 +233,7 @@ function App() {
                     </thead>
                     <tbody>
                       {Object.keys(episode).map((key) => (
-                        <tr key={key}>
+                        <tr className="align-top" key={key}>
                           <td className="border border-neutral-600 p-2">{key}</td>
                           <td className="border border-neutral-600 p-2">{JSON.stringify(episode[key])}</td>
                         </tr>
@@ -256,7 +256,7 @@ function App() {
                   </thead>
                   <tbody>
                     {Object.keys(itunes).map((key) => (
-                      <tr key={key}>
+                      <tr className="align-top" key={key}>
                         <td className="border border-neutral-600 p-2">{key}</td>
                         <td className="border border-neutral-600 p-2">{JSON.stringify(itunes[key])}</td>
                       </tr>
