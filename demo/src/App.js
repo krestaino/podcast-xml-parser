@@ -24,7 +24,7 @@ function App() {
   const [readmeContent, setReadmeContent] = useState("");
   const [config, setConfig] = useState({
     start: 0,
-    limit: -1,
+    limit: 20,
     requestSizeLimit: 50000,
     itunes: true
   });
@@ -97,7 +97,7 @@ function App() {
             className="flex flex-col"
             onSubmit={(event) => {
               event.preventDefault();
-              fetchPodcast(source);
+              fetchPodcast(new URL(source));
             }}
           >
             <h2 className="text-2xl font-bold">Try the demo</h2>
