@@ -13,7 +13,7 @@ const parser = new DOMParser();
  * @returns {string} The preprocessed XML string.
  */
 function preprocessXml(xmlString: string): string {
-  // Check if xmlSource is a valid XML string
+  // Check if source is a valid XML string
   if (xmlString.trim() === "") {
     throw new Error("Empty XML feed. Please provide valid XML content.");
   }
@@ -145,19 +145,37 @@ async function itunesLookup(id: number): Promise<any | undefined> {
   }
 }
 
-async function retrieveXmlFromSource(xmlSource: string | URL | number): Promise<string> {
-  if (xmlSource instanceof URL) {
-    return await fetchXmlFromUrl(xmlSource.toString());
-  } else if (typeof xmlSource === "number") {
-    const itunes = await itunesLookup(xmlSource);
+/**
+ * Retrieves XML content from a given source, which can be a URL, iTunes ID, or an XML string.
+ *
+ * @param {string | URL | number} source - The source of the XML content, can be a URL object, an iTunes ID, or an XML string.
+ * @returns {Promise<{ itunes?: any, xmlString: string }>} Object containing iTunes data (if relevant) and the XML string.
+ * @throws {Error} Throws an error if the source type is invalid or if unable to fetch associated feed URL with the given iTunes ID.
+ */
+async function retrieveXmlFromSource(source: string | URL | number): Promise<{ itunes?: any, xmlString: string }> {
+  if (source instanceof URL) {
+    // Fetch the XML string from a URL
+    const xmlString = await fetchXmlFromUrl(source.toString());
+
+    return { xmlString };
+  } else if (typeof source === "number") {
+    // Fetch the iTunes information for the provided ID
+    const itunes = await itunesLookup(source);
+
     if (itunes && itunes.feedUrl) {
-      return await fetchXmlFromUrl(itunes.feedUrl);
+      // Fetch the XML string from the iTunes feed URL
+      const xmlString = await fetchXmlFromUrl(itunes.feedUrl);
+      return { itunes, xmlString };
     }
+
+    // If iTunes ID is invalid or unable to fetch associated feed URL, throw an error
     throw new Error("Invalid iTunes ID or unable to fetch associated feed URL.");
-  } else if (typeof xmlSource === "string") {
-    return xmlSource;
+  } else if (typeof source === "string") {
+    // If source is already an XML string, return it directly
+    return { xmlString: source };
   } else {
-    throw new Error("Invalid xmlSource type. Please provide a valid URL, iTunes ID, or XML string.");
+    // If the source type is none of the above, throw an error
+    throw new Error("Invalid source type. Please provide a valid URL, iTunes ID, or XML string.");
   }
 }
 
@@ -165,20 +183,16 @@ async function retrieveXmlFromSource(xmlSource: string | URL | number): Promise<
  * Parses a podcast's XML feed and returns structured data about the podcast and its episodes.
  * Supports optional iTunes integration to retrieve additional details.
  *
- * @param {string | URL | number} xmlSource - XML content, a URL pointing to the podcast feed, or an iTunes collectionId.
+ * @param {string | URL | number} source - XML content, a URL pointing to the podcast feed, or an iTunes collectionId.
  * @param {Config} [config] - Configuration options for parsing, like pagination or iTunes integration.
  * @returns {Promise<{ podcast: Podcast; episodes: Episode[]; itunes?: any }>} Parsed podcast data.
  * @throws {Error} Throws an error for invalid or empty XML feeds.
  */
 export default async function podcastXmlParser(
-  xmlSource: string | URL | number | any,
+  source: string | URL | number | any,
   config: Config = {},
 ): Promise<{ podcast: Podcast; episodes: Episode[]; itunes?: any }> {
-  let itunes: any;
-  let xmlString: any;
-
-  // Retrieve XML based on the xmlSource
-  xmlString = await retrieveXmlFromSource(xmlSource);
+  let { itunes, xmlString } = await retrieveXmlFromSource(source);
 
   // Cleanup XML
   const preprocessedXml = preprocessXml(xmlString);
