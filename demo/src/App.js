@@ -33,6 +33,7 @@ function App() {
     try {
       setLoading(true);
       setError(null);
+      setSource(source.href)
       const { podcast, episodes, itunes } = await podcastXmlParser(source, config);
       setPodcast(podcast);
       setEpisodes(episodes);
@@ -203,7 +204,7 @@ function App() {
           <section className="font-mono mt-8 max-w-5xl mx-auto">
             <h2 className="text-2xl font-bold">Podcast ({podcast.title})</h2>
             <table className="mt-4 w-full bg-neutral-800 block overflow-scroll h-[35vh]">
-              <thead className="bg-neutral-700">
+              <thead className="bg-neutral-700 text-left">
                 <tr>
                   <th className="border border-neutral-600 p-2 font-bold">key</th>
                   <th className="border border-neutral-600 p-2 font-bold">value</th>
@@ -224,7 +225,7 @@ function App() {
               <div className="overflow-scroll h-[35vh]">
                 {episodes.map((episode, episodeIdx) => (
                   <table className="mt-4 w-full bg-neutral-800 block" key={episodeIdx}>
-                    <thead className="bg-neutral-700">
+                    <thead className="bg-neutral-700 text-left">
                       <tr>
                         <th className="border border-neutral-600 p-2 font-bold">key</th>
                         <th className="border border-neutral-600 p-2 font-bold">value</th>
@@ -247,7 +248,7 @@ function App() {
               <div className="my-8">
                 <h2 className="text-2xl font-bold">iTunes</h2>
                 <table className="mt-4 w-full bg-neutral-800 block overflow-scroll h-[35vh]">
-                  <thead className="bg-neutral-700">
+                  <thead className="bg-neutral-700 text-left">
                     <tr>
                       <th className="border border-neutral-600 p-2 font-bold">key</th>
                       <th className="border border-neutral-600 p-2 font-bold">value</th>
