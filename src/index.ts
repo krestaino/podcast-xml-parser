@@ -141,7 +141,7 @@ async function itunesLookup(id: number): Promise<any | undefined> {
     const itunesData = await itunesResponse.json();
     return itunesData.results[0];
   } catch (err) {
-    return undefined;
+    throw new Error("Error fetching from iTunes.");
   }
 }
 

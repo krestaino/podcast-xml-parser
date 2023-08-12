@@ -318,6 +318,14 @@ describe("podcastXmlParser", () => {
     expect(episodes[episodes.length  - 1].title).toBe("Coming Soon");
   });
 
+  it('should throw error using invalid iTunes ID', async () => {
+    await expect(podcastXmlParser(0)).rejects.toThrow();
+  });
+
+  it('should throw error using invalid input type', async () => {
+    await expect(podcastXmlParser({})).rejects.toThrow();
+  });
+
   // NOTE: To run these tests, ensure that you set the environment variable FEED_URLS to a comma-separated list
   // of URLs of the XML feeds that you want to test. You can create an .env file to do this.
   const { FEED_URLS = "" } = process.env;
