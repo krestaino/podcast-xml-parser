@@ -331,9 +331,9 @@ describe("podcastXmlParser", () => {
   const { FEED_URLS = "" } = process.env;
 
   if (FEED_URLS) {
-    const feedUrlsArray = FEED_URLS.split(",");
+    const FEEDS = FEED_URLS.split(",");
 
-    feedUrlsArray.forEach((FEED_URL) => {
+    FEEDS.forEach((FEED_URL) => {
       it(`should parse the XML feed of URL: ${FEED_URL}`, async () => {
         const { podcast, episodes } = await podcastXmlParser(new URL(FEED_URL));
         expect(podcast.feedUrl).toBe(FEED_URL);
@@ -344,8 +344,8 @@ describe("podcastXmlParser", () => {
     });
 
     it('return itunes when config.itunes is set to true', async () => {
-      const { podcast, itunes } = await podcastXmlParser(new URL(feedUrlsArray[0]), { itunes: true });
-      expect(podcast.feedUrl).toBe(feedUrlsArray[0]);
+      const { podcast, itunes } = await podcastXmlParser(new URL(FEEDS[0]), { itunes: true });
+      expect(podcast.feedUrl).toBe(FEEDS[0]);
       expect(typeof itunes).toBe("object");
     });
   }
