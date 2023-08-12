@@ -39,7 +39,7 @@ function App() {
       setItunes(itunes || null);
     } catch (error) {
       console.log(error);
-      if (source === "https://feeds.npr.org/500005/podcast.xml") {
+      if (source.href === "https://feeds.npr.org/500005/podcast.xml") {
         setError({
           message: `You were unlucky. This feed (${source}) has CORS enabled.\nIt is included in the demo to demonstrate that browser based parsing is not reliable.\nUse this library in Node or React Native to parse this feed reliably.\n\nError: ${error}`,
         });
