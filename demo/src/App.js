@@ -17,24 +17,25 @@ const PODCAST_FEEDS = [
 function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [url, setUrl] = useState("");
+  const [source, setSource] = useState("");
   const [podcast, setPodcast] = useState({});
   const [episodes, setEpisodes] = useState([]);
+  const [itunes, setItunes] = useState(null);
   const [readmeContent, setReadmeContent] = useState("");
 
-  async function fetchPodcast(url) {
+  async function fetchPodcast(source) {
     try {
       setLoading(true);
       setError(null);
-      const xmlUrl = new URL(url);
-      const { podcast, episodes } = await podcastXmlParser(xmlUrl);
+      const { podcast, episodes, itunes } = await podcastXmlParser(source, { itunes: false });
       setPodcast(podcast);
       setEpisodes(episodes);
+      setItunes(itunes || null);
     } catch (error) {
       console.log(error);
-      if (url === "https://feeds.npr.org/500005/podcast.xml") {
+      if (source === "https://feeds.npr.org/500005/podcast.xml") {
         setError({
-          message: `You were unlucky. This feed (${url}) has CORS enabled.\nIt is included in the demo to demonstrate that browser based parsing is not reliable.\nUse this library in Node or React Native to parse this feed reliably.\n\nError: ${error}`,
+          message: `You were unlucky. This feed (${source}) has CORS enabled.\nIt is included in the demo to demonstrate that browser based parsing is not reliable.\nUse this library in Node or React Native to parse this feed reliably.\n\nError: ${error}`,
         });
       } else {
         setError(error);
@@ -57,9 +58,9 @@ function App() {
 
   function getRandomFeed() {
     const randomIndex = Math.floor(Math.random() * PODCAST_FEEDS.length);
-    const url = PODCAST_FEEDS[randomIndex];
-    setUrl(url);
-    return url;
+    const source = PODCAST_FEEDS[randomIndex];
+    setSource(source);
+    return source;
   }
 
   function preprocessReadmeContent(content) {
@@ -90,7 +91,7 @@ function App() {
             className="flex flex-col"
             onSubmit={(event) => {
               event.preventDefault();
-              fetchPodcast(url);
+              fetchPodcast(source);
             }}
           >
             <h2 className="text-2xl font-bold">Try the demo</h2>
@@ -98,9 +99,9 @@ function App() {
               className="bg-neutral-700 p-2 rounded flex-grow mt-4"
               id="urlInput"
               type="text"
-              onChange={(event) => setUrl(event.target.value)}
+              onChange={(event) => setSource(event.target.value)}
               placeholder="Enter Podcast XML URL"
-              value={url}
+              value={source}
             />
             <div className="mt-4">
               <button className="bg-neutral-200 text-neutral-900 p-2 rounded" type="submit">
@@ -109,7 +110,7 @@ function App() {
               <button
                 onClick={(event) => {
                   event.preventDefault();
-                  fetchPodcast("https://feeds.megaphone.fm/climbinggold");
+                  fetchPodcast(new URL("https://feeds.megaphone.fm/climbinggold"));
                 }}
                 className="bg-neutral-700 p-2 rounded ml-4"
               >
@@ -118,7 +119,7 @@ function App() {
               <button
                 onClick={(event) => {
                   event.preventDefault();
-                  fetchPodcast("https://feeds.simplecast.com/54nAGcIl");
+                  fetchPodcast(new URL("https://feeds.simplecast.com/54nAGcIl"));
                 }}
                 className="bg-neutral-700 p-2 rounded ml-4"
               >
@@ -127,7 +128,7 @@ function App() {
               <button
                 onClick={(event) => {
                   event.preventDefault();
-                  fetchPodcast(getRandomFeed());
+                  fetchPodcast(new URL(getRandomFeed()));
                 }}
                 className="bg-neutral-700 p-2 rounded ml-4"
               >
@@ -165,10 +166,35 @@ function App() {
                 ))}
               </tbody>
             </table>
-            <h2 className="text-2xl font-bold mt-4">Episodes ({episodes.length})</h2>
-            <div className="overflow-scroll h-[35vh] mb-8">
-              {episodes.map((episode, episodeIdx) => (
-                <table className="mt-4 w-full bg-neutral-800 block" key={episodeIdx}>
+
+            <div className="my-8">
+              <h2 className="text-2xl font-bold">Episodes ({episodes.length})</h2>
+              <div className="overflow-scroll h-[35vh]">
+                {episodes.map((episode, episodeIdx) => (
+                  <table className="mt-4 w-full bg-neutral-800 block" key={episodeIdx}>
+                    <thead className="bg-neutral-700">
+                      <tr>
+                        <th className="border border-neutral-600 p-2 font-bold">key</th>
+                        <th className="border border-neutral-600 p-2 font-bold">value</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {Object.keys(episode).map((key) => (
+                        <tr key={key}>
+                          <td className="border border-neutral-600 p-2">{key}</td>
+                          <td className="border border-neutral-600 p-2">{JSON.stringify(episode[key])}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                ))}
+              </div>
+            </div>
+
+            {itunes !== null && itunes !== undefined && (
+              <div className="my-8">
+                <h2 className="text-2xl font-bold">iTunes</h2>
+                <table className="mt-4 w-full bg-neutral-800 block overflow-scroll h-[35vh]">
                   <thead className="bg-neutral-700">
                     <tr>
                       <th className="border border-neutral-600 p-2 font-bold">key</th>
@@ -176,16 +202,16 @@ function App() {
                     </tr>
                   </thead>
                   <tbody>
-                    {Object.keys(episode).map((key) => (
+                    {Object.keys(itunes).map((key) => (
                       <tr key={key}>
                         <td className="border border-neutral-600 p-2">{key}</td>
-                        <td className="border border-neutral-600 p-2">{JSON.stringify(episode[key])}</td>
+                        <td className="border border-neutral-600 p-2">{JSON.stringify(itunes[key])}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
-              ))}
-            </div>
+              </div>
+            )}
           </section>
         ) : null}
       </section>
