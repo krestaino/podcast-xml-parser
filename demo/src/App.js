@@ -22,12 +22,18 @@ function App() {
   const [episodes, setEpisodes] = useState([]);
   const [itunes, setItunes] = useState(null);
   const [readmeContent, setReadmeContent] = useState("");
+  const [config, setConfig] = useState({
+    start: 0,
+    limit: -1,
+    requestSizeLimit: 50000,
+    itunes: true
+  });
 
   async function fetchPodcast(source) {
     try {
       setLoading(true);
       setError(null);
-      const { podcast, episodes, itunes } = await podcastXmlParser(source, { itunes: false });
+      const { podcast, episodes, itunes } = await podcastXmlParser(source, config);
       setPodcast(podcast);
       setEpisodes(episodes);
       setItunes(itunes || null);
@@ -103,7 +109,7 @@ function App() {
               placeholder="Enter Podcast XML URL"
               value={source}
             />
-            <div className="mt-4">
+            <div className="mt-4 flex items-center">
               <button className="bg-neutral-200 text-neutral-900 p-2 rounded" type="submit">
                 Parse URL
               </button>
@@ -134,6 +140,52 @@ function App() {
               >
                 I'm Feeling Lucky
               </button>
+              <div className="ml-4 flex items-center">
+                <span>Config:</span>
+                <div className="ml-4 flex items-center">
+                  <input
+                    type="checkbox"
+                    role="switch"
+                    value={config.itunes}
+                    checked={config.itunes}
+                    id="itunes"
+                    onChange={() => setConfig({ ...config, itunes: !config.itunes })}
+                  />
+                  <label
+                    className="inline-block pl-[0.15rem] hover:cursor-pointer"
+                    htmlFor="itunes"
+                  >iTunes</label>
+                </div>
+
+
+                <div className="ml-4 flex items-center">
+                  <label
+                    className="inline-block pl-[0.15rem] hover:cursor-pointer"
+                    htmlFor="start"
+                  >Start</label>
+                  <input
+                    className="bg-neutral-700 p-2 rounded w-16 ml-2"
+                    id="start"
+                    type="number"
+                    onChange={(event) => setConfig({ ...config, start: Number(event.target.value) })}
+                    value={config.start}
+                  />
+                </div>
+
+                <div className="ml-4 flex items-center">
+                  <label
+                    className="inline-block pl-[0.15rem] hover:cursor-pointer"
+                    htmlFor="limit"
+                  >Limit</label>
+                  <input
+                    className="bg-neutral-700 p-2 rounded w-16 ml-2"
+                    id="limit"
+                    type="number"
+                    onChange={(event) => setConfig({ ...config, limit: Number(event.target.value) })}
+                    value={config.limit}
+                  />
+                </div>
+              </div>
             </div>
           </form>
         </div>
@@ -191,7 +243,7 @@ function App() {
               </div>
             </div>
 
-            {itunes !== null && itunes !== undefined && (
+            {itunes !== null && itunes !== undefined && config.itunes && (
               <div className="my-8">
                 <h2 className="text-2xl font-bold">iTunes</h2>
                 <table className="mt-4 w-full bg-neutral-800 block overflow-scroll h-[35vh]">

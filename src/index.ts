@@ -208,7 +208,8 @@ export default async function podcastXmlParser(
 
   // Optionally paginate episodes using config, otherwise use all episodes
   const { start = 0, limit } = config;
-  const paginatedElements = limit !== undefined ? episodeElements.slice(start, start + limit) : episodeElements;
+  const end = start + (typeof limit === "number" && limit > 0 ? limit : episodeElements.length);
+  const paginatedElements = episodeElements.slice(start, end);
 
   // Set episodes data
   const episodes = paginatedElements.map(createEpisode);

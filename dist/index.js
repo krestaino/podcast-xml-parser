@@ -251,7 +251,7 @@ function retrieveXmlFromSource(source) {
 function podcastXmlParser(source, config) {
     if (config === void 0) { config = {}; }
     return __awaiter(this, void 0, void 0, function () {
-        var _a, itunes, xmlString, preprocessedXml, doc, podcast, episodeElements, _b, start, limit, paginatedElements, episodes, itunesResponse, err_2;
+        var _a, itunes, xmlString, preprocessedXml, doc, podcast, episodeElements, _b, start, limit, end, paginatedElements, episodes, itunesResponse, err_2;
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0: return [4 /*yield*/, retrieveXmlFromSource(source)];
@@ -262,7 +262,8 @@ function podcastXmlParser(source, config) {
                     podcast = createPodcast(doc.documentElement);
                     episodeElements = Array.from(doc.getElementsByTagName("item"));
                     _b = config.start, start = _b === void 0 ? 0 : _b, limit = config.limit;
-                    paginatedElements = limit !== undefined ? episodeElements.slice(start, start + limit) : episodeElements;
+                    end = start + (typeof limit === "number" && limit > 0 ? limit : episodeElements.length);
+                    paginatedElements = episodeElements.slice(start, end);
                     episodes = paginatedElements.map(createEpisode);
                     if (!(config.itunes === true)) return [3 /*break*/, 7];
                     _c.label = 2;
