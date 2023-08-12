@@ -129,7 +129,7 @@ function App() {
                 }}
                 className="bg-neutral-700 p-2 rounded ml-4"
               >
-                Massive Feed
+                Large Feed
               </button>
               <button
                 onClick={(event) => {
