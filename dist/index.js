@@ -262,6 +262,7 @@ function podcastXmlParser(source, config) {
                     podcast = createPodcast(doc.documentElement);
                     episodeElements = Array.from(doc.getElementsByTagName("item"));
                     _b = config.start, start = _b === void 0 ? 0 : _b, limit = config.limit;
+                    start = typeof start === "number" && start > 0 ? start : 0;
                     end = start + (typeof limit === "number" && limit > 0 ? limit : episodeElements.length);
                     paginatedElements = episodeElements.slice(start, end);
                     episodes = paginatedElements.map(createEpisode);

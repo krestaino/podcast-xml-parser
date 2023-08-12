@@ -207,7 +207,8 @@ export default async function podcastXmlParser(
   const episodeElements = Array.from(doc.getElementsByTagName("item"));
 
   // Optionally paginate episodes using config, otherwise use all episodes
-  const { start = 0, limit } = config;
+  let { start = 0, limit } = config;
+  start = typeof start === "number" && start > 0 ? start : 0;
   const end = start + (typeof limit === "number" && limit > 0 ? limit : episodeElements.length);
   const paginatedElements = episodeElements.slice(start, end);
 
