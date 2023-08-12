@@ -152,7 +152,7 @@ async function itunesLookup(id: number): Promise<any | undefined> {
  * @returns {Promise<{ itunes?: any, xmlString: string }>} Object containing iTunes data (if relevant) and the XML string.
  * @throws {Error} Throws an error if the source type is invalid or if unable to fetch associated feed URL with the given iTunes ID.
  */
-async function retrieveXmlFromSource(source: string | URL | number): Promise<{ itunes?: any, xmlString: string }> {
+async function retrieveXmlFromSource(source: string | URL | number): Promise<{ itunes?: any; xmlString: string }> {
   if (source instanceof URL) {
     // Fetch the XML string from a URL
     const xmlString = await fetchXmlFromUrl(source.toString());
@@ -162,7 +162,7 @@ async function retrieveXmlFromSource(source: string | URL | number): Promise<{ i
     // Fetch the iTunes information for the provided ID
     const itunes = await itunesLookup(source);
 
-    if (itunes && itunes.feedUrl) {
+    if (typeof itunes?.feedUrl === "string") {
       // Fetch the XML string from the iTunes feed URL
       const xmlString = await fetchXmlFromUrl(itunes.feedUrl);
       return { itunes, xmlString };
