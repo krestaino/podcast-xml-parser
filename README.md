@@ -1,6 +1,6 @@
 # podcast-xml-parser
 
-A library for parsing XML podcast feeds, designed to work in Node.js, browser environments, and React Native.
+Parse podcast feeds in Node.js, React Native, or browser environments.
 
 - **Simple Parsing:** Parse XML podcast feeds into JavaScript objects.
 - **Versatile Input:** Parse from URLs, iTunes IDs, or directly from XML strings.
