@@ -61,11 +61,12 @@ When parsing a URL, you must call `new URL()` otherwise the library will try to 
 ```javascript
 import podcastXmlParser from "podcast-xml-parser";
 
-const xmlUrl = new URL("https://example.com/podcast.xml"); // must use `new URL()`!
-const { podcast, episodes } = await podcastXmlParser(xmlUrl);
+const url = new URL("https://feeds.simplecast.com/dHoohVNH"); // must use `new URL()`!
+const { podcast, episodes, itunes } = await podcastXmlParser(url);
 
-console.log(podcast.title);
-console.log(episodes[0].title);
+console.log(podcast.title); // "Conan O’Brien Needs A Friend"
+console.log(episodes[episodes.length - 1].title); // "Introducing Conan’s new podcast"
+console.log(itunes.collectionId); // 1438054347
 ```
 ### From an iTunes ID
 
@@ -116,17 +117,41 @@ console.log(podcast.title); // Podcast Title
 console.log(episodes[0].title); // Episode 1 Title
 ```
 
+### Partial Feed
+
+You can limit the request size of the XML fetch to improve response times. This can be useful to return the latest episodes quickly when you don't need the entire feed.
+
+```javascript
+import podcastXmlParser from "podcast-xml-parser";
+
+const url = new URL("https://feeds.simplecast.com/54nAGcIl"); // Huge feed
+const config = { requestSize: 50000 } // First 50,000 bytes of the feed
+const { episodes, itunes } = await podcastXmlParser(collectionId, config);
+
+console.log(episodes.length !== itunes.trackCount) // true
+```
+
+### Pagination
+
+```javascript
+import podcastXmlParser from "podcast-xml-parser";
+
+const config = { start: 0, limit: 10 } // Last 10 episodes
+const { episodes } = await podcastXmlParser(1438054347, config); 
+
+console.log(episodes.length); // 10
+```
+
 ## TypeScript
 
 ```typescript
 // From a URL
-import podcastXmlParser, { Podcast, Episode } from "podcast-xml-parser";
+import podcastXmlParser, { Podcast } from "podcast-xml-parser";
 
-const xmlUrl = new URL("https://example.com/podcast.xml"); // must use `new URL()`!
-const { podcast, episodes }: { podcast: Podcast; episodes: Episode[] } = await podcastXmlParser(xmlUrl);
+const url = new URL("https://feeds.simplecast.com/dHoohVNH"); // must use `new URL()`!
+const { podcast }: { podcast: Podcast } = await podcastXmlParser(url);
 
-console.log(podcast.title);
-console.log(episodes[0].title);
+console.log(podcast.title); // "Conan O’Brien Needs A Friend"
 ```
 
 ### Types
