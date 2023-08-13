@@ -36,16 +36,16 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var create_1 = require("./create");
 var xml_1 = require("./xml");
+var create_1 = require("./create");
 /**
  * Parses a podcast's XML feed and returns structured data about the podcast and its episodes.
  * Supports optional iTunes integration to retrieve additional details.
  *
- * @param {string | URL | number} source - XML content, a URL pointing to the podcast feed, or an iTunes collectionId.
- * @param {Config} [config] - Configuration options for parsing, like pagination or iTunes integration.
- * @returns {Promise<{ podcast: Podcast; episodes: Episode[]; itunes?: any }>} Parsed podcast data.
- * @throws {Error} Throws an error for invalid or empty XML feeds.
+ * @param source - XML content, a URL pointing to the podcast feed, or an iTunes collectionId.
+ * @param config - Configuration options for parsing, like pagination or iTunes integration.
+ * @returns Parsed podcast data.
+ * @throws Throws an error for invalid or empty XML feeds.
  */
 function podcastXmlParser(source, config) {
     if (config === void 0) { config = {}; }

@@ -4,9 +4,9 @@ exports.createEpisode = exports.createPodcast = void 0;
 /**
  * Extracts the text content from a specified XML element.
  *
- * @param {Element} element - The XML element to extract content from.
- * @param {string} tagName - The name of the tag to retrieve content from.
- * @returns {string} Text content of the tag, or an empty string if not found.
+ * @param element - The XML element to extract content from.
+ * @param tagName - The name of the tag to retrieve content from.
+ * @returns Text content of the tag, or an empty string if not found.
  */
 function getText(element, tagName) {
     var _a;
@@ -16,8 +16,8 @@ function getText(element, tagName) {
 /**
  * Constructs a Podcast object based on the provided XML item element.
  *
- * @param {Element} document - The XML element that represents a podcast.
- * @returns {Podcast} The created Podcast object with parsed values.
+ * @param document - The XML element that represents a podcast.
+ * @returns The created Podcast object with parsed values.
  */
 function createPodcast(document) {
     var _a, _b, _c, _d, _e, _f;
@@ -52,8 +52,8 @@ exports.createPodcast = createPodcast;
 /**
  * Constructs an Episode object based on the provided XML item element.
  *
- * @param {Element} item - The XML element that represents an episode.
- * @returns {Episode} The created Episode object with parsed values.
+ * @param item - The XML element that represents an episode.
+ * @returns The created Episode object with parsed values.
  */
 function createEpisode(item) {
     var _a, _b;

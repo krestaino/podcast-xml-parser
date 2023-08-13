@@ -3,9 +3,9 @@ import { type Podcast, type Episode } from "./types";
 /**
  * Extracts the text content from a specified XML element.
  *
- * @param {Element} element - The XML element to extract content from.
- * @param {string} tagName - The name of the tag to retrieve content from.
- * @returns {string} Text content of the tag, or an empty string if not found.
+ * @param element - The XML element to extract content from.
+ * @param tagName - The name of the tag to retrieve content from.
+ * @returns Text content of the tag, or an empty string if not found.
  */
 function getText(element: Element, tagName: string): string {
   const node = element?.getElementsByTagName(tagName)[0];
@@ -15,8 +15,8 @@ function getText(element: Element, tagName: string): string {
 /**
  * Constructs a Podcast object based on the provided XML item element.
  *
- * @param {Element} document - The XML element that represents a podcast.
- * @returns {Podcast} The created Podcast object with parsed values.
+ * @param document - The XML element that represents a podcast.
+ * @returns The created Podcast object with parsed values.
  */
 export function createPodcast(document: Element): Podcast {
   const imageElem = document.getElementsByTagName("image")[0];
@@ -51,8 +51,8 @@ export function createPodcast(document: Element): Podcast {
 /**
  * Constructs an Episode object based on the provided XML item element.
  *
- * @param {Element} item - The XML element that represents an episode.
- * @returns {Episode} The created Episode object with parsed values.
+ * @param item - The XML element that represents an episode.
+ * @returns The created Episode object with parsed values.
  */
 export function createEpisode(item: Element): Episode {
   const enclosureElem = item.getElementsByTagName("enclosure")[0];

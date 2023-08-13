@@ -44,9 +44,9 @@ var parser = new xmldom_1.DOMParser();
  * Preprocesses an XML string to handle possible XML inconsistencies.
  * Wraps content in a root tag if it doesn't start with one.
  *
- * @param {string} xmlString - The XML string to preprocess.
- * @returns {string} The preprocessed XML string.
- * @throws {Error} Throws an error if the XML feed is empty.
+ * @param xmlString - The XML string to preprocess.
+ * @returns The preprocessed XML string.
+ * @throws Throws an error if the XML feed is empty.
  */
 function preprocessXml(xmlString) {
     // Check if source is a valid XML string
@@ -62,10 +62,10 @@ exports.preprocessXml = preprocessXml;
  * Retrieves XML content from a given URL using the Fetch API.
  * Supports optional byte range requests.
  *
- * @param {string} url - The URL from which to fetch the XML content.
- * @param {Config} config - Configuration options for the request, like request size.
- * @returns {Promise<string>} Resolves to the XML content as a string.
- * @throws {Error} Throws an error if there's an issue fetching the XML content.
+ * @param url - The URL from which to fetch the XML content.
+ * @param config - Configuration options for the request, like request size.
+ * @returns Resolves to the XML content as a string.
+ * @throws Throws an error if there's an issue fetching the XML content.
  */
 function fetchXmlFromUrl(url, config) {
     return __awaiter(this, void 0, void 0, function () {
@@ -100,10 +100,10 @@ function fetchXmlFromUrl(url, config) {
 /**
  * Retrieves XML content from a given source, which can be a URL, iTunes ID, or an XML string.
  *
- * @param {string | URL | number} source - The source of the XML content, can be a URL object, an iTunes ID, or an XML string.
- * @param {Config} config - Configuration options for the request, like request size.
- * @returns {Promise<{ itunes?: any; xmlString: string }>} Object containing iTunes data (if relevant) and the XML string.
- * @throws {Error} Throws an error if the source type is invalid or if unable to fetch associated feed URL with the given iTunes ID.
+ * @param source - The source of the XML content, can be a URL object, an iTunes ID, or an XML string.
+ * @param config - Configuration options for the request, like request size.
+ * @returns Object containing iTunes data (if relevant) and the XML string.
+ * @throws Throws an error if the source type is invalid or if unable to fetch associated feed URL with the given iTunes ID.
  */
 function retrieveXmlFromSource(source, config) {
     return __awaiter(this, void 0, void 0, function () {
@@ -145,6 +145,12 @@ function retrieveXmlFromSource(source, config) {
     });
 }
 exports.retrieveXmlFromSource = retrieveXmlFromSource;
+/**
+ * Parses the given XML string into a Document object.
+ *
+ * @param preprocessedXml - The preprocessed XML string to be parsed.
+ * @returns The parsed Document object.
+ */
 function parse(preprocessedXml) {
     return parser.parseFromString(preprocessedXml, "text/xml");
 }
