@@ -139,13 +139,9 @@ function createEpisode(item: Element): Episode {
  * @returns {Promise<any | undefined>} The search results for the podcast from iTunes or undefined on error.
  */
 async function itunesLookup(id: number): Promise<any | undefined> {
-  try {
-    const itunesResponse = await fetch(`https://itunes.apple.com/lookup?id=${id}&entity=podcast`);
-    const itunesData = await itunesResponse.json();
-    return itunesData.results[0];
-  } catch (err) {
-    throw new Error("Error fetching from iTunes.");
-  }
+  const itunesResponse = await fetch(`https://itunes.apple.com/lookup?id=${id}&entity=podcast`);
+  const itunesData = await itunesResponse.json();
+  return itunesData.results[0];
 }
 
 /**
@@ -223,19 +219,15 @@ export default async function podcastXmlParser(
 
   // Optionally set itunes data
   if (config.itunes === true) {
-    try {
-      if (itunes === null || itunes === undefined) {
-        const itunesResponse = await fetch(`https://itunes.apple.com/search?term=${podcast.title}&entity=podcast`);
-        itunes = await itunesResponse.json();
-        // Set podcast if the feedUrl is equal on iTunes and in the XML
-        itunes = itunes.results.find((result: any) => result.feedUrl === podcast.feedUrl);
-      }
-
-      // All done, return data
-      return { itunes, podcast, episodes };
-    } catch (err) {
-      throw new Error("Error fetching from iTunes.");
+    if (itunes === null || itunes === undefined) {
+      const itunesResponse = await fetch(`https://itunes.apple.com/search?term=${podcast.title}&entity=podcast`);
+      itunes = await itunesResponse.json();
+      // Set podcast if the feedUrl is equal on iTunes and in the XML
+      itunes = itunes.results.find((result: any) => result.feedUrl === podcast.feedUrl);
     }
+
+    // All done, return data
+    return { itunes, podcast, episodes };
   }
 
   // All done, return data
