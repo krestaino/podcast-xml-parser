@@ -265,7 +265,8 @@ function podcastXmlParser(source, config) {
                     end = start + (typeof limit === "number" && limit > 0 ? limit : episodeElements.length);
                     paginatedElements = episodeElements.slice(start, end);
                     episodes = paginatedElements.map(createEpisode);
-                    if (!(config.itunes === true && (itunes === null || itunes === undefined))) return [3 /*break*/, 4];
+                    if (!(config.itunes === true || itunes !== undefined)) return [3 /*break*/, 5];
+                    if (!(itunes === undefined)) return [3 /*break*/, 4];
                     return [4 /*yield*/, fetch("https://itunes.apple.com/search?term=".concat(podcast.title, "&entity=podcast"))];
                 case 2:
                     itunesResponse = _c.sent();
@@ -274,9 +275,11 @@ function podcastXmlParser(source, config) {
                     itunes = _c.sent();
                     // Set podcast if the feedUrl is equal on iTunes and in the XML
                     itunes = itunes.results.find(function (result) { return result.feedUrl === podcast.feedUrl; });
-                    // All done, return data
-                    return [2 /*return*/, { itunes: itunes, podcast: podcast, episodes: episodes }];
+                    _c.label = 4;
                 case 4: 
+                // All done, return data
+                return [2 /*return*/, { itunes: itunes, podcast: podcast, episodes: episodes }];
+                case 5: 
                 // All done, return data
                 return [2 /*return*/, { podcast: podcast, episodes: episodes }];
             }
