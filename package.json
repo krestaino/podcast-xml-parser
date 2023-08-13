@@ -1,14 +1,16 @@
 {
   "name": "podcast-xml-parser",
   "main": "dist/index.js",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "keywords": [
     "podcast",
     "xml",
     "parse",
     "node",
     "javascript",
-    "typescript"
+    "typescript",
+    "react-native",
+    "itunes"
   ],
   "scripts": {
     "build": "tsc && webpack",
