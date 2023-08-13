@@ -156,6 +156,7 @@ describe("podcastXmlParser", () => {
     const { podcast, episodes } = await podcastXmlParser(xmlWithEmptyElements);
 
     expect(podcast.title).toBe("");
+    assertPodcastProperties(podcast);
     episodes.forEach((episode) => assertEpisodeProperties(episode));
   });
 
@@ -208,6 +209,7 @@ describe("podcastXmlParser", () => {
     const { podcast, episodes } = await podcastXmlParser(xmlWithSpecialChars);
 
     expect(podcast.title).toBe("Test & Podcast");
+    assertPodcastProperties(podcast);
     episodes.forEach((episode) => assertEpisodeProperties(episode));
   });
 
@@ -272,7 +274,7 @@ describe("podcastXmlParser", () => {
         </channel>
       </rss>
     `;
-    const { podcast, episodes } = await podcastXmlParser(xmlWithMissingElements);
+    const { episodes } = await podcastXmlParser(xmlWithMissingElements);
 
     expect(Array.isArray(episodes)).toBe(true);
     expect(episodes.length).toBe(1);
@@ -295,8 +297,10 @@ describe("podcastXmlParser", () => {
 
   it('should have an empty feedUrl when xmlSource is a string and XML lacks <atom:link>', async () => {
     const xmlSource = 'not_a_url_but_a_string';
-    const result = await podcastXmlParser(xmlSource);
-    expect(result.podcast.feedUrl).toBe('');
+    const { podcast } = await podcastXmlParser(xmlSource);
+
+    expect(podcast.feedUrl).toBe('');
+    assertPodcastProperties(podcast);
   });
 
   it('should fetch feedUrl from <atom:link> tag when xmlSource is a string', async () => {
@@ -306,8 +310,9 @@ describe("podcastXmlParser", () => {
       </channel>
     `;
 
-    const result = await podcastXmlParser(xmlSource);
-    expect(result.podcast.feedUrl).toBe('https://example.com/rss_feed.xml');
+    const { podcast } = await podcastXmlParser(xmlSource);
+    expect(podcast.feedUrl).toBe('https://example.com/rss_feed.xml');
+    assertPodcastProperties(podcast);
   });
 
   it('should return correct itunes data', async () => {
@@ -316,6 +321,8 @@ describe("podcastXmlParser", () => {
     expect(podcast.feedUrl).toBe('https://feeds.megaphone.fm/climbinggold');
     expect(podcast.title).toBe("Climbing Gold");
     expect(episodes[episodes.length  - 1].title).toBe("Coming Soon");
+    assertPodcastProperties(podcast);
+    episodes.forEach((episode) => assertEpisodeProperties(episode));
   });
 
   it('should throw error using invalid iTunes ID', async () => {
@@ -325,6 +332,18 @@ describe("podcastXmlParser", () => {
   it('should throw error using invalid input type', async () => {
     await expect(podcastXmlParser({})).rejects.toThrow();
   });
+
+  it("should return correct episodes using `start` and `limit`", async () => {
+    const xmlFilePath = "./test/test.xml";
+    const xmlData = fs.readFileSync(xmlFilePath, "utf-8");
+    const { podcast, episodes } = await podcastXmlParser(xmlData, { start: 1, limit: 1 });
+
+    expect(podcast.title).toBe("My Test Podcast");
+    expect(episodes[0].title).toBe("Episode 2 Title");
+    assertPodcastProperties(podcast);
+    episodes.forEach((episode) => assertEpisodeProperties(episode));
+  });
+
 
   // NOTE: To run these tests, ensure that you set the environment variable FEED_URLS to a comma-separated list
   // of URLs of the XML feeds that you want to test. You can create an .env file to do this.
@@ -336,8 +355,8 @@ describe("podcastXmlParser", () => {
     FEEDS.forEach((FEED_URL) => {
       it(`should parse the XML feed of URL: ${FEED_URL}`, async () => {
         const { podcast, episodes } = await podcastXmlParser(new URL(FEED_URL));
-        expect(podcast.feedUrl).toBe(FEED_URL);
 
+        expect(podcast.feedUrl).toBe(FEED_URL);
         assertPodcastProperties(podcast);
         episodes.forEach((episode) => assertEpisodeProperties(episode));
       });
@@ -345,6 +364,7 @@ describe("podcastXmlParser", () => {
 
     it('return itunes when config.itunes is set to true', async () => {
       const { podcast, itunes } = await podcastXmlParser(new URL(FEEDS[0]), { itunes: true });
+
       expect(podcast.feedUrl).toBe(FEEDS[0]);
       expect(typeof itunes).toBe("object");
     });
