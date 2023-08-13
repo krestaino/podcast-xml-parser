@@ -11,6 +11,7 @@ const parser = new DOMParser();
  *
  * @param {string} xmlString - The XML string to preprocess.
  * @returns {string} The preprocessed XML string.
+ * @throws {Error} Throws an error if the XML feed is empty.
  */
 function preprocessXml(xmlString: string): string {
   // Check if source is a valid XML string
@@ -27,6 +28,7 @@ function preprocessXml(xmlString: string): string {
  * Supports optional byte range requests.
  *
  * @param {string} url - The URL from which to fetch the XML content.
+ * @param {Config} config - Configuration options for the request, like request size.
  * @returns {Promise<string>} Resolves to the XML content as a string.
  * @throws {Error} Throws an error if there's an issue fetching the XML content.
  */
@@ -148,7 +150,8 @@ async function itunesLookup(id: number): Promise<any | undefined> {
  * Retrieves XML content from a given source, which can be a URL, iTunes ID, or an XML string.
  *
  * @param {string | URL | number} source - The source of the XML content, can be a URL object, an iTunes ID, or an XML string.
- * @returns {Promise<{ itunes?: any, xmlString: string }>} Object containing iTunes data (if relevant) and the XML string.
+ * @param {Config} config - Configuration options for the request, like request size.
+ * @returns {Promise<{ itunes?: any; xmlString: string }>} Object containing iTunes data (if relevant) and the XML string.
  * @throws {Error} Throws an error if the source type is invalid or if unable to fetch associated feed URL with the given iTunes ID.
  */
 async function retrieveXmlFromSource(
@@ -185,7 +188,7 @@ async function retrieveXmlFromSource(
  * Parses a podcast's XML feed and returns structured data about the podcast and its episodes.
  * Supports optional iTunes integration to retrieve additional details.
  *
- * @param {string | URL | number} source - XML content, a URL pointing to the podcast feed, or an iTunes collectionId.
+ * @param {string | URL | number | any} source - XML content, a URL pointing to the podcast feed, or an iTunes collectionId.
  * @param {Config} [config] - Configuration options for parsing, like pagination or iTunes integration.
  * @returns {Promise<{ podcast: Podcast; episodes: Episode[]; itunes?: any }>} Parsed podcast data.
  * @throws {Error} Throws an error for invalid or empty XML feeds.
