@@ -344,6 +344,14 @@ describe("podcastXmlParser", () => {
     episodes.forEach((episode) => assertEpisodeProperties(episode));
   });
 
+  it("should return correct episodes using `requestSize`", async () => {
+    const { itunes, podcast, episodes } = await podcastXmlParser(1559139153, { requestSize: 50000 });   
+
+    expect(episodes.length).toBeGreaterThanOrEqual(1);
+    expect(episodes.length).toBeLessThan(itunes.trackCount);
+    assertPodcastProperties(podcast);
+    episodes.forEach((episode) => assertEpisodeProperties(episode));
+  });
 
   // NOTE: To run these tests, ensure that you set the environment variable FEED_URLS to a comma-separated list
   // of URLs of the XML feeds that you want to test. You can create an .env file to do this.
