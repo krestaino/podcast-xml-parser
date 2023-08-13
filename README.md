@@ -2,10 +2,8 @@
 
 A library for parsing XML podcast feeds, designed to work in Node.js, browser environments, and React Native.
 
-## Features
-
 - **Simple Parsing:** Parse XML podcast feeds into JavaScript objects.
-- **Versatile Input:** Parse directly from XML strings, URLs, or even iTunes IDs.
+- **Versatile Input:** Parse from URLs, iTunes IDs, or directly from XML strings.
 - **Cross-platform:** Designed to be compatible across Node.js, browsers, and React Native.
 - **Graceful Handling:** In cases of missing elements in the XML feed, the parser returns empty strings instead of throwing errors.
 - **Support for iTunes:** Additional details can be fetched from iTunes.
@@ -22,9 +20,7 @@ You can install the library using npm or yarn.
 
 ```bash
 npm install podcast-xml-parser
-
 # or
-
 yarn add podcast-xml-parser
 ```
 
@@ -162,7 +158,7 @@ You can limit the request size of the XML fetch to improve response times. This 
 ```javascript
 import podcastXmlParser from "podcast-xml-parser";
 
-const url = new URL("https://feeds.simplecast.com/54nAGcIl"); // Huge feed
+const url = new URL("https://feeds.simplecast.com/54nAGcIl"); // From a URL with a huge feed
 const config = { requestSize: 50000 } // First 50,000 bytes of the feed
 const { episodes, itunes } = await podcastXmlParser(collectionId, config);
 
@@ -177,7 +173,7 @@ Pagination allows you to control the number of episodes returned by the parser. 
 import podcastXmlParser from "podcast-xml-parser";
 
 const config = { start: 0, limit: 10 } // Last 10 episodes
-const { episodes } = await podcastXmlParser(1438054347, config); 
+const { episodes } = await podcastXmlParser(1438054347, config); // From an iTunes ID
 
 console.log(episodes.length); // 10
 ```
@@ -185,10 +181,9 @@ console.log(episodes.length); // 10
 ## TypeScript
 
 ```typescript
-// From a URL
 import podcastXmlParser, { Podcast } from "podcast-xml-parser";
 
-const url = new URL("https://feeds.simplecast.com/dHoohVNH"); // must use `new URL()`!
+const url = new URL("https://feeds.simplecast.com/dHoohVNH"); // From a URL
 const { podcast }: { podcast: Podcast } = await podcastXmlParser(url);
 
 console.log(podcast.title); // "Conan O’Brien Needs A Friend"
