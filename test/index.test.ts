@@ -330,7 +330,7 @@ describe("podcastXmlParser", () => {
   });
 
   it('should throw error using invalid input type', async () => {
-    await expect(podcastXmlParser({})).rejects.toThrow();
+    await expect(podcastXmlParser({} as any)).rejects.toThrow();
   });
 
   it("should return correct episodes using `start` and `limit`", async () => {
