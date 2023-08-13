@@ -218,11 +218,14 @@ export default async function podcastXmlParser(
   const episodes = paginatedElements.map(createEpisode);
 
   // Optionally set itunes data
-  if (config.itunes === true && (itunes === null || itunes === undefined)) {
-    const itunesResponse = await fetch(`https://itunes.apple.com/search?term=${podcast.title}&entity=podcast`);
-    itunes = await itunesResponse.json();
-    // Set podcast if the feedUrl is equal on iTunes and in the XML
-    itunes = itunes.results.find((result: any) => result.feedUrl === podcast.feedUrl);
+  if (config.itunes === true || itunes !== undefined) {
+    // If already fetched itunes data in itunesLookup, skip the search and return the data directly
+    if (itunes === undefined) {
+      const itunesResponse = await fetch(`https://itunes.apple.com/search?term=${podcast.title}&entity=podcast`);
+      itunes = await itunesResponse.json();
+      // Set podcast if the feedUrl is equal on iTunes and in the XML
+      itunes = itunes.results.find((result: any) => result.feedUrl === podcast.feedUrl);
+    }
 
     // All done, return data
     return { itunes, podcast, episodes };
