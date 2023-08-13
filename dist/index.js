@@ -59,30 +59,35 @@ function preprocessXml(xmlString) {
  * Supports optional byte range requests.
  *
  * @param {string} url - The URL from which to fetch the XML content.
- * @param {string} [range] - Optional range for byte requests.
- * @param {boolean} [fetchEnd] - If true, fetch from the end of the range.
  * @returns {Promise<string>} Resolves to the XML content as a string.
  * @throws {Error} Throws an error if there's an issue fetching the XML content.
  */
-function fetchXmlFromUrl(url, range, fetchEnd) {
+function fetchXmlFromUrl(url, config) {
     return __awaiter(this, void 0, void 0, function () {
-        var headers, response;
+        var headers, response, partialFeed, lastCompleteItem, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    headers = {};
-                    if (range !== null && range !== undefined && range.trim() !== "") {
-                        headers.Range = range;
-                    }
+                    _a.trys.push([0, 3, , 4]);
+                    headers = typeof config.requestSize === "number" && config.requestSize > 0
+                        ? { Range: "bytes=0-".concat(config.requestSize) }
+                        : undefined;
                     return [4 /*yield*/, fetch(url, { headers: headers })];
                 case 1:
                     response = _a.sent();
-                    // Check if partial content is returned
-                    if ((range !== null && range !== void 0 ? range : fetchEnd) !== undefined && response.status !== 206) {
-                        throw new Error("Server does not support byte range requests.");
-                    }
                     return [4 /*yield*/, response.text()];
-                case 2: return [2 /*return*/, _a.sent()];
+                case 2:
+                    partialFeed = _a.sent();
+                    lastCompleteItem = partialFeed.lastIndexOf("</item>");
+                    if (lastCompleteItem !== -1) {
+                        // Cut off anything after the last complete item
+                        partialFeed = partialFeed.substring(0, lastCompleteItem + "</item>".length);
+                    }
+                    return [2 /*return*/, partialFeed + "</channel></rss>"]; // Close the RSS feed to parse data
+                case 3:
+                    error_1 = _a.sent();
+                    throw Error("Error fetching from feed: " + url);
+                case 4: return [2 /*return*/];
             }
         });
     });
@@ -200,14 +205,14 @@ function itunesLookup(id) {
  * @returns {Promise<{ itunes?: any, xmlString: string }>} Object containing iTunes data (if relevant) and the XML string.
  * @throws {Error} Throws an error if the source type is invalid or if unable to fetch associated feed URL with the given iTunes ID.
  */
-function retrieveXmlFromSource(source) {
+function retrieveXmlFromSource(source, config) {
     return __awaiter(this, void 0, void 0, function () {
         var xmlString, itunes, xmlString;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     if (!(source instanceof URL)) return [3 /*break*/, 2];
-                    return [4 /*yield*/, fetchXmlFromUrl(source.toString())];
+                    return [4 /*yield*/, fetchXmlFromUrl(source.toString(), config)];
                 case 1:
                     xmlString = _a.sent();
                     return [2 /*return*/, { xmlString: xmlString }];
@@ -217,7 +222,7 @@ function retrieveXmlFromSource(source) {
                 case 3:
                     itunes = _a.sent();
                     if (!(typeof (itunes === null || itunes === void 0 ? void 0 : itunes.feedUrl) === "string")) return [3 /*break*/, 5];
-                    return [4 /*yield*/, fetchXmlFromUrl(itunes.feedUrl)];
+                    return [4 /*yield*/, fetchXmlFromUrl(itunes.feedUrl, config)];
                 case 4:
                     xmlString = _a.sent();
                     return [2 /*return*/, { itunes: itunes, xmlString: xmlString }];
@@ -254,7 +259,7 @@ function podcastXmlParser(source, config) {
         var _a, itunes, xmlString, preprocessedXml, doc, podcast, episodeElements, _b, start, limit, end, paginatedElements, episodes, itunesResponse, err_2;
         return __generator(this, function (_c) {
             switch (_c.label) {
-                case 0: return [4 /*yield*/, retrieveXmlFromSource(source)];
+                case 0: return [4 /*yield*/, retrieveXmlFromSource(source, config)];
                 case 1:
                     _a = _c.sent(), itunes = _a.itunes, xmlString = _a.xmlString;
                     preprocessedXml = preprocessXml(xmlString);

@@ -24,8 +24,8 @@ function App() {
   const [readmeContent, setReadmeContent] = useState("");
   const [config, setConfig] = useState({
     start: 0,
-    limit: 20,
-    requestSizeLimit: 50000,
+    limit: -1,
+    requestSize: 50000,
     itunes: true
   });
 
@@ -132,7 +132,8 @@ function App() {
               >
                 Large Feed
               </button>
-              <button
+
+              {/* <button
                 onClick={(event) => {
                   event.preventDefault();
                   fetchPodcast(new URL(getRandomFeed()));
@@ -140,7 +141,8 @@ function App() {
                 className="bg-neutral-700 p-2 rounded ml-4"
               >
                 I'm Feeling Lucky
-              </button>
+              </button> */}
+
               <div className="ml-4 flex items-center">
                 <span>Config:</span>
                 <div className="ml-4 flex items-center">
@@ -155,7 +157,7 @@ function App() {
                   <label
                     className="inline-block pl-[0.15rem] hover:cursor-pointer"
                     htmlFor="itunes"
-                  >iTunes</label>
+                  >itunes</label>
                 </div>
 
 
@@ -163,7 +165,7 @@ function App() {
                   <label
                     className="inline-block pl-[0.15rem] hover:cursor-pointer"
                     htmlFor="start"
-                  >Start</label>
+                  >start</label>
                   <input
                     className="bg-neutral-700 p-2 rounded w-16 ml-2"
                     id="start"
@@ -177,13 +179,27 @@ function App() {
                   <label
                     className="inline-block pl-[0.15rem] hover:cursor-pointer"
                     htmlFor="limit"
-                  >Limit</label>
+                  >limit</label>
                   <input
                     className="bg-neutral-700 p-2 rounded w-16 ml-2"
                     id="limit"
                     type="number"
                     onChange={(event) => setConfig({ ...config, limit: Number(event.target.value) })}
                     value={config.limit}
+                  />
+                </div>
+
+                <div className="ml-4 flex items-center">
+                  <label
+                    className="inline-block pl-[0.15rem] hover:cursor-pointer"
+                    htmlFor="requestSize"
+                  >requestSize</label>
+                  <input
+                    className="bg-neutral-700 p-2 rounded w-24 ml-2"
+                    id="requestSize"
+                    type="number"
+                    onChange={(event) => setConfig({ ...config, requestSize: Number(event.target.value) })}
+                    value={config.requestSize}
                   />
                 </div>
               </div>

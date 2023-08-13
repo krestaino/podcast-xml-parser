@@ -290,7 +290,7 @@ describe("podcastXmlParser", () => {
 
   it('should throw an error if fetch fails', async () => {
     const url = new URL('hxxps://example.com/podcast.xml');
-    await expect(podcastXmlParser(url)).rejects.toThrow('fetch failed');
+    await expect(podcastXmlParser(url)).rejects.toThrow('Error fetching from feed: ' + url.href);
   });
 
   it('should have an empty feedUrl when xmlSource is a string and XML lacks <atom:link>', async () => {
@@ -311,7 +311,7 @@ describe("podcastXmlParser", () => {
   });
 
   it('should return correct itunes data', async () => {
-    const { podcast, episodes } = await podcastXmlParser(1559139153);   
+    const { podcast, episodes } = await podcastXmlParser(1559139153);
 
     expect(podcast.feedUrl).toBe('https://feeds.megaphone.fm/climbinggold');
     expect(podcast.title).toBe("Climbing Gold");

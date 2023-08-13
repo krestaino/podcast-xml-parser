@@ -48,6 +48,6 @@ export interface Podcast {
 export interface Config {
   start?: number;
   limit?: number;
-  requestSizeLimit?: number;
+  requestSize?: number;
   itunes?: boolean;
 }

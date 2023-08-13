@@ -27,26 +27,29 @@ function preprocessXml(xmlString: string): string {
  * Supports optional byte range requests.
  *
  * @param {string} url - The URL from which to fetch the XML content.
- * @param {string} [range] - Optional range for byte requests.
- * @param {boolean} [fetchEnd] - If true, fetch from the end of the range.
  * @returns {Promise<string>} Resolves to the XML content as a string.
  * @throws {Error} Throws an error if there's an issue fetching the XML content.
  */
-async function fetchXmlFromUrl(url: string, range?: string, fetchEnd?: boolean): Promise<string> {
-  const headers: Record<string, string> = {};
+async function fetchXmlFromUrl(url: string, config: Config): Promise<string> {
+  try {
+    const headers =
+      typeof config.requestSize === "number" && config.requestSize > 0
+        ? { Range: `bytes=0-${config.requestSize}` }
+        : undefined;
+    const response = await fetch(url, { headers });
+    let partialFeed = await response.text();
 
-  if (range !== null && range !== undefined && range.trim() !== "") {
-    headers.Range = range;
+    // Find the last complete <item>...</item> tag
+    const lastCompleteItem = partialFeed.lastIndexOf("</item>");
+    if (lastCompleteItem !== -1) {
+      // Cut off anything after the last complete item
+      partialFeed = partialFeed.substring(0, lastCompleteItem + "</item>".length);
+    }
+
+    return partialFeed + "</channel></rss>"; // Close the RSS feed to parse data
+  } catch (error) {
+    throw Error("Error fetching from feed: " + url);
   }
-
-  const response = await fetch(url, { headers });
-
-  // Check if partial content is returned
-  if ((range ?? fetchEnd) !== undefined && response.status !== 206) {
-    throw new Error("Server does not support byte range requests.");
-  }
-
-  return await response.text();
 }
 
 /**
@@ -152,10 +155,13 @@ async function itunesLookup(id: number): Promise<any | undefined> {
  * @returns {Promise<{ itunes?: any, xmlString: string }>} Object containing iTunes data (if relevant) and the XML string.
  * @throws {Error} Throws an error if the source type is invalid or if unable to fetch associated feed URL with the given iTunes ID.
  */
-async function retrieveXmlFromSource(source: string | URL | number): Promise<{ itunes?: any; xmlString: string }> {
+async function retrieveXmlFromSource(
+  source: string | URL | number,
+  config: Config,
+): Promise<{ itunes?: any; xmlString: string }> {
   if (source instanceof URL) {
     // Fetch the XML string from a URL
-    const xmlString = await fetchXmlFromUrl(source.toString());
+    const xmlString = await fetchXmlFromUrl(source.toString(), config);
 
     return { xmlString };
   } else if (typeof source === "number") {
@@ -164,7 +170,7 @@ async function retrieveXmlFromSource(source: string | URL | number): Promise<{ i
 
     if (typeof itunes?.feedUrl === "string") {
       // Fetch the XML string from the iTunes feed URL
-      const xmlString = await fetchXmlFromUrl(itunes.feedUrl);
+      const xmlString = await fetchXmlFromUrl(itunes.feedUrl, config);
       return { itunes, xmlString };
     }
 
@@ -192,7 +198,7 @@ export default async function podcastXmlParser(
   source: string | URL | number | any,
   config: Config = {},
 ): Promise<{ podcast: Podcast; episodes: Episode[]; itunes?: any }> {
-  let { itunes, xmlString } = await retrieveXmlFromSource(source);
+  let { itunes, xmlString } = await retrieveXmlFromSource(source, config);
 
   // Cleanup XML
   const preprocessedXml = preprocessXml(xmlString);
