@@ -16,7 +16,7 @@ Want to see the library in action? Check the [demo](https://podcast-xml-parser.k
 
 ## Installation
 
-You can install the library using npm or yarn.
+You can install the library using `npm` or `yarn`.
 
 ```bash
 npm install podcast-xml-parser
@@ -254,9 +254,7 @@ To run the test suite, execute the following command:
 
 ```bash
 npm test
-
 # or
-
 yarn test
 ```
 
