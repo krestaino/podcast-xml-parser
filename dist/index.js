@@ -178,22 +178,16 @@ function createEpisode(item) {
  */
 function itunesLookup(id) {
     return __awaiter(this, void 0, void 0, function () {
-        var itunesResponse, itunesData, err_1;
+        var itunesResponse, itunesData;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, fetch("https://itunes.apple.com/lookup?id=".concat(id, "&entity=podcast"))];
+                case 0: return [4 /*yield*/, fetch("https://itunes.apple.com/lookup?id=".concat(id, "&entity=podcast"))];
                 case 1:
                     itunesResponse = _a.sent();
                     return [4 /*yield*/, itunesResponse.json()];
                 case 2:
                     itunesData = _a.sent();
                     return [2 /*return*/, itunesData.results[0]];
-                case 3:
-                    err_1 = _a.sent();
-                    throw new Error("Error fetching from iTunes.");
-                case 4: return [2 /*return*/];
             }
         });
     });
@@ -256,7 +250,7 @@ function retrieveXmlFromSource(source, config) {
 function podcastXmlParser(source, config) {
     if (config === void 0) { config = {}; }
     return __awaiter(this, void 0, void 0, function () {
-        var _a, itunes, xmlString, preprocessedXml, doc, podcast, episodeElements, _b, start, limit, end, paginatedElements, episodes, itunesResponse, err_2;
+        var _a, itunes, xmlString, preprocessedXml, doc, podcast, episodeElements, _b, start, limit, end, paginatedElements, episodes, itunesResponse;
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0: return [4 /*yield*/, retrieveXmlFromSource(source, config)];
@@ -271,27 +265,21 @@ function podcastXmlParser(source, config) {
                     end = start + (typeof limit === "number" && limit > 0 ? limit : episodeElements.length);
                     paginatedElements = episodeElements.slice(start, end);
                     episodes = paginatedElements.map(createEpisode);
-                    if (!(config.itunes === true)) return [3 /*break*/, 7];
-                    _c.label = 2;
-                case 2:
-                    _c.trys.push([2, 6, , 7]);
-                    if (!(itunes === null || itunes === undefined)) return [3 /*break*/, 5];
+                    if (!(config.itunes === true)) return [3 /*break*/, 5];
+                    if (!(itunes === null || itunes === undefined)) return [3 /*break*/, 4];
                     return [4 /*yield*/, fetch("https://itunes.apple.com/search?term=".concat(podcast.title, "&entity=podcast"))];
-                case 3:
+                case 2:
                     itunesResponse = _c.sent();
                     return [4 /*yield*/, itunesResponse.json()];
-                case 4:
+                case 3:
                     itunes = _c.sent();
                     // Set podcast if the feedUrl is equal on iTunes and in the XML
                     itunes = itunes.results.find(function (result) { return result.feedUrl === podcast.feedUrl; });
-                    _c.label = 5;
-                case 5: 
+                    _c.label = 4;
+                case 4: 
                 // All done, return data
                 return [2 /*return*/, { itunes: itunes, podcast: podcast, episodes: episodes }];
-                case 6:
-                    err_2 = _c.sent();
-                    throw new Error("Error fetching from iTunes.");
-                case 7: 
+                case 5: 
                 // All done, return data
                 return [2 /*return*/, { podcast: podcast, episodes: episodes }];
             }
