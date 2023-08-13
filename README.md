@@ -28,6 +28,16 @@ npm install podcast-xml-parser
 yarn add podcast-xml-parser
 ```
 
+## Basic Example
+```javascript
+import podcastXmlParser from "podcast-xml-parser";
+
+const url = new URL("https://feeds.simplecast.com/dHoohVNH");
+const { podcast } = await podcastXmlParser(url);
+
+console.log(podcast.title); // "Conan O’Brien Needs A Friend"
+```
+
 ## Usage
 
 ### `podcastXmlParser`
@@ -49,7 +59,35 @@ A promise that resolves with an object containing:
 **Signature**:
 
 ```typescript
-podcastXmlParser(xmlSource: string | URL| number): Promise<{ podcast: Podcast; episodes: Episode[]; itunes?: any }>
+podcastXmlParser(source: string | URL| number): Promise<{ podcast: Podcast; episodes: Episode[]; itunes?: any }>
+```
+
+## Configuration Options
+
+The `podcastXmlParser` function accepts a configuration object as its second parameter, allowing you to customize various aspects of the parsing process.
+
+#### `requestSize`: number
+Specifies the number of bytes to fetch from the XML feed, allowing you to limit the size of the request. Useful for improving response times when you only need a portion of the feed.
+```javascript
+const config = { requestSize: 50000 }; // First 50,000 bytes of the feed
+```
+
+#### `start`: number
+The starting index for episode pagination. Combined with the `limit` option, this allows you to paginate through the episodes in the feed.
+```javascript
+const config = { start: 0, limit: 10 }; // Retrieves the last 10 episodes
+```
+
+#### `limit`: number
+The number of episodes to retrieve from the starting index. Used in conjunction with the `start` option for pagination.
+```javascript
+const config = { start: 5, limit: 5 }; // Retrieves episodes 6 through 10
+```
+
+#### `itunes`: boolean
+A boolean flag to control whether iTunes data is retrieved. If set to `true`, the parser will fetch additional details from iTunes based on the podcast's feed URL.
+```javascript
+const config = { itunes: true }; // Enables iTunes integration
 ```
 
 ## Examples
@@ -132,6 +170,8 @@ console.log(episodes.length !== itunes.trackCount) // true
 ```
 
 ### Pagination
+
+Pagination allows you to control the number of episodes returned by the parser. It lets you define the starting point and the limit for fetching the episodes. When parsing a partial feed with `requestSize` set, be aware that the episodes you request may not be in the feed.
 
 ```javascript
 import podcastXmlParser from "podcast-xml-parser";
