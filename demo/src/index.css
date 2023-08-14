@@ -14,3 +14,11 @@
 .prose pre code {
   padding: 0;
 }
+
+.prose h1 {
+  @apply mb-0 border-b pb-4 border-neutral-600;
+}
+
+.prose h2 {
+  @apply mb-4 border-b pb-4 border-neutral-600;
+}
