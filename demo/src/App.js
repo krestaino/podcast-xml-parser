@@ -4,15 +4,15 @@ import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { a11yDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
-// const PODCAST_FEEDS = [
-//   "https://feeds.megaphone.fm/climbinggold",
-//   "https://feeds.simplecast.com/dHoohVNH",
-//   "https://rss.art19.com/smartless",
-//   "https://feeds.simplecast.com/qm_9xx0g",
-//   "https://feeds.megaphone.fm/STU4418364045",
-//   "https://feeds.simplecast.com/4T39_jAj",
-//   "https://feeds.npr.org/500005/podcast.xml",
-// ];
+const PODCAST_FEEDS = [
+  "https://feeds.megaphone.fm/climbinggold",
+  "https://feeds.simplecast.com/dHoohVNH",
+  "https://rss.art19.com/smartless",
+  "https://feeds.simplecast.com/qm_9xx0g",
+  "https://feeds.megaphone.fm/STU4418364045",
+  // "https://feeds.simplecast.com/4T39_jAj",
+  "https://feeds.npr.org/500005/podcast.xml",
+];
 
 function App() {
   const [loading, setLoading] = useState(false);
@@ -62,17 +62,18 @@ function App() {
           setPodcast(podcast);
           setEpisodes(episodes);
           setItunes(itunes || null);
+        } else {
+          if (source.href === "https://feeds.npr.org/500005/podcast.xml") {
+            setError({
+              message: `You were unlucky. This feed (${source}) has CORS enabled.\nIt is included in the demo to demonstrate that browser based parsing is not reliable.\nUse this library in Node or React Native to parse this feed reliably.\n\n${error}`,
+            });
+          } else {
+            setError(error);
+          }
         }
       }
     } catch (error) {
       console.log(error);
-      if (source.href === "https://feeds.npr.org/500005/podcast.xml") {
-        setError({
-          message: `You were unlucky. This feed (${source}) has CORS enabled.\nIt is included in the demo to demonstrate that browser based parsing is not reliable.\nUse this library in Node or React Native to parse this feed reliably.\n\nError: ${error}`,
-        });
-      } else {
-        setError(error);
-      }
     } finally {
       setLoading(false);
     }
@@ -89,12 +90,12 @@ function App() {
     }
   }
 
-  // function getRandomFeed() {
-  //   const randomIndex = Math.floor(Math.random() * PODCAST_FEEDS.length);
-  //   const source = PODCAST_FEEDS[randomIndex];
-  //   setSource(source);
-  //   return source;
-  // }
+  function getRandomFeed() {
+    const randomIndex = Math.floor(Math.random() * PODCAST_FEEDS.length);
+    const source = PODCAST_FEEDS[randomIndex];
+    setSource(source);
+    return source;
+  }
 
   function preprocessReadmeContent(content) {
     const hideSectionStartTag = "<!-- HIDE_SECTION_START -->";
@@ -140,7 +141,7 @@ function App() {
               <button className="bg-neutral-200 text-neutral-900 p-2 rounded" type="submit">
                 Parse
               </button>
-              <button
+              {/* <button
                 onClick={(event) => {
                   event.preventDefault();
                   fetchPodcast(new URL("https://feeds.megaphone.fm/climbinggold"));
@@ -157,17 +158,17 @@ function App() {
                 className="bg-neutral-700 p-2 rounded ml-4"
               >
                 Large Feed
-              </button>
+              </button> */}
 
-              {/* <button
+              <button
                 onClick={(event) => {
                   event.preventDefault();
                   fetchPodcast(new URL(getRandomFeed()));
                 }}
                 className="bg-neutral-700 p-2 rounded ml-4"
               >
-                I'm Feeling Lucky
-              </button> */}
+                Random Feed
+              </button>
 
               <div className="ml-4 flex items-center">
                 <span>Config:</span>
