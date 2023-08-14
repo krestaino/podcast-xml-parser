@@ -96,7 +96,7 @@ export default function Header({ config, setConfig, setLoading, setError, setPod
               }}
               className="bg-neutral-700 p-2 rounded ml-4"
             >
-              Random Feed
+              Random
             </button>
 
             <Config config={config} setConfig={setConfig} />
