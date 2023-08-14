@@ -117,8 +117,9 @@ console.log(podcast.title); // "Conan O’Brien Needs A Friend"
 
 You can read from the filesystem or pass a string.
 
+#### From the filesystem
+
 ```javascript
-// From the filesystem
 import fs from "fs";
 import podcastXmlParser from "podcast-xml-parser";
 
@@ -128,8 +129,9 @@ const { podcast } = await podcastXmlParser(xmlData);
 console.log(podcast.title);
 ```
 
+#### From a string
+
 ```javascript
-// From a string
 import podcastXmlParser from "podcast-xml-parser";
 
 const xmlString = `
