@@ -21,6 +21,23 @@ export default function Header({ config, setConfig, setLoading, setError, setPod
     return source;
   }
 
+  async function parse(source, config, setPodcast, setEpisodes, setItunes) {
+    const { podcast, episodes, itunes } = await podcastXmlParser(source, config);
+    setPodcast(podcast);
+    setEpisodes(episodes);
+    setItunes(itunes || null);
+  }
+
+  function handleError(source, error, setError) {
+    if (source.href === "https://feeds.npr.org/500005/podcast.xml") {
+      setError({
+        message: `You were unlucky. This feed (${source}) has CORS enabled.\nIt is included in the demo to demonstrate that browser based parsing is not reliable.\nUse this library in Node or React Native to parse this feed reliably.\n\n${error}`,
+      });
+    } else {
+      setError(error);
+    }
+  }
+
   async function fetchPodcast(source) {
     try {
       setLoading(true);
@@ -28,33 +45,18 @@ export default function Header({ config, setConfig, setLoading, setError, setPod
 
       if (source !== "") {
         const url = new URL(source);
-        const { podcast, episodes, itunes } = await podcastXmlParser(url, config);
-        setPodcast(podcast);
-        setEpisodes(episodes);
-        setItunes(itunes || null);
+        await parse(url, config, setPodcast, setEpisodes, setItunes);
       } else {
         setError({ message: "Invalid input. Must be a URL, number, or a non-empty string." });
       }
     } catch (error) {
       const num = Number(source);
       if (!isNaN(num)) {
-        const { podcast, episodes, itunes } = await podcastXmlParser(parseInt(source), config);
-        setPodcast(podcast);
-        setEpisodes(episodes);
-        setItunes(itunes || null);
+        await parse(parseInt(source), config, setPodcast, setEpisodes, setItunes);
       } else if (typeof source === "string" && source !== "") {
-        const { podcast, episodes, itunes } = await podcastXmlParser(source, config);
-        setPodcast(podcast);
-        setEpisodes(episodes);
-        setItunes(itunes || null);
+        await parse(source, config, setPodcast, setEpisodes, setItunes);
       } else {
-        if (source.href === "https://feeds.npr.org/500005/podcast.xml") {
-          setError({
-            message: `You were unlucky. This feed (${source}) has CORS enabled.\nIt is included in the demo to demonstrate that browser based parsing is not reliable.\nUse this library in Node or React Native to parse this feed reliably.\n\n${error}`,
-          });
-        } else {
-          setError(error);
-        }
+        handleError(source, error, setError);
       }
     } finally {
       setLoading(false);
