@@ -57,3 +57,6 @@ export default async function podcastXmlParser(
   // All done, return data
   return { podcast, episodes };
 }
+
+module.exports = podcastXmlParser;
+module.exports.default = podcastXmlParser;

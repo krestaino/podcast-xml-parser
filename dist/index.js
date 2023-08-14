@@ -87,3 +87,5 @@ function podcastXmlParser(source, config) {
     });
 }
 exports.default = podcastXmlParser;
+module.exports = podcastXmlParser;
+module.exports.default = podcastXmlParser;
