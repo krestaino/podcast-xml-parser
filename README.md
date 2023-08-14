@@ -53,7 +53,7 @@ A promise that resolves with an object containing:
 **Signature**:
 
 ```typescript
-podcastXmlParser(source: string | URL| number): Promise<{ podcast: Podcast; episodes: Episode[]; itunes?: any }>
+podcastXmlParser(source: string | URL | number): Promise<{ podcast: Podcast; episodes: Episode[]; itunes?: any }>
 ```
 
 ## Configuration Options
