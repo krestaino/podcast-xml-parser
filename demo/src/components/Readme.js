@@ -39,7 +39,7 @@ export default function Readme() {
 
   return (
     <section className="mt-4">
-      <div className="prose prose-neutral prose-code:bg-neutral-700 prose-code:rounded prose-code:p-1 prose-code:before:content-none prose-code:after:content-none dark:prose-invert max-w-5xl mx-auto p-4">
+      <div className="prose prose-neutral prose-code:bg-neutral-700 prose-code:rounded prose-code:p-1 prose-code:before:content-none prose-code:after:content-none dark:prose-invert max-w-5xl mx-auto p-4 border rounded-lg border-neutral-600 mb-8">
         <div className="flex mb-4">
           <a href="https://github.com/krestaino/podcast-xml-parser">
             <img

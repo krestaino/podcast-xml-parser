@@ -2,7 +2,7 @@ import React from "react";
 
 export default function Results({ config, podcast, episodes, itunes }) {
   return (
-    <section className="bg-neutral-800 border-t border-b border-neutral-500">
+    <section className="border-t border-neutral-500">
       <div className="font-mono max-w-5xl mx-auto p-4 mt-4">
         <h2 className="text-2xl font-bold">Podcast ({podcast.title})</h2>
         <table className="mt-4 w-full bg-neutral-800 block overflow-scroll h-[35vh]">
@@ -22,7 +22,7 @@ export default function Results({ config, podcast, episodes, itunes }) {
           </tbody>
         </table>
 
-        <div className="my-8">
+        <div className="mt-8">
           <h2 className="text-2xl font-bold">Episodes ({episodes.length})</h2>
           <div className="overflow-scroll h-[35vh]">
             {episodes.map((episode, episodeIdx) => (
@@ -47,7 +47,7 @@ export default function Results({ config, podcast, episodes, itunes }) {
         </div>
 
         {itunes !== null && itunes !== undefined && config.itunes && (
-          <div className="my-8">
+          <div className="mt-8">
             <h2 className="text-2xl font-bold">iTunes</h2>
             <table className="mt-4 w-full bg-neutral-800 block overflow-scroll h-[35vh]">
               <thead className="bg-neutral-700 text-left">
