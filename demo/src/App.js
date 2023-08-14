@@ -4,23 +4,23 @@ import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { a11yDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
-const PODCAST_FEEDS = [
-  "https://feeds.megaphone.fm/climbinggold",
-  "https://feeds.simplecast.com/dHoohVNH",
-  "https://rss.art19.com/smartless",
-  "https://feeds.simplecast.com/qm_9xx0g",
-  "https://feeds.megaphone.fm/STU4418364045",
-  "https://feeds.simplecast.com/4T39_jAj",
-  "https://feeds.npr.org/500005/podcast.xml",
-];
+// const PODCAST_FEEDS = [
+//   "https://feeds.megaphone.fm/climbinggold",
+//   "https://feeds.simplecast.com/dHoohVNH",
+//   "https://rss.art19.com/smartless",
+//   "https://feeds.simplecast.com/qm_9xx0g",
+//   "https://feeds.megaphone.fm/STU4418364045",
+//   "https://feeds.simplecast.com/4T39_jAj",
+//   "https://feeds.npr.org/500005/podcast.xml",
+// ];
 
 function App() {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(undefined);
   const [source, setSource] = useState("");
-  const [podcast, setPodcast] = useState({});
-  const [episodes, setEpisodes] = useState([]);
-  const [itunes, setItunes] = useState(null);
+  const [podcast, setPodcast] = useState(undefined);
+  const [episodes, setEpisodes] = useState(undefined);
+  const [itunes, setItunes] = useState(undefined);
   const [readmeContent, setReadmeContent] = useState("");
   const [config, setConfig] = useState({
     start: 0,
@@ -33,11 +33,37 @@ function App() {
     try {
       setLoading(true);
       setError(null);
-      setSource(source.href)
-      const { podcast, episodes, itunes } = await podcastXmlParser(source, config);
-      setPodcast(podcast);
-      setEpisodes(episodes);
-      setItunes(itunes || null);
+
+      try {
+        if (source !== "") {
+          const url = new URL(source);
+          setSource(source.href)
+          const { podcast, episodes, itunes } = await podcastXmlParser(url, config);
+          console.log(1);
+          setPodcast(podcast);
+          setEpisodes(episodes);
+          setItunes(itunes || null);
+        } else {
+          setError({ message: "Invalid input. Must be a URL, number, or a non-empty string." })
+        }
+      } catch (error) {
+        const num = Number(source);
+        if (!isNaN(num)) {
+          const { podcast, episodes, itunes } = await podcastXmlParser(parseInt(source), config);
+          console.log(2);
+          console.log({ podcast, episodes, itunes });
+          // setSource(podcast.feedUrl)
+          setPodcast(podcast);
+          setEpisodes(episodes);
+          setItunes(itunes || null);
+        } else if (typeof source === "string" && source !== "") {
+          const { podcast, episodes, itunes } = await podcastXmlParser(source, config);
+          console.log(3);
+          setPodcast(podcast);
+          setEpisodes(episodes);
+          setItunes(itunes || null);
+        }
+      }
     } catch (error) {
       console.log(error);
       if (source.href === "https://feeds.npr.org/500005/podcast.xml") {
@@ -63,12 +89,12 @@ function App() {
     }
   }
 
-  function getRandomFeed() {
-    const randomIndex = Math.floor(Math.random() * PODCAST_FEEDS.length);
-    const source = PODCAST_FEEDS[randomIndex];
-    setSource(source);
-    return source;
-  }
+  // function getRandomFeed() {
+  //   const randomIndex = Math.floor(Math.random() * PODCAST_FEEDS.length);
+  //   const source = PODCAST_FEEDS[randomIndex];
+  //   setSource(source);
+  //   return source;
+  // }
 
   function preprocessReadmeContent(content) {
     const hideSectionStartTag = "<!-- HIDE_SECTION_START -->";
@@ -92,13 +118,13 @@ function App() {
 
   return (
     <div>
-      <section className="bg-neutral-800 py-4">
-        <div className="max-w-5xl mx-auto">
+      <section className="bg-neutral-800">
+        <div className="max-w-5xl mx-auto p-4">
           <form
             className="flex flex-col"
             onSubmit={(event) => {
               event.preventDefault();
-              fetchPodcast(new URL(source));
+              fetchPodcast(source);
             }}
           >
             <h2 className="text-2xl font-bold">Try the demo</h2>
@@ -107,12 +133,12 @@ function App() {
               id="urlInput"
               type="text"
               onChange={(event) => setSource(event.target.value)}
-              placeholder="Enter Podcast XML URL"
+              placeholder="Enter Podcast XML URL, iTunes ID, or an XML string"
               value={source}
             />
             <div className="mt-4 flex items-center">
               <button className="bg-neutral-200 text-neutral-900 p-2 rounded" type="submit">
-                Parse URL
+                Parse
               </button>
               <button
                 onClick={(event) => {
@@ -210,14 +236,14 @@ function App() {
       <section>
         {loading ? (
           <pre className="bg-blue-400">
-            <div className="max-w-5xl mx-auto text-neutral-900 py-2">Loading...</div>
+            <div className="max-w-5xl mx-auto text-neutral-900 p-4">Loading...</div>
           </pre>
         ) : error ? (
           <pre className="bg-red-400">
-            <div className="max-w-5xl mx-auto text-neutral-900 py-2">{error.message}</div>
+            <div className="max-w-5xl mx-auto text-neutral-900 p-4">{error.message}</div>
           </pre>
-        ) : podcast.feedUrl ? (
-          <section className="font-mono mt-8 max-w-5xl mx-auto">
+        ) : podcast ? (
+          <section className="font-mono max-w-5xl mx-auto p-4">
             <h2 className="text-2xl font-bold">Podcast ({podcast.title})</h2>
             <table className="mt-4 w-full bg-neutral-800 block overflow-scroll h-[35vh]">
               <thead className="bg-neutral-700 text-left">
@@ -285,19 +311,28 @@ function App() {
         ) : null}
       </section>
 
-      <section className={podcast.feedUrl ? "bg-neutral-800" : ""}>
-        <div className="prose prose-neutral dark:prose-invert max-w-5xl mx-auto py-8">
+      <section className={podcast ? "bg-neutral-800" : ""}>
+        <div className="prose prose-neutral dark:prose-invert max-w-5xl mx-auto p-4">
           <div className="flex mb-4">
             <a href="https://github.com/krestaino/podcast-xml-parser">
               <img
+                alt="GitHub Repo"
                 src="https://img.shields.io/github/package-json/v/krestaino/podcast-xml-parser/main?label=GitHub"
                 className="m-0"
               />
             </a>
             <a href="https://www.npmjs.com/package/podcast-xml-parser">
-              <img src="https://img.shields.io/npm/v/podcast-xml-parser?color=red" className="m-0 ml-2" />
+              <img
+                alt="NPM Package"
+                src="https://img.shields.io/npm/v/podcast-xml-parser?color=red"
+                className="m-0 ml-2"
+              />
             </a>
-            <img src="https://img.shields.io/github/license/krestaino/podcast-xml-parser.svg" className="m-0 ml-2" />
+            <img
+              alt="MIT License"
+              src="https://img.shields.io/github/license/krestaino/podcast-xml-parser.svg"
+              className="m-0 ml-2"
+            />
           </div>
           <ReactMarkdown
             children={preprocessReadmeContent(readmeContent)}
