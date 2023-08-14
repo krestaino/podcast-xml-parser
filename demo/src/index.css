@@ -10,3 +10,7 @@
 .prose pre div {
   margin: 0 !important;
 }
+
+.prose pre code {
+  padding: 0;
+}
