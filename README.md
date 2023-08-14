@@ -34,7 +34,7 @@ const { podcast } = await podcastXmlParser(url);
 console.log(podcast.title); // "Conan O’Brien Needs A Friend"
 ```
 
-## Usage `podcastXmlParser`
+## Usage `podcastXmlParser()`
 
 **Purpose**: Parses a podcast's XML feed to retrieve podcast and episode details.
 
