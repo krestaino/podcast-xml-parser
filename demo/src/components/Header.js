@@ -10,7 +10,7 @@ const PODCAST_FEEDS = [
   "https://feeds.simplecast.com/qm_9xx0g",
   "https://feeds.megaphone.fm/STU4418364045",
   // "https://feeds.simplecast.com/4T39_jAj",
-  "https://feeds.npr.org/500005/podcast.xml",
+  // "https://feeds.npr.org/500005/podcast.xml",
 ];
 
 export default function Header({ config, setConfig, setLoading, setError, setPodcast, setEpisodes, setItunes }) {
@@ -30,7 +30,7 @@ export default function Header({ config, setConfig, setLoading, setError, setPod
     setItunes(itunes || null);
   }
 
-  function handleError(source, error, setError) {
+  function handleError(source, error) {
     if (source.href === "https://feeds.npr.org/500005/podcast.xml") {
       setError({
         message: `You were unlucky. This feed (${source}) has CORS enabled.\nIt is included in the demo to demonstrate that browser based parsing is not reliable.\nUse this library in Node or React Native to parse this feed reliably.\n\n${error}`,
@@ -52,13 +52,17 @@ export default function Header({ config, setConfig, setLoading, setError, setPod
         setError({ message: "Invalid input. Must be a URL, number, or a non-empty string." });
       }
     } catch (error) {
-      const num = Number(source);
-      if (!isNaN(num)) {
-        await parse(parseInt(source), config, setPodcast, setEpisodes, setItunes);
-      } else if (typeof source === "string" && source !== "") {
-        await parse(source, config, setPodcast, setEpisodes, setItunes);
-      } else {
-        handleError(source, error, setError);
+      try {
+        const num = Number(source);
+        if (!isNaN(num)) {
+          await parse(parseInt(source), config, setPodcast, setEpisodes, setItunes);
+        } else if (typeof source === "string" && source !== "") {
+          await parse(source, config, setPodcast, setEpisodes, setItunes);
+        } else {
+          handleError(source, error);
+        }
+      } catch (error) {
+        handleError(source, error);
       }
     } finally {
       setLoading(false);
