@@ -7,8 +7,8 @@ import ActivityIndicator from "./components/ActivityIndicator";
 
 const CONFIG = {
   start: 0,
-  limit: -1,
-  requestSize: 50000,
+  limit: 20,
+  requestSize: 150000,
   itunes: true,
 };
 
