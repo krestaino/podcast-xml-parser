@@ -11,7 +11,7 @@ export interface Episode {
     } | null;
     guid: string;
     itunesAuthor: string;
-    itunesDuration: string;
+    itunesDuration: number | undefined;
     itunesEpisode: string;
     itunesEpisodeType: string;
     itunesExplicit: string;

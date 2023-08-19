@@ -29,14 +29,11 @@ function trimXmlFeed(feed: string): string {
  * @throws Throws an error if the XML feed is empty.
  */
 export function preprocessXml(xmlString: string, config: Config): string {
-  // Only process requestSize limit if set
-  let feed: string = config.requestSize ? xmlString.slice(0, config.requestSize) : xmlString;
+  let feed: string =
+    config.requestSize !== null && config.requestSize !== undefined && config.requestSize > 0
+      ? xmlString.slice(0, config.requestSize)
+      : xmlString;
   feed = trimXmlFeed(feed);
-
-  // Check if source is a valid XML string
-  if (feed.trim() === "") {
-    throw new Error("Empty XML feed. Please provide valid XML content.");
-  }
 
   const wrappedString = feed.startsWith("<") ? feed : `<root>${feed}</root>`;
   const doc = parser.parseFromString(wrappedString, "text/xml");

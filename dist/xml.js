@@ -63,13 +63,10 @@ function trimXmlFeed(feed) {
  * @throws Throws an error if the XML feed is empty.
  */
 function preprocessXml(xmlString, config) {
-    // Only process requestSize limit if set
-    var feed = config.requestSize ? xmlString.slice(0, config.requestSize) : xmlString;
+    var feed = config.requestSize !== null && config.requestSize !== undefined && config.requestSize > 0
+        ? xmlString.slice(0, config.requestSize)
+        : xmlString;
     feed = trimXmlFeed(feed);
-    // Check if source is a valid XML string
-    if (feed.trim() === "") {
-        throw new Error("Empty XML feed. Please provide valid XML content.");
-    }
     var wrappedString = feed.startsWith("<") ? feed : "<root>".concat(feed, "</root>");
     var doc = parser.parseFromString(wrappedString, "text/xml");
     return new xmldom_1.XMLSerializer().serializeToString(doc);

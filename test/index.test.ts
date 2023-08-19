@@ -27,7 +27,7 @@ const assertEpisodeProperties = (episode: Episode) => {
   expect(episode.enclosure).toBeDefined();
   expect(typeof episode.guid).toBe("string");
   expect(typeof episode.itunesAuthor).toBe("string");
-  expect(typeof episode.itunesDuration).toBe("string");
+  expect(typeof episode.itunesDuration).toBe("number");
   expect(typeof episode.itunesEpisode).toBe("string");
   expect(typeof episode.itunesEpisodeType).toBe("string");
   expect(typeof episode.itunesExplicit).toBe("string");
@@ -123,7 +123,7 @@ describe("podcastXmlParser", () => {
     expect(episodes[0].enclosure?.type).toBe("episode-enclosure-type");
     expect(episodes[0].guid).toBe("episode-guid");
     expect(episodes[0].itunesAuthor).toBe("episode-itunes-author");
-    expect(episodes[0].itunesDuration).toBe("12345");
+    expect(episodes[0].itunesDuration).toBe(12345);
     expect(episodes[0].itunesEpisode).toBe("episode-itunes-episode");
     expect(episodes[0].itunesEpisodeType).toBe("episode-itunes-episode-type");
     expect(episodes[0].itunesExplicit).toBe("episode-itunes-explicit");

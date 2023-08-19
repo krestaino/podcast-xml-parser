@@ -1,4 +1,5 @@
 import { type Podcast, type Episode } from "./types";
+import { getDuration } from "./sanitize";
 
 /**
  * Extracts the text content from a specified XML element.
@@ -67,7 +68,7 @@ export function createEpisode(item: Element): Episode {
     },
     guid: getText(item, "guid"),
     itunesAuthor: getText(item, "itunes:author"),
-    itunesDuration: getText(item, "itunes:duration"),
+    itunesDuration: getDuration(getText(item, "itunes:duration")),
     itunesEpisode: getText(item, "itunes:episode"),
     itunesEpisodeType: getText(item, "itunes:episodeType"),
     itunesExplicit: getText(item, "itunes:explicit"),
