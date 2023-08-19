@@ -56,7 +56,7 @@ function podcastXmlParser(source, config) {
                 case 0: return [4 /*yield*/, (0, xml_1.retrieveXmlFromSource)(source, config)];
                 case 1:
                     _a = _c.sent(), itunes = _a.itunes, xmlString = _a.xmlString;
-                    preprocessedXml = (0, xml_1.preprocessXml)(xmlString);
+                    preprocessedXml = (0, xml_1.preprocessXml)(xmlString, config);
                     doc = (0, xml_1.parse)(preprocessedXml);
                     podcast = (0, create_1.createPodcast)(doc.documentElement);
                     episodeElements = Array.from(doc.getElementsByTagName("item"));

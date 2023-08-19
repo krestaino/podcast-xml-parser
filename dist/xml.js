@@ -41,6 +41,20 @@ var xmldom_1 = require("xmldom");
 var itunes_1 = require("./itunes");
 var parser = new xmldom_1.DOMParser();
 /**
+ * Trims XML feed by cutting off anything after the last complete <item>...</item> tag.
+ *
+ * @param feed - The XML feed to trim.
+ * @returns The trimmed XML feed.
+ */
+function trimXmlFeed(feed) {
+    var lastCompleteItem = feed.lastIndexOf("</item>");
+    if (lastCompleteItem !== -1) {
+        // Cut off anything after the last complete item
+        feed = feed.substring(0, lastCompleteItem + "</item>".length);
+    }
+    return feed + "</channel></rss>"; // Close the RSS feed to parse data
+}
+/**
  * Preprocesses an XML string to handle possible XML inconsistencies.
  * Wraps content in a root tag if it doesn't start with one.
  *
@@ -48,12 +62,15 @@ var parser = new xmldom_1.DOMParser();
  * @returns The preprocessed XML string.
  * @throws Throws an error if the XML feed is empty.
  */
-function preprocessXml(xmlString) {
+function preprocessXml(xmlString, config) {
+    // Only process requestSize limit if set
+    var feed = config.requestSize ? xmlString.slice(0, config.requestSize) : xmlString;
+    feed = trimXmlFeed(feed);
     // Check if source is a valid XML string
-    if (xmlString.trim() === "") {
+    if (feed.trim() === "") {
         throw new Error("Empty XML feed. Please provide valid XML content.");
     }
-    var wrappedString = xmlString.startsWith("<") ? xmlString : "<root>".concat(xmlString, "</root>");
+    var wrappedString = feed.startsWith("<") ? feed : "<root>".concat(feed, "</root>");
     var doc = parser.parseFromString(wrappedString, "text/xml");
     return new xmldom_1.XMLSerializer().serializeToString(doc);
 }
@@ -69,7 +86,7 @@ exports.preprocessXml = preprocessXml;
  */
 function fetchXmlFromUrl(url, config) {
     return __awaiter(this, void 0, void 0, function () {
-        var headers, response, partialFeed, lastCompleteItem, error_1;
+        var headers, response, feed, lastCompleteItem, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -82,13 +99,14 @@ function fetchXmlFromUrl(url, config) {
                     response = _a.sent();
                     return [4 /*yield*/, response.text()];
                 case 2:
-                    partialFeed = _a.sent();
-                    lastCompleteItem = partialFeed.lastIndexOf("</item>");
+                    feed = _a.sent();
+                    feed = trimXmlFeed(feed);
+                    lastCompleteItem = feed.lastIndexOf("</item>");
                     if (lastCompleteItem !== -1) {
                         // Cut off anything after the last complete item
-                        partialFeed = partialFeed.substring(0, lastCompleteItem + "</item>".length);
+                        feed = feed.substring(0, lastCompleteItem + "</item>".length);
                     }
-                    return [2 /*return*/, partialFeed + "</channel></rss>"]; // Close the RSS feed to parse data
+                    return [2 /*return*/, feed + "</channel></rss>"]; // Close the RSS feed to parse data
                 case 3:
                     error_1 = _a.sent();
                     throw Error("Error fetching from feed: " + url);

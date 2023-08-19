@@ -6,6 +6,21 @@ import { itunesLookup } from "./itunes";
 const parser = new DOMParser();
 
 /**
+ * Trims XML feed by cutting off anything after the last complete <item>...</item> tag.
+ *
+ * @param feed - The XML feed to trim.
+ * @returns The trimmed XML feed.
+ */
+function trimXmlFeed(feed: string): string {
+  const lastCompleteItem = feed.lastIndexOf("</item>");
+  if (lastCompleteItem !== -1) {
+    // Cut off anything after the last complete item
+    feed = feed.substring(0, lastCompleteItem + "</item>".length);
+  }
+  return feed + "</channel></rss>"; // Close the RSS feed to parse data
+}
+
+/**
  * Preprocesses an XML string to handle possible XML inconsistencies.
  * Wraps content in a root tag if it doesn't start with one.
  *
@@ -13,12 +28,17 @@ const parser = new DOMParser();
  * @returns The preprocessed XML string.
  * @throws Throws an error if the XML feed is empty.
  */
-export function preprocessXml(xmlString: string): string {
+export function preprocessXml(xmlString: string, config: Config): string {
+  // Only process requestSize limit if set
+  let feed: string = config.requestSize ? xmlString.slice(0, config.requestSize) : xmlString;
+  feed = trimXmlFeed(feed);
+
   // Check if source is a valid XML string
-  if (xmlString.trim() === "") {
+  if (feed.trim() === "") {
     throw new Error("Empty XML feed. Please provide valid XML content.");
   }
-  const wrappedString = xmlString.startsWith("<") ? xmlString : `<root>${xmlString}</root>`;
+
+  const wrappedString = feed.startsWith("<") ? feed : `<root>${feed}</root>`;
   const doc = parser.parseFromString(wrappedString, "text/xml");
   return new XMLSerializer().serializeToString(doc);
 }
@@ -39,16 +59,17 @@ async function fetchXmlFromUrl(url: string, config: Config): Promise<string> {
         ? { Range: `bytes=0-${config.requestSize}` }
         : undefined;
     const response = await fetch(url, { headers });
-    let partialFeed = await response.text();
+    let feed = await response.text();
+    feed = trimXmlFeed(feed);
 
     // Find the last complete <item>...</item> tag
-    const lastCompleteItem = partialFeed.lastIndexOf("</item>");
+    const lastCompleteItem = feed.lastIndexOf("</item>");
     if (lastCompleteItem !== -1) {
       // Cut off anything after the last complete item
-      partialFeed = partialFeed.substring(0, lastCompleteItem + "</item>".length);
+      feed = feed.substring(0, lastCompleteItem + "</item>".length);
     }
 
-    return partialFeed + "</channel></rss>"; // Close the RSS feed to parse data
+    return feed + "</channel></rss>"; // Close the RSS feed to parse data
   } catch (error) {
     throw Error("Error fetching from feed: " + url);
   }

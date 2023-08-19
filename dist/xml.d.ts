@@ -7,7 +7,7 @@ import { type Config } from "./types";
  * @returns The preprocessed XML string.
  * @throws Throws an error if the XML feed is empty.
  */
-export declare function preprocessXml(xmlString: string): string;
+export declare function preprocessXml(xmlString: string, config: Config): string;
 /**
  * Retrieves XML content from a given source, which can be a URL, iTunes ID, or an XML string.
  *

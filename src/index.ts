@@ -20,7 +20,7 @@ export default async function podcastXmlParser(
   let { itunes, xmlString } = await retrieveXmlFromSource(source, config);
 
   // Cleanup XML
-  const preprocessedXml = preprocessXml(xmlString);
+  const preprocessedXml = preprocessXml(xmlString, config);
 
   // Parse XML
   const doc = parse(preprocessedXml);
