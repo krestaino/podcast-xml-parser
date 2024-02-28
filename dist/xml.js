@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -39,6 +50,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.parse = exports.retrieveXmlFromSource = exports.preprocessXml = void 0;
 var xmldom_1 = require("xmldom");
 var itunes_1 = require("./itunes");
+var package_json_1 = require("../package.json");
 var parser = new xmldom_1.DOMParser();
 /**
  * Trims XML feed by cutting off anything after the last complete <item>...</item> tag.
@@ -88,9 +100,13 @@ function fetchXmlFromUrl(url, config) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 3, , 4]);
-                    headers = typeof config.requestSize === "number" && config.requestSize > 0
-                        ? { Range: "bytes=0-".concat(config.requestSize) }
-                        : undefined;
+                    headers = config.requestHeaders != null ? __assign({}, config.requestHeaders) : {};
+                    if (headers["User-Agent"] === undefined || headers["User-Agent"] === "") {
+                        headers["User-Agent"] = "".concat(package_json_1.name, "/").concat(package_json_1.version);
+                    }
+                    if (typeof config.requestSize === "number" && config.requestSize > 0) {
+                        headers.Range = "bytes=0-".concat(config.requestSize);
+                    }
                     return [4 /*yield*/, fetch(url, { headers: headers })];
                 case 1:
                     response = _a.sent();

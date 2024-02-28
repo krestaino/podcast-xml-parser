@@ -41,7 +41,7 @@ console.log(podcast.title); // "Conan O’Brien Needs A Friend"
 **Parameters**:
 
 - `source` _(string | URL | number)_: The source of the XML content. Can be a URL object, an iTunes ID, or an XML string.
-- `config` _(Config)_: Configuration options for the request, like request size, pagination, or to additionally return iTunes details.
+- `config` _(Config)_: Configuration options for the request, like request size, request headers, pagination, or to additionally return iTunes details.
 
 **Returns**:
 A promise that resolves with an object containing:
@@ -59,6 +59,16 @@ podcastXmlParser(source: string | URL | number): Promise<{ podcast: Podcast; epi
 ## Configuration Options
 
 The `podcastXmlParser` function accepts a configuration object as its second parameter, allowing you to customize various aspects of the parsing process.
+
+#### `requestHeaders`: Record<string, string>
+Allows you to set custom headers for the HTTP request when fetching the XML feed. This can be useful for setting a custom `User-Agent` or other headers required by the server. If no `User-Agent` is specified, the default user agent `{name}/{version}` is used, where `{name}` and `{version}` are the name and version of the library from `package.json`.
+```javascript
+const config = {
+  requestHeaders: {
+    'User-Agent': 'MyCustomUserAgent/1.0',
+  }
+}; // Sets a custom User-Agent header
+```
 
 #### `requestSize`: number
 Specifies the number of bytes to fetch from the XML feed, allowing you to limit the size of the request. Useful for improving response times when you only need a portion of the feed.
@@ -245,6 +255,7 @@ interface Episode {
 interface Config {
   start?: number;
   limit?: number;
+  requestHeaders?: Record<string, string>;
   requestSize?: number;
   itunes?: boolean;
 }

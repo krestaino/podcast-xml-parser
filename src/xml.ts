@@ -2,6 +2,7 @@ import { DOMParser, XMLSerializer } from "xmldom";
 
 import { type Config } from "./types";
 import { itunesLookup } from "./itunes";
+import { name, version } from "../package.json";
 
 const parser = new DOMParser();
 
@@ -51,10 +52,13 @@ export function preprocessXml(xmlString: string, config: Config): string {
  */
 async function fetchXmlFromUrl(url: string, config: Config): Promise<string> {
   try {
-    const headers =
-      typeof config.requestSize === "number" && config.requestSize > 0
-        ? { Range: `bytes=0-${config.requestSize}` }
-        : undefined;
+    const headers = config.requestHeaders != null ? { ...config.requestHeaders } : {};
+    if (headers["User-Agent"] === undefined || headers["User-Agent"] === "") {
+      headers["User-Agent"] = `${name}/${version}`;
+    }
+    if (typeof config.requestSize === "number" && config.requestSize > 0) {
+      headers.Range = `bytes=0-${config.requestSize}`;
+    }
     const response = await fetch(url, { headers });
     let feed = await response.text();
     feed = trimXmlFeed(feed);
