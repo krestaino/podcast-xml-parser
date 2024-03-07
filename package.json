@@ -15,10 +15,11 @@
   "scripts": {
     "build": "tsc && webpack",
     "lint": "eslint 'src/**/*.ts'",
-    "lint:fix": "eslint 'src/**/*.ts' --fix",    
+    "lint:fix": "eslint 'src/**/*.ts' --fix",
     "test": "jest"
   },
   "devDependencies": {
+    "@types/babel__core": "^7.20.5",
     "@types/jest": "^29.5.3",
     "@types/node": "^20.4.5",
     "@types/xmldom": "^0.1.31",
