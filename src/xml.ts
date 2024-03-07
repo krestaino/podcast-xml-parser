@@ -2,7 +2,7 @@ import { DOMParser, XMLSerializer } from "xmldom";
 
 import { type Config } from "./types";
 import { itunesLookup } from "./itunes";
-import { name, version } from "../package.json";
+import { USER_AGENT } from "./constants";
 
 const parser = new DOMParser();
 
@@ -54,7 +54,7 @@ async function fetchXmlFromUrl(url: string, config: Config): Promise<string> {
   try {
     const headers = config.requestHeaders != null ? { ...config.requestHeaders } : {};
     if (headers["User-Agent"] === undefined || headers["User-Agent"] === "") {
-      headers["User-Agent"] = `${name}/${version}`;
+      headers["User-Agent"] = USER_AGENT;
     }
     if (typeof config.requestSize === "number" && config.requestSize > 0) {
       headers.Range = `bytes=0-${config.requestSize}`;
