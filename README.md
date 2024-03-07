@@ -61,7 +61,14 @@ A promise that resolves with an object containing:
 **Signature**:
 
 ```typescript
-podcastXmlParser(source: string | URL | number): Promise<{ podcast: Podcast; episodes: Episode[]; itunes?: any }>
+podcastXmlParser(
+  source: string | URL | number,
+  config?: Config
+): Promise<{
+  podcast: Podcast;
+  episodes: Episode[];
+  itunes?: Itunes;
+}>
 ```
 
 ## Configuration Options
