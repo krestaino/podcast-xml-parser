@@ -50,7 +50,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.parse = exports.retrieveXmlFromSource = exports.preprocessXml = void 0;
 var xmldom_1 = require("xmldom");
 var itunes_1 = require("./itunes");
-var package_json_1 = require("../package.json");
+var constants_1 = require("./constants");
 var parser = new xmldom_1.DOMParser();
 /**
  * Trims XML feed by cutting off anything after the last complete <item>...</item> tag.
@@ -102,7 +102,7 @@ function fetchXmlFromUrl(url, config) {
                     _a.trys.push([0, 3, , 4]);
                     headers = config.requestHeaders != null ? __assign({}, config.requestHeaders) : {};
                     if (headers["User-Agent"] === undefined || headers["User-Agent"] === "") {
-                        headers["User-Agent"] = "".concat(package_json_1.name, "/").concat(package_json_1.version);
+                        headers["User-Agent"] = constants_1.USER_AGENT;
                     }
                     if (typeof config.requestSize === "number" && config.requestSize > 0) {
                         headers.Range = "bytes=0-".concat(config.requestSize);

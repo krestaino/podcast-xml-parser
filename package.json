@@ -1,7 +1,7 @@
 {
   "name": "podcast-xml-parser",
   "main": "dist/index.js",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "keywords": [
     "podcast",
     "xml",
@@ -14,8 +14,8 @@
   ],
   "scripts": {
     "build": "tsc && webpack",
-    "lint": "eslint 'src/**/*.{js,ts}' --quiet",
-    "lint:fix": "eslint 'src/**/*.{js,ts}' --quiet --fix",
+    "lint": "eslint 'src/**/*.{js,ts}'",
+    "lint:fix": "eslint 'src/**/*.{js,ts}' --fix",
     "test": "jest"
   },
   "devDependencies": {
