@@ -138,9 +138,16 @@ describe("podcastXmlParser", () => {
 
   it("should throw an error for an empty XML feed", async () => {
     const emptyXml = "";
-
+    
+    // Mock console.error to suppress the error output
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+  
     await expect(podcastXmlParser(emptyXml)).rejects.toThrow();
+  
+    // Restore the original console.error implementation after the test
+    consoleSpy.mockRestore();
   });
+  
 
   it("should handle an XML feed with empty elements and attributes", async () => {
     const xmlWithEmptyElements = `
