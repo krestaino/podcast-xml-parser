@@ -47,7 +47,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.parse = exports.retrieveXmlFromSource = exports.preprocessXml = void 0;
+exports.parse = exports.retrieveXmlFromSource = exports.fetchXmlFromUrl = exports.preprocessXml = void 0;
 var xmldom_1 = require("xmldom");
 var itunes_1 = require("./itunes");
 var constants_1 = require("./constants");
@@ -128,6 +128,7 @@ function fetchXmlFromUrl(url, config) {
         });
     });
 }
+exports.fetchXmlFromUrl = fetchXmlFromUrl;
 /**
  * Retrieves XML content from a given source, which can be a URL, iTunes ID, or an XML string.
  *

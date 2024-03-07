@@ -50,7 +50,7 @@ export function preprocessXml(xmlString: string, config: Config): string {
  * @returns Resolves to the XML content as a string.
  * @throws Throws an error if there's an issue fetching the XML content.
  */
-async function fetchXmlFromUrl(url: string, config: Config): Promise<string> {
+export async function fetchXmlFromUrl(url: string, config: Config): Promise<string> {
   try {
     const headers = config.requestHeaders != null ? { ...config.requestHeaders } : {};
     if (headers["User-Agent"] === undefined || headers["User-Agent"] === "") {

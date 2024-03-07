@@ -9,6 +9,16 @@ import { type Config } from "./types";
  */
 export declare function preprocessXml(xmlString: string, config: Config): string;
 /**
+ * Retrieves XML content from a given URL using the Fetch API.
+ * Supports optional byte range requests.
+ *
+ * @param url - The URL from which to fetch the XML content.
+ * @param config - Configuration options for the request, like request size.
+ * @returns Resolves to the XML content as a string.
+ * @throws Throws an error if there's an issue fetching the XML content.
+ */
+export declare function fetchXmlFromUrl(url: string, config: Config): Promise<string>;
+/**
  * Retrieves XML content from a given source, which can be a URL, iTunes ID, or an XML string.
  *
  * @param source - The source of the XML content, can be a URL object, an iTunes ID, or an XML string.
