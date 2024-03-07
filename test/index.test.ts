@@ -360,6 +360,14 @@ describe("podcastXmlParser", () => {
     episodes.forEach((episode) => assertEpisodeProperties(episode));
   });
 
+  it('should fetch and integrate iTunes data when config.itunes is true', async () => {
+    const url = new URL('https://feeds.simplecast.com/dHoohVNH');
+    const { itunes } = await podcastXmlParser(url, { itunes: true });
+
+    expect(itunes).toBeDefined();
+    expect(itunes.feedUrl).toBe('https://feeds.simplecast.com/dHoohVNH');
+  });
+
   // NOTE: To run these tests, ensure that you set the environment variable FEED_URLS to a comma-separated list
   // of URLs of the XML feeds that you want to test. You can create an .env file to do this.
   const { FEED_URLS = "" } = process.env;
