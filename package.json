@@ -14,8 +14,8 @@
   ],
   "scripts": {
     "build": "tsc && webpack",
-    "lint": "eslint 'src/**/*.{js,ts}'",
-    "lint:fix": "eslint 'src/**/*.{js,ts}' --fix",
+    "lint": "eslint 'src/**/*.ts'",
+    "lint:fix": "eslint 'src/**/*.ts' --fix",    
     "test": "jest"
   },
   "devDependencies": {

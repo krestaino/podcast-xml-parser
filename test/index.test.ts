@@ -1,10 +1,10 @@
 import "dotenv/config";
-import fs from 'fs';
+import fs from "fs";
 
-import podcastXmlParser, { Podcast, Episode } from "../src";
+import podcastXmlParser, { type Podcast, type Episode } from "../src";
 
 // Helper function to assert properties of a Podcast object
-const assertPodcastProperties = (podcast: Podcast) => {
+const assertPodcastProperties = (podcast: Podcast): void => {
   expect(podcast.copyright).toBeDefined();
   expect(podcast.contentEncoded).toBeDefined();
   expect(podcast.description).toBeDefined();
@@ -20,7 +20,7 @@ const assertPodcastProperties = (podcast: Podcast) => {
 };
 
 // Helper function to assert properties of an Episode object
-const assertEpisodeProperties = (episode: Episode) => {
+const assertEpisodeProperties = (episode: Episode): void => {
   expect(typeof episode.author).toBe("string");
   expect(typeof episode.contentEncoded).toBe("string");
   expect(typeof episode.description).toBe("string");
@@ -133,21 +133,22 @@ describe("podcastXmlParser", () => {
     expect(episodes[0].link).toBe("episode-link");
     expect(episodes[0].pubDate).toBe("episode-pubDate");
     expect(episodes[0].title).toBe("episode-title");
-    episodes.forEach((episode) => assertEpisodeProperties(episode));
+    episodes.forEach((episode) => {
+      assertEpisodeProperties(episode);
+    });
   });
 
   it("should throw an error for an empty XML feed", async () => {
     const emptyXml = "";
-    
+
     // Mock console.error to suppress the error output
-    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-  
+    const consoleSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+
     await expect(podcastXmlParser(emptyXml)).rejects.toThrow();
-  
+
     // Restore the original console.error implementation after the test
     consoleSpy.mockRestore();
   });
-  
 
   it("should handle an XML feed with empty elements and attributes", async () => {
     const xmlWithEmptyElements = `
@@ -164,7 +165,9 @@ describe("podcastXmlParser", () => {
 
     expect(podcast.title).toBe("");
     assertPodcastProperties(podcast);
-    episodes.forEach((episode) => assertEpisodeProperties(episode));
+    episodes.forEach((episode) => {
+      assertEpisodeProperties(episode);
+    });
   });
 
   it("should handle an XML feed with multiple episodes", async () => {
@@ -180,7 +183,9 @@ describe("podcastXmlParser", () => {
 
     expect(Array.isArray(episodes)).toBe(true);
     expect(episodes.length).toBeGreaterThan(1);
-    episodes.forEach((episode) => assertEpisodeProperties(episode));
+    episodes.forEach((episode) => {
+      assertEpisodeProperties(episode);
+    });
   });
 
   it("should handle an XML feed with nested XML tags gracefully", async () => {
@@ -199,7 +204,9 @@ describe("podcastXmlParser", () => {
 
     expect(Array.isArray(episodes)).toBe(true);
     expect(episodes.length).toBeGreaterThan(0);
-    episodes.forEach((episode) => assertEpisodeProperties(episode));
+    episodes.forEach((episode) => {
+      assertEpisodeProperties(episode);
+    });
   });
 
   it("should handle an XML feed special characters and entities in XML", async () => {
@@ -217,7 +224,9 @@ describe("podcastXmlParser", () => {
 
     expect(podcast.title).toBe("Test & Podcast");
     assertPodcastProperties(podcast);
-    episodes.forEach((episode) => assertEpisodeProperties(episode));
+    episodes.forEach((episode) => {
+      assertEpisodeProperties(episode);
+    });
   });
 
   it("should handle an XML feed with Unicode characters", async () => {
@@ -235,7 +244,9 @@ describe("podcastXmlParser", () => {
 
     expect(Array.isArray(episodes)).toBe(true);
     expect(episodes.length).toBeGreaterThan(0);
-    episodes.forEach((episode) => assertEpisodeProperties(episode));
+    episodes.forEach((episode) => {
+      assertEpisodeProperties(episode);
+    });
   });
 
   it("should handle an XML feed with multiple enclosures", async () => {
@@ -250,7 +261,9 @@ describe("podcastXmlParser", () => {
 
     expect(Array.isArray(episodes)).toBe(true);
     expect(episodes.length).toBeGreaterThan(0);
-    episodes.forEach((episode) => assertEpisodeProperties(episode));
+    episodes.forEach((episode) => {
+      assertEpisodeProperties(episode);
+    });
   });
 
   it("should handle missing elements in the XML feed gracefully", async () => {
@@ -267,7 +280,9 @@ describe("podcastXmlParser", () => {
 
     expect(Array.isArray(episodes)).toBe(true);
     expect(episodes.length).toBe(1);
-    episodes.forEach((episode) => assertEpisodeProperties(episode));
+    episodes.forEach((episode) => {
+      assertEpisodeProperties(episode);
+    });
   });
 
   it("should handle missing enclosure element gracefully", async () => {
@@ -285,7 +300,9 @@ describe("podcastXmlParser", () => {
 
     expect(Array.isArray(episodes)).toBe(true);
     expect(episodes.length).toBe(1);
-    episodes.forEach((episode) => assertEpisodeProperties(episode));
+    episodes.forEach((episode) => {
+      assertEpisodeProperties(episode);
+    });
   });
 
   it("should load and parse a local XML file", async () => {
@@ -294,23 +311,25 @@ describe("podcastXmlParser", () => {
     const { podcast, episodes } = await podcastXmlParser(xmlData);
 
     assertPodcastProperties(podcast);
-    episodes.forEach((episode) => assertEpisodeProperties(episode));
+    episodes.forEach((episode) => {
+      assertEpisodeProperties(episode);
+    });
   });
 
-  it('should throw an error if fetch fails', async () => {
-    const url = new URL('hxxps://example.com/podcast.xml');
-    await expect(podcastXmlParser(url)).rejects.toThrow('Error fetching from feed: ' + url.href);
+  it("should throw an error if fetch fails", async () => {
+    const url = new URL("hxxps://example.com/podcast.xml");
+    await expect(podcastXmlParser(url)).rejects.toThrow("Error fetching from feed: " + url.href);
   });
 
-  it('should have an empty feedUrl when xmlSource is a string and XML lacks <atom:link>', async () => {
-    const xmlSource = 'not_a_url_but_a_string';
+  it("should have an empty feedUrl when xmlSource is a string and XML lacks <atom:link>", async () => {
+    const xmlSource = "not_a_url_but_a_string";
     const { podcast } = await podcastXmlParser(xmlSource);
 
-    expect(podcast.feedUrl).toBe('');
+    expect(podcast.feedUrl).toBe("");
     assertPodcastProperties(podcast);
   });
 
-  it('should fetch feedUrl from <atom:link> tag when xmlSource is a string', async () => {
+  it("should fetch feedUrl from <atom:link> tag when xmlSource is a string", async () => {
     const xmlSource = `
       <channel>
         <atom:link href="https://example.com/rss_feed.xml" rel="self" type="application/rss+xml" />
@@ -318,25 +337,27 @@ describe("podcastXmlParser", () => {
     `;
 
     const { podcast } = await podcastXmlParser(xmlSource);
-    expect(podcast.feedUrl).toBe('https://example.com/rss_feed.xml');
+    expect(podcast.feedUrl).toBe("https://example.com/rss_feed.xml");
     assertPodcastProperties(podcast);
   });
 
-  it('should return correct itunes data', async () => {
+  it("should return correct itunes data", async () => {
     const { podcast, episodes } = await podcastXmlParser(1559139153);
 
-    expect(podcast.feedUrl).toBe('https://feeds.megaphone.fm/climbinggold');
+    expect(podcast.feedUrl).toBe("https://feeds.megaphone.fm/climbinggold");
     expect(podcast.title).toBe("Climbing Gold");
-    expect(episodes[episodes.length  - 1].title).toBe("Coming Soon");
+    expect(episodes[episodes.length - 1].title).toBe("Coming Soon");
     assertPodcastProperties(podcast);
-    episodes.forEach((episode) => assertEpisodeProperties(episode));
+    episodes.forEach((episode) => {
+      assertEpisodeProperties(episode);
+    });
   });
 
-  it('should throw error using invalid iTunes ID', async () => {
+  it("should throw error using invalid iTunes ID", async () => {
     await expect(podcastXmlParser(0)).rejects.toThrow();
   });
 
-  it('should throw error using invalid input type', async () => {
+  it("should throw error using invalid input type", async () => {
     await expect(podcastXmlParser({} as any)).rejects.toThrow();
   });
 
@@ -348,31 +369,35 @@ describe("podcastXmlParser", () => {
     expect(podcast.title).toBe("My Test Podcast");
     expect(episodes[0].title).toBe("Episode 2 Title");
     assertPodcastProperties(podcast);
-    episodes.forEach((episode) => assertEpisodeProperties(episode));
+    episodes.forEach((episode) => {
+      assertEpisodeProperties(episode);
+    });
   });
 
   it("should return correct episodes using `requestSize`", async () => {
-    const { itunes, podcast, episodes } = await podcastXmlParser(1559139153, { requestSize: 50000 });   
+    const { itunes, podcast, episodes } = await podcastXmlParser(1559139153, { requestSize: 50000 });
 
     expect(episodes.length).toBeGreaterThanOrEqual(1);
     expect(episodes.length).toBeLessThan(itunes.trackCount);
     assertPodcastProperties(podcast);
-    episodes.forEach((episode) => assertEpisodeProperties(episode));
+    episodes.forEach((episode) => {
+      assertEpisodeProperties(episode);
+    });
   });
 
-  it('should fetch and integrate iTunes data when config.itunes is true', async () => {
-    const url = new URL('https://feeds.simplecast.com/dHoohVNH');
+  it("should fetch and integrate iTunes data when config.itunes is true", async () => {
+    const url = new URL("https://feeds.simplecast.com/dHoohVNH");
     const { itunes } = await podcastXmlParser(url, { itunes: true });
 
     expect(itunes).toBeDefined();
-    expect(itunes.feedUrl).toBe('https://feeds.simplecast.com/dHoohVNH');
+    expect(itunes.feedUrl).toBe("https://feeds.simplecast.com/dHoohVNH");
   });
 
   // NOTE: To run these tests, ensure that you set the environment variable FEED_URLS to a comma-separated list
   // of URLs of the XML feeds that you want to test. You can create an .env file to do this.
   const { FEED_URLS = "" } = process.env;
 
-  if (FEED_URLS) {
+  if (FEED_URLS !== "") {
     const FEEDS = FEED_URLS.split(",");
 
     FEEDS.forEach((FEED_URL) => {
@@ -381,11 +406,13 @@ describe("podcastXmlParser", () => {
 
         expect(podcast.feedUrl).toBe(FEED_URL);
         assertPodcastProperties(podcast);
-        episodes.forEach((episode) => assertEpisodeProperties(episode));
+        episodes.forEach((episode) => {
+          assertEpisodeProperties(episode);
+        });
       });
     });
 
-    it('return itunes when config.itunes is set to true', async () => {
+    it("return itunes when config.itunes is set to true", async () => {
       const { podcast, itunes } = await podcastXmlParser(new URL(FEEDS[0]), { itunes: true });
 
       expect(podcast.feedUrl).toBe(FEEDS[0]);
