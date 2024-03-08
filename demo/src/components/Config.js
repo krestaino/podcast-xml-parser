@@ -2,9 +2,9 @@ import React from "react";
 
 export default function Config({ config, setConfig }) {
   return (
-    <div className="ml-4 flex items-center font-mono">
+    <div className="lg:ml-4 flex flex-col lg:flex-row items-start lg:items-center font-mono">
       <span>config = {"{"}</span>
-      <div className="ml-2 flex items-center">
+      <div className="ml-4 lg:ml-2 flex items-center mt-1 lg:mt-0">
         <label className="inline-block hover:cursor-pointer" htmlFor="itunes">
           itunes:
         </label>
@@ -17,11 +17,10 @@ export default function Config({ config, setConfig }) {
           id="itunes"
           onChange={() => setConfig({ ...config, itunes: !config.itunes })}
         />
+        <span className="ml-2">{","}</span>
       </div>
 
-      <span className="ml-2">{","}</span>
-
-      <div className="ml-2 flex items-center">
+      <div className="ml-4 lg:ml-2 flex items-center mt-1 lg:mt-0">
         <label className="inline-block hover:cursor-pointer" htmlFor="start">
           start:
         </label>
@@ -32,11 +31,10 @@ export default function Config({ config, setConfig }) {
           onChange={(event) => setConfig({ ...config, start: Number(event.target.value) })}
           value={config.start}
         />
+        <span className="ml-2">{","}</span>
       </div>
 
-      <span className="ml-2">{","}</span>
-
-      <div className="ml-2 flex items-center">
+      <div className="ml-4 lg:ml-2 flex items-center mt-1 lg:mt-0">
         <label className="inline-block hover:cursor-pointer" htmlFor="limit">
           limit:
         </label>
@@ -47,11 +45,10 @@ export default function Config({ config, setConfig }) {
           onChange={(event) => setConfig({ ...config, limit: Number(event.target.value) })}
           value={config.limit}
         />
+        <span className="ml-2">{","}</span>
       </div>
 
-      <span className="ml-2">{","}</span>
-
-      <div className="ml-2 flex items-center">
+      <div className="ml-4 lg:ml-2 flex items-center mt-1 lg:mt-0">
         <label className="inline-block hover:cursor-pointer" htmlFor="requestSize">
           requestSize:
         </label>
@@ -64,7 +61,7 @@ export default function Config({ config, setConfig }) {
         />
       </div>
 
-      <span className="ml-2">{"}"}</span>
+      <span className="lg:ml-2">{"}"}</span>
     </div>
   );
 }

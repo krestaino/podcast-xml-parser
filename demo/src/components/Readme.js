@@ -42,49 +42,49 @@ export default function Readme() {
   }, []);
 
   return (
-    <section className="mt-4">
-      <div className="prose prose-neutral prose-code:bg-neutral-700 prose-code:rounded prose-code:p-1 prose-code:before:content-none prose-code:after:content-none dark:prose-invert max-w-5xl mx-auto p-4 border rounded-lg border-neutral-600 mb-8">
-        <div className="flex mb-4">
+    <section className="sm:mt-4 sm:px-4">
+      <div className="prose prose-neutral prose-code:bg-neutral-700 prose-code:rounded prose-code:p-1 prose-code:before:content-none prose-code:after:content-none dark:prose-invert max-w-5xl mx-auto p-4 sm:border rounded-lg border-neutral-600 mb-8">
+        <div className="flex flex-wrap mb-4 -m-1">
           <a href="https://github.com/krestaino/podcast-xml-parser">
             <img
               alt="GitHub Repo"
               src="https://img.shields.io/github/package-json/v/krestaino/podcast-xml-parser/main?label=GitHub"
-              className="m-0"
+              className="m-1"
             />
           </a>
           <a href="https://www.npmjs.com/package/podcast-xml-parser">
             <img
               alt="NPM Package"
               src="https://img.shields.io/npm/v/podcast-xml-parser?color=red"
-              className="m-0 ml-2"
+              className="m-1"
             />
           </a>
           <a href="https://raw.githubusercontent.com/krestaino/podcast-xml-parser/main/LICENSE.md">
             <img
               alt="MIT License"
               src="https://img.shields.io/github/license/krestaino/podcast-xml-parser.svg"
-              className="m-0 ml-2"
+              className="m-1"
             />
           </a>
           <a href="https://github.com/krestaino/podcast-xml-parser/actions/workflows/build.yml">
             <img
               alt="Build"
               src="https://img.shields.io/github/actions/workflow/status/krestaino/podcast-xml-parser/build.yml"
-              className="m-0 ml-2"
+              className="m-1"
             />
           </a>
           <a href="https://codecov.io/github/krestaino/podcast-xml-parser">
             <img
               alt="Codecov"
               src="https://codecov.io/github/krestaino/podcast-xml-parser/graph/badge.svg?token=IS0T58N4FQ"
-              className="m-0 ml-2"
+              className="m-1"
             />
           </a>
           <a href="https://podcast-xml-parser.kmr.io/">
             <img
               alt="Live Demo"
               src="https://img.shields.io/badge/demo-live-blueviolet"
-              className="m-0 ml-2"
+              className="m-1"
             />
           </a>
         </div>

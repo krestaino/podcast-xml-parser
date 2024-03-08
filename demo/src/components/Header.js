@@ -88,20 +88,22 @@ export default function Header({ config, setConfig, setLoading, setError, setPod
             placeholder="Enter Podcast XML URL, iTunes ID, or an XML string"
             value={source}
           />
-          <div className="mt-4 flex items-center">
-            <button className="bg-neutral-200 text-neutral-900 p-2 rounded" type="submit">
-              Parse
-            </button>
+          <div className="mt-4 flex flex-col lg:flex-row items-start lg:items-center">
+            <div className="flex order-1 lg:order-none w-full lg:w-auto mt-4 lg:mt-0">
+              <button className="bg-neutral-200 text-neutral-900 p-2 rounded flex-1" type="submit">
+                Parse
+              </button>
 
-            <button
-              onClick={(event) => {
-                event.preventDefault();
-                fetchPodcast(new URL(getRandomFeed()));
-              }}
-              className="bg-neutral-700 p-2 rounded ml-4"
-            >
-              Random
-            </button>
+              <button
+                onClick={(event) => {
+                  event.preventDefault();
+                  fetchPodcast(new URL(getRandomFeed()));
+                }}
+                className="bg-neutral-700 p-2 rounded ml-4 flex-1"
+              >
+                Random
+              </button>
+            </div>
 
             <Config config={config} setConfig={setConfig} />
           </div>
