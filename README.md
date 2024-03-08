@@ -1,3 +1,14 @@
+<!-- HIDE_SECTION_START -->
+
+[![GitHub Repo](https://img.shields.io/github/package-json/v/krestaino/podcast-xml-parser/main?label=GitHub)](https://github.com/krestaino/podcast-xml-parser)
+[![NPM Package](https://img.shields.io/npm/v/podcast-xml-parser?color=red)](https://www.npmjs.com/package/podcast-xml-parser)
+[![MIT License](https://img.shields.io/github/license/krestaino/podcast-xml-parser.svg)](https://raw.githubusercontent.com/krestaino/podcast-xml-parser/main/LICENSE.md)
+[![Build](https://img.shields.io/github/actions/workflow/status/krestaino/podcast-xml-parser/build.yml)](https://github.com/krestaino/podcast-xml-parser/actions/workflows/build.yml)
+[![Codecov](https://codecov.io/github/krestaino/podcast-xml-parser/graph/badge.svg?token=IS0T58N4FQ)](https://codecov.io/github/krestaino/podcast-xml-parser)
+[![Live Demo](https://img.shields.io/badge/demo-live-blueviolet)](https://podcast-xml-parser.kmr.io/)
+
+<!-- HIDE_SECTION_END -->
+
 # podcast-xml-parser
 
 Parse podcast feeds in browsers, React Native, or Node.js environments.
