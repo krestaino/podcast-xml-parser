@@ -115,7 +115,7 @@ function fetchXmlFromUrl(url, config) {
                 case 2: return [2 /*return*/, _a.apply(void 0, [_b.sent()])];
                 case 3:
                     error_1 = _b.sent();
-                    throw Error("Error fetching from feed: " + url);
+                    throw new Error("Error fetching from feed: " + url);
                 case 4: return [2 /*return*/];
             }
         });

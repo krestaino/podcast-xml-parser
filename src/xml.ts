@@ -63,7 +63,7 @@ export async function fetchXmlFromUrl(url: string, config: Config): Promise<stri
     const response = await fetch(url, { headers });
     return trimXmlFeed(await response.text());
   } catch (error) {
-    throw Error("Error fetching from feed: " + url);
+    throw new Error("Error fetching from feed: " + url);
   }
 }
 
