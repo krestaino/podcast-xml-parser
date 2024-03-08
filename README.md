@@ -13,12 +13,12 @@
 
 Parse podcast feeds in browsers, React Native, or Node.js environments.
 
-- **Simple Parsing:** Parse XML podcast feeds into JavaScript objects.
-- **Versatile Input:** Parse from URLs, iTunes IDs, or directly from XML strings.
-- **Cross-platform:** Designed to work in browsers, React Native, and Node.js.
-- **Graceful Handling:** In cases of missing elements in the XML feed, the parser returns empty strings instead of throwing errors.
-- **Support for iTunes:** Additional details can be fetched from iTunes.
-- **Partial Feed Support:** Allows fetching and parsing a specific byte range of a feed.
+- **📜 Simple Parsing:** Parse XML podcast feeds into JavaScript objects.
+- **🔗 Versatile Input:** Parse from URLs, iTunes IDs, or directly from XML strings.
+- **💻 Cross-platform:** Designed to work in browsers, React Native, and Node.js.
+- **🚫 Graceful Handling:** In cases of missing elements in the XML feed, the parser returns empty strings instead of throwing errors.
+- **🎧 Support for iTunes:** Additional details can be fetched from iTunes.
+- **🔢 Partial Feed Support:** Allows fetching and parsing a specific byte range of a feed.
 
 <!-- HIDE_SECTION_START -->
 
