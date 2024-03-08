@@ -55,11 +55,20 @@ export default function Readme() {
               className="m-0 ml-2"
             />
           </a>
-          <img
-            alt="MIT License"
-            src="https://img.shields.io/github/license/krestaino/podcast-xml-parser.svg"
-            className="m-0 ml-2"
-          />
+          <a href="https://raw.githubusercontent.com/krestaino/podcast-xml-parser/main/LICENSE.md">
+            <img
+              alt="MIT License"
+              src="https://img.shields.io/github/license/krestaino/podcast-xml-parser.svg"
+              className="m-0 ml-2"
+            />
+          </a>
+          <a href="https://codecov.io/github/krestaino/podcast-xml-parser" > 
+            <img
+              alt="Codecov"
+              src="https://codecov.io/github/krestaino/podcast-xml-parser/graph/badge.svg?token=IS0T58N4FQ"
+              className="m-0 ml-2"
+            /> 
+          </a>
         </div>
         <ReactMarkdown
           children={preprocessReadmeContent(readmeContent)}
