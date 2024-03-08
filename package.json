@@ -1,7 +1,8 @@
 {
   "name": "podcast-xml-parser",
   "main": "dist/index.js",
-  "version": "2.3.2",
+  "version": "2.3.3",
+  "description": "🎙 Parse podcast feeds in browsers, React Native, or Node.js environments.",
   "keywords": [
     "podcast",
     "xml",
