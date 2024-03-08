@@ -59,18 +59,9 @@ export async function fetchXmlFromUrl(url: string, config: Config): Promise<stri
     if (typeof config.requestSize === "number" && config.requestSize > 0) {
       headers.Range = `bytes=0-${config.requestSize}`;
     }
+
     const response = await fetch(url, { headers });
-    let feed = await response.text();
-    feed = trimXmlFeed(feed);
-
-    // Find the last complete <item>...</item> tag
-    const lastCompleteItem = feed.lastIndexOf("</item>");
-    if (lastCompleteItem !== -1) {
-      // Cut off anything after the last complete item
-      feed = feed.substring(0, lastCompleteItem + "</item>".length);
-    }
-
-    return feed + "</channel></rss>"; // Close the RSS feed to parse data
+    return trimXmlFeed(await response.text());
   } catch (error) {
     throw Error("Error fetching from feed: " + url);
   }
@@ -90,28 +81,21 @@ export async function retrieveXmlFromSource(
 ): Promise<{ itunes?: any; xmlString: string }> {
   if (source instanceof URL) {
     // Fetch the XML string from a URL
-    const xmlString = await fetchXmlFromUrl(source.toString(), config);
-
-    return { xmlString };
+    return { xmlString: await fetchXmlFromUrl(source.toString(), config) };
   } else if (typeof source === "number") {
     // Fetch the iTunes information for the provided ID
     const itunes = await itunesLookup(source);
 
-    if (typeof itunes?.feedUrl === "string") {
-      // Fetch the XML string from the iTunes feed URL
-      const xmlString = await fetchXmlFromUrl(itunes.feedUrl, config);
-      return { itunes, xmlString };
+    if (itunes?.feedUrl == null || itunes.feedUrl === "") {
+      throw new Error("Invalid iTunes ID or unable to fetch associated feed URL.");
     }
 
-    // If iTunes ID is invalid or unable to fetch associated feed URL, throw an error
-    throw new Error("Invalid iTunes ID or unable to fetch associated feed URL.");
-  } else if (typeof source === "string") {
-    // If source is already an XML string, return it directly
-    return { xmlString: source };
-  } else {
-    // If the source type is none of the above, throw an error
-    throw new Error("Invalid source type. Please provide a valid URL, iTunes ID, or XML string.");
+    // Fetch the XML string from the iTunes feed URL
+    return { itunes, xmlString: await fetchXmlFromUrl(itunes.feedUrl, config) };
   }
+
+  // If source is already an XML string, return it directly
+  return { xmlString: source };
 }
 
 /**

@@ -95,11 +95,11 @@ exports.preprocessXml = preprocessXml;
  */
 function fetchXmlFromUrl(url, config) {
     return __awaiter(this, void 0, void 0, function () {
-        var headers, response, feed, lastCompleteItem, error_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
+        var headers, response, _a, error_1;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
                 case 0:
-                    _a.trys.push([0, 3, , 4]);
+                    _b.trys.push([0, 3, , 4]);
                     headers = config.requestHeaders != null ? __assign({}, config.requestHeaders) : {};
                     if (headers["User-Agent"] === undefined || headers["User-Agent"] === "") {
                         headers["User-Agent"] = constants_1.USER_AGENT;
@@ -109,19 +109,12 @@ function fetchXmlFromUrl(url, config) {
                     }
                     return [4 /*yield*/, fetch(url, { headers: headers })];
                 case 1:
-                    response = _a.sent();
+                    response = _b.sent();
+                    _a = trimXmlFeed;
                     return [4 /*yield*/, response.text()];
-                case 2:
-                    feed = _a.sent();
-                    feed = trimXmlFeed(feed);
-                    lastCompleteItem = feed.lastIndexOf("</item>");
-                    if (lastCompleteItem !== -1) {
-                        // Cut off anything after the last complete item
-                        feed = feed.substring(0, lastCompleteItem + "</item>".length);
-                    }
-                    return [2 /*return*/, feed + "</channel></rss>"]; // Close the RSS feed to parse data
+                case 2: return [2 /*return*/, _a.apply(void 0, [_b.sent()])];
                 case 3:
-                    error_1 = _a.sent();
+                    error_1 = _b.sent();
                     throw Error("Error fetching from feed: " + url);
                 case 4: return [2 /*return*/];
             }
@@ -139,39 +132,33 @@ exports.fetchXmlFromUrl = fetchXmlFromUrl;
  */
 function retrieveXmlFromSource(source, config) {
     return __awaiter(this, void 0, void 0, function () {
-        var xmlString, itunes, xmlString;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
+        var itunes;
+        var _a, _b;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
                 case 0:
                     if (!(source instanceof URL)) return [3 /*break*/, 2];
+                    _a = {};
                     return [4 /*yield*/, fetchXmlFromUrl(source.toString(), config)];
-                case 1:
-                    xmlString = _a.sent();
-                    return [2 /*return*/, { xmlString: xmlString }];
+                case 1: 
+                // Fetch the XML string from a URL
+                return [2 /*return*/, (_a.xmlString = _c.sent(), _a)];
                 case 2:
-                    if (!(typeof source === "number")) return [3 /*break*/, 6];
+                    if (!(typeof source === "number")) return [3 /*break*/, 5];
                     return [4 /*yield*/, (0, itunes_1.itunesLookup)(source)];
                 case 3:
-                    itunes = _a.sent();
-                    if (!(typeof (itunes === null || itunes === void 0 ? void 0 : itunes.feedUrl) === "string")) return [3 /*break*/, 5];
+                    itunes = _c.sent();
+                    if ((itunes === null || itunes === void 0 ? void 0 : itunes.feedUrl) == null || itunes.feedUrl === "") {
+                        throw new Error("Invalid iTunes ID or unable to fetch associated feed URL.");
+                    }
+                    _b = { itunes: itunes };
                     return [4 /*yield*/, fetchXmlFromUrl(itunes.feedUrl, config)];
-                case 4:
-                    xmlString = _a.sent();
-                    return [2 /*return*/, { itunes: itunes, xmlString: xmlString }];
+                case 4: 
+                // Fetch the XML string from the iTunes feed URL
+                return [2 /*return*/, (_b.xmlString = _c.sent(), _b)];
                 case 5: 
-                // If iTunes ID is invalid or unable to fetch associated feed URL, throw an error
-                throw new Error("Invalid iTunes ID or unable to fetch associated feed URL.");
-                case 6:
-                    if (typeof source === "string") {
-                        // If source is already an XML string, return it directly
-                        return [2 /*return*/, { xmlString: source }];
-                    }
-                    else {
-                        // If the source type is none of the above, throw an error
-                        throw new Error("Invalid source type. Please provide a valid URL, iTunes ID, or XML string.");
-                    }
-                    _a.label = 7;
-                case 7: return [2 /*return*/];
+                // If source is already an XML string, return it directly
+                return [2 /*return*/, { xmlString: source }];
             }
         });
     });

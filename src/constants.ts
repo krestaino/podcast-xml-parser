@@ -1,1 +1,1 @@
-export const USER_AGENT = "podcast-xml-parser/2.3.1";
+export const USER_AGENT = "podcast-xml-parser/2.3.2";
