@@ -20,18 +20,22 @@ export default function Readme() {
   function preprocessReadmeContent(content) {
     const hideSectionStartTag = "<!-- HIDE_SECTION_START -->";
     const hideSectionEndTag = "<!-- HIDE_SECTION_END -->";
-
-    const hiddenSectionStart = content.indexOf(hideSectionStartTag);
-    const hiddenSectionEnd = content.indexOf(hideSectionEndTag);
-
-    if (hiddenSectionStart !== -1 && hiddenSectionEnd !== -1) {
-      const beforeHidden = content.substring(0, hiddenSectionStart);
-      const afterHidden = content.substring(hiddenSectionEnd + hideSectionEndTag.length);
-      return beforeHidden + afterHidden;
+  
+    let updatedContent = content;
+    let hiddenSectionStart = updatedContent.indexOf(hideSectionStartTag);
+    let hiddenSectionEnd = updatedContent.indexOf(hideSectionEndTag);
+  
+    while (hiddenSectionStart !== -1 && hiddenSectionEnd !== -1) {
+      const beforeHidden = updatedContent.substring(0, hiddenSectionStart);
+      const afterHidden = updatedContent.substring(hiddenSectionEnd + hideSectionEndTag.length);
+      updatedContent = beforeHidden + afterHidden;
+  
+      hiddenSectionStart = updatedContent.indexOf(hideSectionStartTag);
+      hiddenSectionEnd = updatedContent.indexOf(hideSectionEndTag);
     }
-
-    return content;
-  }
+  
+    return updatedContent;
+  }  
 
   useEffect(() => {
     fetchReadme();
@@ -62,12 +66,26 @@ export default function Readme() {
               className="m-0 ml-2"
             />
           </a>
-          <a href="https://codecov.io/github/krestaino/podcast-xml-parser" > 
+          <a href="https://github.com/krestaino/podcast-xml-parser/actions/workflows/build.yml">
+            <img
+              alt="Build"
+              src="https://img.shields.io/github/actions/workflow/status/krestaino/podcast-xml-parser/build.yml"
+              className="m-0 ml-2"
+            />
+          </a>
+          <a href="https://codecov.io/github/krestaino/podcast-xml-parser">
             <img
               alt="Codecov"
               src="https://codecov.io/github/krestaino/podcast-xml-parser/graph/badge.svg?token=IS0T58N4FQ"
               className="m-0 ml-2"
-            /> 
+            />
+          </a>
+          <a href="https://podcast-xml-parser.kmr.io/">
+            <img
+              alt="Live Demo"
+              src="https://img.shields.io/badge/demo-live-blueviolet"
+              className="m-0 ml-2"
+            />
           </a>
         </div>
         <ReactMarkdown

@@ -3156,9 +3156,9 @@ caniuse-api@^3.0.0:
     lodash.uniq "^4.5.0"
 
 caniuse-lite@^1.0.0, caniuse-lite@^1.0.30001464, caniuse-lite@^1.0.30001517:
-  version "1.0.30001520"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001520.tgz#62e2b7a1c7b35269594cf296a80bdf8cb9565006"
-  integrity sha512-tahF5O9EiiTzwTUqAeFjIZbn4Dnqxzz7ktrgGlMYNLH43Ul26IgTMH/zvL3DG0lZxBYnlT04axvInszUsZULdA==
+  version "1.0.30001596"
+  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001596.tgz"
+  integrity sha512-zpkZ+kEr6We7w63ORkoJ2pOfBwBkY/bJrG/UZ90qNb45Isblu8wzDgevEOrRL1r9dWayHjYiiyCMEXPn4DweGQ==
 
 case-sensitive-paths-webpack-plugin@^2.4.0:
   version "2.4.0"
@@ -7327,10 +7327,10 @@ pkg-up@^3.1.0:
   dependencies:
     find-up "^3.0.0"
 
-podcast-xml-parser@^2.3.0:
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/podcast-xml-parser/-/podcast-xml-parser-2.3.0.tgz#c47562737d5bb4cf9190a09fb7f5d73e52a034f1"
-  integrity sha512-hcG+NwNKYvGmav0iz83jSs9c7taVZATx9+sUoaeYHbeqNV+mNe7XE4GGBfXnPd1TOhWitjs05LRywmizG0aY4A==
+podcast-xml-parser@^2.3.1:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/podcast-xml-parser/-/podcast-xml-parser-2.3.1.tgz#845d2bc529ff7da7d75c672dc8aa81fa5e48c2c4"
+  integrity sha512-w7Airxeh+Vd7FPH7FvdncaTHirkrNBp3c4ww9gw5Pj6rSFZ4X0NNJY+FNA5oC+tnLkJn72azaUhhuBYE9cRuoA==
   dependencies:
     xmldom "^0.6.0"
 
