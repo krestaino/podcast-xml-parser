@@ -1,4 +1,7 @@
 layout {
+    pane size=1 borderless=true {
+        plugin location="zellij:tab-bar"
+    }
     pane split_direction="vertical" {
         pane split_direction="horizontal" {
             pane
@@ -9,6 +12,10 @@ layout {
         pane split_direction="horizontal" {
             pane {
                 command "fish"
+                args "-c" "nvm use; yarn lint:fix"
+            }
+            pane {
+                command "fish"
                 args "-c" "nvm use; yarn build"
             }
             pane {
@@ -16,5 +23,8 @@ layout {
                 args "-c" "nvm use; yarn test:coverage"
             }
         }
+    }
+    pane size=2 borderless=true {
+        plugin location="zellij:status-bar"
     }
 }
