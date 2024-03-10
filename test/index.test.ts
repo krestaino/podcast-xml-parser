@@ -1,10 +1,9 @@
-import "dotenv/config";
 import fs from "fs";
 
 import podcastXmlParser, { type Podcast, type Episode } from "../src";
 
 // Helper function to assert properties of a Podcast object
-const assertPodcastProperties = (podcast: Podcast): void => {
+export const assertPodcastProperties = (podcast: Podcast): void => {
   expect(podcast.copyright).toBeDefined();
   expect(podcast.contentEncoded).toBeDefined();
   expect(podcast.description).toBeDefined();
@@ -20,7 +19,7 @@ const assertPodcastProperties = (podcast: Podcast): void => {
 };
 
 // Helper function to assert properties of an Episode object
-const assertEpisodeProperties = (episode: Episode): void => {
+export const assertEpisodeProperties = (episode: Episode): void => {
   expect(typeof episode.author).toBe("string");
   expect(typeof episode.contentEncoded).toBe("string");
   expect(typeof episode.description).toBe("string");
@@ -393,30 +392,10 @@ describe("podcastXmlParser", () => {
     expect(itunes.feedUrl).toBe("https://feeds.simplecast.com/dHoohVNH");
   });
 
-  // NOTE: To run these tests, ensure that you set the environment variable FEED_URLS to a comma-separated list
-  // of URLs of the XML feeds that you want to test. You can create an .env file to do this.
-  const { FEED_URLS = "" } = process.env;
+  it("return itunes when config.itunes is set to true", async () => {
+    const { podcast, itunes } = await podcastXmlParser(new URL("https://feeds.simplecast.com/dHoohVNH"), { itunes: true });
 
-  if (FEED_URLS !== "") {
-    const FEEDS = FEED_URLS.split(",");
-
-    FEEDS.forEach((FEED_URL) => {
-      it(`should parse the XML feed of URL: ${FEED_URL}`, async () => {
-        const { podcast, episodes } = await podcastXmlParser(new URL(FEED_URL));
-
-        expect(podcast.feedUrl).toBe(FEED_URL);
-        assertPodcastProperties(podcast);
-        episodes.forEach((episode) => {
-          assertEpisodeProperties(episode);
-        });
-      });
-    });
-
-    it("return itunes when config.itunes is set to true", async () => {
-      const { podcast, itunes } = await podcastXmlParser(new URL(FEEDS[0]), { itunes: true });
-
-      expect(podcast.feedUrl).toBe(FEEDS[0]);
-      expect(typeof itunes).toBe("object");
-    });
-  }
+    expect(podcast.feedUrl).toBe("https://feeds.simplecast.com/dHoohVNH");
+    expect(typeof itunes).toBe("object");
+  });
 });
