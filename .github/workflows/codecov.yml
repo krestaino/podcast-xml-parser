@@ -19,6 +19,11 @@ jobs:
         with:
           node-version: '18'
 
+      - name: 'Create env file'
+        run: |
+          touch .env
+          echo FEED_URLS=${{ secrets.FEED_URLS }} >> .env
+
       - name: Install dependencies
         run: npm install
 
