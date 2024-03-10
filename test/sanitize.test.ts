@@ -27,4 +27,8 @@ describe("getDuration function", () => {
   it("converts numerical input to seconds", () => {
     expect(getDuration(123456)).toBe(123456);
   });
+
+  it("returns 0 for empty time string", () => {
+    expect(getDuration("")).toBe(0);
+  });
 });

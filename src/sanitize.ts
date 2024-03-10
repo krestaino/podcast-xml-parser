@@ -11,6 +11,7 @@
  * getDuration("1:20:50");  // Returns 4850
  * getDuration("123456");   // Returns 123456
  * getDuration("12:3456");  // Returns 0
+ * getDuration("");         // Returns 0
  */
 export function getDuration(time: unknown): number {
   if (typeof time !== "string" && typeof time !== "number") {
@@ -18,6 +19,10 @@ export function getDuration(time: unknown): number {
   }
 
   if (typeof time === "string") {
+    if (time === "") {
+      return 0;
+    }
+
     // Check if the time string is in the format of HH:MM:SS or MM:SS
     const timeRegex = /^(?:(\d{1,2}):)?(\d{1,2}):(\d{1,2})$/;
     const match = time.match(timeRegex);
