@@ -7327,10 +7327,10 @@ pkg-up@^3.1.0:
   dependencies:
     find-up "^3.0.0"
 
-podcast-xml-parser@^2.4.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/podcast-xml-parser/-/podcast-xml-parser-2.4.0.tgz#d44183c6038d67647c85c61bc3b71d57d7a4e2af"
-  integrity sha512-MRXmpPZHbt0tmNWDobhdA2/mnkcAlwCzEHx1FAPPz7X5oHGXA6m78utXfI6TpNoLhnMZD9I7GJ7b/FlA2MHcAQ==
+podcast-xml-parser@^2.4.1:
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/podcast-xml-parser/-/podcast-xml-parser-2.4.1.tgz#bcebd918f9ec8bf197832e126bba702fb696cb67"
+  integrity sha512-T8fPCO64kse2FqMd7cDQPQKSGvx32AWsB+ARJjJedN1iVGjXHWS32U+agneEDgUcashCX/uRPkd2lAv4J7JTHg==
   dependencies:
     xmldom "^0.6.0"
 
