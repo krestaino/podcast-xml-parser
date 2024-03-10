@@ -1,0 +1,20 @@
+layout {
+    pane split_direction="vertical" {
+        pane split_direction="horizontal" {
+            pane
+            pane {
+                cwd "src"
+            }
+        }
+        pane split_direction="horizontal" {
+            pane {
+                command "fish"
+                args "-c" "nvm use; yarn build"
+            }
+            pane {
+                command "fish"
+                args "-c" "nvm use; yarn test:coverage"
+            }
+        }
+    }
+}
