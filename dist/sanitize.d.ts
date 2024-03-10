@@ -11,5 +11,6 @@
  * getDuration("1:20:50");  // Returns 4850
  * getDuration("123456");   // Returns 123456
  * getDuration("12:3456");  // Returns 0
+ * getDuration("");         // Returns 0
  */
 export declare function getDuration(time: unknown): number;
