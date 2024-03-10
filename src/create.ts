@@ -17,16 +17,21 @@ function getText(element: Element, tagName: string): string {
  * Constructs a Podcast object based on the provided XML item element.
  *
  * @param document - The XML element that represents a podcast.
+ * @param source - XML content, a URL pointing to the podcast feed, or an iTunes collectionId.
  * @returns The created Podcast object with parsed values.
  */
-export function createPodcast(document: Element): Podcast {
+export function createPodcast(document: Element, source: string | URL | number): Podcast {
   const imageElem = document.getElementsByTagName("image")[0];
+  let feedUrl = document.getElementsByTagName("atom:link")[0]?.getAttribute("href") ?? "";
+  if (feedUrl === "" && source instanceof URL) {
+    feedUrl = source.toString();
+  }
 
   return {
     copyright: getText(document, "copyright"),
     contentEncoded: getText(document, "content:encoded"),
     description: getText(document, "description"),
-    feedUrl: document.getElementsByTagName("atom:link")[0]?.getAttribute("href") ?? "",
+    feedUrl,
     image: {
       link: getText(imageElem, "link"),
       title: getText(imageElem, "title"),

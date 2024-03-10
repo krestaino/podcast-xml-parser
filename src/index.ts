@@ -26,7 +26,7 @@ export default async function podcastXmlParser(
   const doc = parse(preprocessedXml);
 
   // Set podcast data
-  const podcast = createPodcast(doc.documentElement);
+  const podcast = createPodcast(doc.documentElement, source);
 
   // Grab episodes from XML
   const episodeElements = Array.from(doc.getElementsByTagName("item"));
