@@ -1,8 +1,8 @@
-import { type Podcast, type Episode, type Config } from "./types";
+import { type Podcast, type Episode, type Itunes, type Config } from "./types";
 import { preprocessXml, retrieveXmlFromSource, parse } from "./xml";
 import { createPodcast, createEpisode } from "./create";
 
-export type { Podcast, Episode, Config };
+export type { Podcast, Episode, Itunes, Config };
 
 /**
  * Parses a podcast's XML feed and returns structured data about the podcast and its episodes.
