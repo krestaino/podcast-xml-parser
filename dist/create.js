@@ -18,16 +18,21 @@ function getText(element, tagName) {
  * Constructs a Podcast object based on the provided XML item element.
  *
  * @param document - The XML element that represents a podcast.
+ * @param source - XML content, a URL pointing to the podcast feed, or an iTunes collectionId.
  * @returns The created Podcast object with parsed values.
  */
-function createPodcast(document) {
+function createPodcast(document, source) {
     var _a, _b, _c, _d, _e, _f;
     var imageElem = document.getElementsByTagName("image")[0];
+    var feedUrl = (_b = (_a = document.getElementsByTagName("atom:link")[0]) === null || _a === void 0 ? void 0 : _a.getAttribute("href")) !== null && _b !== void 0 ? _b : "";
+    if (feedUrl === "" && source instanceof URL) {
+        feedUrl = source.toString();
+    }
     return {
         copyright: getText(document, "copyright"),
         contentEncoded: getText(document, "content:encoded"),
         description: getText(document, "description"),
-        feedUrl: (_b = (_a = document.getElementsByTagName("atom:link")[0]) === null || _a === void 0 ? void 0 : _a.getAttribute("href")) !== null && _b !== void 0 ? _b : "",
+        feedUrl: feedUrl,
         image: {
             link: getText(imageElem, "link"),
             title: getText(imageElem, "title"),
