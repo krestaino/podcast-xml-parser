@@ -79,6 +79,9 @@ function preprocessXml(xmlString, config) {
         ? xmlString.slice(0, config.requestSize)
         : xmlString;
     feed = trimXmlFeed(feed);
+    if (feed.trim() === "" || !feed.trim().startsWith("<")) {
+        throw new Error("Invalid or empty XML feed.");
+    }
     var wrappedString = feed.startsWith("<") ? feed : "<root>".concat(feed, "</root>");
     var doc = parser.parseFromString(wrappedString, "text/xml");
     return new xmldom_1.XMLSerializer().serializeToString(doc);
