@@ -23,13 +23,13 @@ export default async function podcastXmlParser(
   const preprocessedXml = preprocessXml(xmlString, config);
 
   // Parse XML
-  const doc = parse(preprocessedXml);
+  const document = parse(preprocessedXml);
 
   // Set podcast data
-  const podcast = createPodcast(doc.documentElement, source);
+  const podcast = createPodcast(document, source);
 
   // Grab episodes from XML
-  const episodeElements = Array.from(doc.getElementsByTagName("item"));
+  const episodeElements = Array.from(document.getElementsByTagName("item"));
 
   // Optionally paginate episodes using config, otherwise use all episodes
   let { start = 0, limit } = config;

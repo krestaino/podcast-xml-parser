@@ -1,5 +1,6 @@
 import { type Podcast, type Episode } from "./types";
 import { getDuration } from "./sanitize";
+import { removeItemsFromDocument } from "./xml";
 
 /**
  * Extracts the text content from a specified XML element.
@@ -20,39 +21,38 @@ function getText(element: Element, tagName: string): string {
  * @param source - XML content, a URL pointing to the podcast feed, or an iTunes collectionId.
  * @returns The created Podcast object with parsed values.
  */
-export function createPodcast(document: Element, source: string | URL | number): Podcast {
-  const channel = document.getElementsByTagName("channel")[0];
-  const image = channel.getElementsByTagName("image")[0];
-
-  let feedUrl = channel.getElementsByTagName("atom:link")[0]?.getAttribute("href") ?? "";
+export function createPodcast(document: Document, source: string | URL | number): Podcast {
+  const documentElement = removeItemsFromDocument(document).documentElement;
+  const imageElem = documentElement.getElementsByTagName("image")[0];
+  let feedUrl = documentElement.getElementsByTagName("atom:link")[0]?.getAttribute("href") ?? "";
   if (feedUrl === "" && source instanceof URL) {
     feedUrl = source.toString();
   }
 
   return {
-    copyright: getText(channel, "copyright"),
-    contentEncoded: getText(channel, "content:encoded"),
-    description: getText(channel, "description"),
+    copyright: getText(documentElement, "copyright"),
+    contentEncoded: getText(documentElement, "content:encoded"),
+    description: getText(documentElement, "description"),
     feedUrl,
     image: {
-      link: getText(image, "link"),
-      title: getText(image, "title"),
-      url: getText(image, "url"),
+      link: getText(imageElem, "link"),
+      title: getText(imageElem, "title"),
+      url: getText(imageElem, "url"),
     },
-    itunesAuthor: getText(channel, "itunes:author"),
-    itunesCategory: channel.getElementsByTagName("itunes:category")[0]?.getAttribute("text") ?? "",
-    itunesExplicit: getText(channel, "itunes:explicit"),
-    itunesImage: channel.getElementsByTagName("itunes:image")[0]?.getAttribute("href") ?? "",
+    itunesAuthor: getText(documentElement, "itunes:author"),
+    itunesCategory: documentElement.getElementsByTagName("itunes:category")[0]?.getAttribute("text") ?? "",
+    itunesExplicit: getText(documentElement, "itunes:explicit"),
+    itunesImage: documentElement.getElementsByTagName("itunes:image")[0]?.getAttribute("href") ?? "",
     itunesOwner: {
-      email: getText(channel, "itunes:email"),
-      name: getText(channel, "itunes:name"),
+      email: getText(documentElement, "itunes:email"),
+      name: getText(documentElement, "itunes:name"),
     },
-    itunesSubtitle: getText(channel, "itunes:subtitle"),
-    itunesSummary: getText(channel, "itunes:summary"),
-    itunesType: getText(channel, "itunes:type"),
-    language: getText(channel, "language"),
-    link: getText(channel, "link"),
-    title: getText(channel, "title"),
+    itunesSubtitle: getText(documentElement, "itunes:subtitle"),
+    itunesSummary: getText(documentElement, "itunes:summary"),
+    itunesType: getText(documentElement, "itunes:type"),
+    language: getText(documentElement, "language"),
+    link: getText(documentElement, "link"),
+    title: getText(documentElement, "title"),
   };
 }
 

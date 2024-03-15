@@ -1,11 +1,13 @@
 import fetchMock from "jest-fetch-mock";
+import { DOMParser, XMLSerializer } from "xmldom";
 
-import { fetchXmlFromUrl } from "../src/xml";
+import { fetchXmlFromUrl, removeItemsFromDocument } from "../src/xml";
 import { USER_AGENT } from "../src/constants";
 
 fetchMock.enableMocks();
+const parser = new DOMParser();
 
-describe("fetchXmlFromUrl", () => {
+describe("xml.test.ts", () => {
   beforeEach(() => {
     fetchMock.resetMocks();
   });
@@ -81,4 +83,29 @@ describe("fetchXmlFromUrl", () => {
       },
     });
   });
+
+  it('should remove all <item> elements from the document', () => {
+    const xmlString = `
+      <rss>
+        <channel>
+          <title>Test Podcast</title>
+          <item><title>Episode 1</title></item>
+          <item><title>Episode 2</title></item>
+        </channel>
+      </rss>
+    `;
+    const document = parser.parseFromString(xmlString);
+
+    // Check the number of <item> elements before removal
+    expect(document.getElementsByTagName("item").length).toBe(2);
+
+    const modifiedDocument = removeItemsFromDocument(document);
+
+    // Check the number of <item> elements after removal
+    expect(modifiedDocument.getElementsByTagName("item").length).toBe(0);
+
+    const modifiedXmlString = new XMLSerializer().serializeToString(modifiedDocument);
+    expect(modifiedXmlString).not.toContain('<item>');
+    expect(modifiedXmlString).toContain('<title>Test Podcast</title>');
+  });  
 });

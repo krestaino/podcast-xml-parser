@@ -7,6 +7,31 @@ import { USER_AGENT } from "./constants";
 const parser = new DOMParser();
 
 /**
+ * Removes all <item> elements from a cloned copy of the provided XML document.
+ * This function is useful for processing podcast feeds where you want to
+ * separate podcast metadata from individual episode information.
+ *
+ * @param originalDocument - The original XML document from which to remove <item> elements.
+ * @returns A new XML document with all <item> elements removed.
+ */
+export function removeItemsFromDocument(originalDocument: Document): Document {
+  // Clone the original document to avoid modifying it
+  const document = originalDocument.cloneNode(true) as Document;
+
+  // Convert the live NodeList to a static array
+  const items = Array.from(document.getElementsByTagName("item"));
+
+  // Remove each item from the document
+  items.forEach((item) => {
+    if (item.parentNode !== null) {
+      item.parentNode.removeChild(item);
+    }
+  });
+
+  return document;
+}
+
+/**
  * Trims XML feed by cutting off anything after the last complete <item>...</item> tag.
  *
  * @param feed - The XML feed to trim.
