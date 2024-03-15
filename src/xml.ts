@@ -36,6 +36,10 @@ export function preprocessXml(xmlString: string, config: Config): string {
       : xmlString;
   feed = trimXmlFeed(feed);
 
+  if (feed.trim() === "" || !feed.trim().startsWith("<")) {
+    throw new Error("Invalid or empty XML feed.");
+  }
+
   const wrappedString = feed.startsWith("<") ? feed : `<root>${feed}</root>`;
   const doc = parser.parseFromString(wrappedString, "text/xml");
   return new XMLSerializer().serializeToString(doc);

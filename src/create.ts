@@ -21,36 +21,38 @@ function getText(element: Element, tagName: string): string {
  * @returns The created Podcast object with parsed values.
  */
 export function createPodcast(document: Element, source: string | URL | number): Podcast {
-  const imageElem = document.getElementsByTagName("image")[0];
-  let feedUrl = document.getElementsByTagName("atom:link")[0]?.getAttribute("href") ?? "";
+  const channel = document.getElementsByTagName("channel")[0];
+  const image = channel.getElementsByTagName("image")[0];
+
+  let feedUrl = channel.getElementsByTagName("atom:link")[0]?.getAttribute("href") ?? "";
   if (feedUrl === "" && source instanceof URL) {
     feedUrl = source.toString();
   }
 
   return {
-    copyright: getText(document, "copyright"),
-    contentEncoded: getText(document, "content:encoded"),
-    description: getText(document, "description"),
+    copyright: getText(channel, "copyright"),
+    contentEncoded: getText(channel, "content:encoded"),
+    description: getText(channel, "description"),
     feedUrl,
     image: {
-      link: getText(imageElem, "link"),
-      title: getText(imageElem, "title"),
-      url: getText(imageElem, "url"),
+      link: getText(image, "link"),
+      title: getText(image, "title"),
+      url: getText(image, "url"),
     },
-    itunesAuthor: getText(document, "itunes:author"),
-    itunesCategory: document.getElementsByTagName("itunes:category")[0]?.getAttribute("text") ?? "",
-    itunesExplicit: getText(document, "itunes:explicit"),
-    itunesImage: document.getElementsByTagName("itunes:image")[0]?.getAttribute("href") ?? "",
+    itunesAuthor: getText(channel, "itunes:author"),
+    itunesCategory: channel.getElementsByTagName("itunes:category")[0]?.getAttribute("text") ?? "",
+    itunesExplicit: getText(channel, "itunes:explicit"),
+    itunesImage: channel.getElementsByTagName("itunes:image")[0]?.getAttribute("href") ?? "",
     itunesOwner: {
-      email: getText(document, "itunes:email"),
-      name: getText(document, "itunes:name"),
+      email: getText(channel, "itunes:email"),
+      name: getText(channel, "itunes:name"),
     },
-    itunesSubtitle: getText(document, "itunes:subtitle"),
-    itunesSummary: getText(document, "itunes:summary"),
-    itunesType: getText(document, "itunes:type"),
-    language: getText(document, "language"),
-    link: getText(document, "link"),
-    title: getText(document, "title"),
+    itunesSubtitle: getText(channel, "itunes:subtitle"),
+    itunesSummary: getText(channel, "itunes:summary"),
+    itunesType: getText(channel, "itunes:type"),
+    language: getText(channel, "language"),
+    link: getText(channel, "link"),
+    title: getText(channel, "title"),
   };
 }
 

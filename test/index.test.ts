@@ -322,10 +322,7 @@ describe("podcastXmlParser", () => {
 
   it("should have an empty feedUrl when xmlSource is a string and XML lacks <atom:link>", async () => {
     const xmlSource = "not_a_url_but_a_string";
-    const { podcast } = await podcastXmlParser(xmlSource);
-
-    expect(podcast.feedUrl).toBe("");
-    assertPodcastProperties(podcast);
+    await expect(podcastXmlParser(xmlSource)).rejects.toThrow();
   });
 
   it("should fetch feedUrl from <atom:link> tag when xmlSource is a string", async () => {
