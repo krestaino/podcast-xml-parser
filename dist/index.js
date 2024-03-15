@@ -50,16 +50,16 @@ var create_1 = require("./create");
 function podcastXmlParser(source, config) {
     if (config === void 0) { config = {}; }
     return __awaiter(this, void 0, void 0, function () {
-        var _a, itunes, xmlString, preprocessedXml, doc, podcast, episodeElements, _b, start, limit, end, paginatedElements, episodes, itunesResponse;
+        var _a, itunes, xmlString, preprocessedXml, document, podcast, episodeElements, _b, start, limit, end, paginatedElements, episodes, itunesResponse;
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0: return [4 /*yield*/, (0, xml_1.retrieveXmlFromSource)(source, config)];
                 case 1:
                     _a = _c.sent(), itunes = _a.itunes, xmlString = _a.xmlString;
                     preprocessedXml = (0, xml_1.preprocessXml)(xmlString, config);
-                    doc = (0, xml_1.parse)(preprocessedXml);
-                    podcast = (0, create_1.createPodcast)(doc.documentElement, source);
-                    episodeElements = Array.from(doc.getElementsByTagName("item"));
+                    document = (0, xml_1.parse)(preprocessedXml);
+                    podcast = (0, create_1.createPodcast)(document, source);
+                    episodeElements = Array.from(document.getElementsByTagName("item"));
                     _b = config.start, start = _b === void 0 ? 0 : _b, limit = config.limit;
                     start = typeof start === "number" && start > 0 ? start : 0;
                     end = start + (typeof limit === "number" && limit > 0 ? limit : episodeElements.length);

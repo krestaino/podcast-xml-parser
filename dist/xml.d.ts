@@ -1,5 +1,14 @@
 import { type Config } from "./types";
 /**
+ * Removes all <item> elements from a cloned copy of the provided XML document.
+ * This function is useful for processing podcast feeds where you want to
+ * separate podcast metadata from individual episode information.
+ *
+ * @param originalDocument - The original XML document from which to remove <item> elements.
+ * @returns A new XML document with all <item> elements removed.
+ */
+export declare function removeItemsFromDocument(originalDocument: Document): Document;
+/**
  * Preprocesses an XML string to handle possible XML inconsistencies.
  * Wraps content in a root tag if it doesn't start with one.
  *

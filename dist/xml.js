@@ -47,11 +47,33 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.parse = exports.retrieveXmlFromSource = exports.fetchXmlFromUrl = exports.preprocessXml = void 0;
+exports.parse = exports.retrieveXmlFromSource = exports.fetchXmlFromUrl = exports.preprocessXml = exports.removeItemsFromDocument = void 0;
 var xmldom_1 = require("xmldom");
 var itunes_1 = require("./itunes");
 var constants_1 = require("./constants");
 var parser = new xmldom_1.DOMParser();
+/**
+ * Removes all <item> elements from a cloned copy of the provided XML document.
+ * This function is useful for processing podcast feeds where you want to
+ * separate podcast metadata from individual episode information.
+ *
+ * @param originalDocument - The original XML document from which to remove <item> elements.
+ * @returns A new XML document with all <item> elements removed.
+ */
+function removeItemsFromDocument(originalDocument) {
+    // Clone the original document to avoid modifying it
+    var document = originalDocument.cloneNode(true);
+    // Convert the live NodeList to a static array
+    var items = Array.from(document.getElementsByTagName("item"));
+    // Remove each item from the document
+    items.forEach(function (item) {
+        if (item.parentNode !== null) {
+            item.parentNode.removeChild(item);
+        }
+    });
+    return document;
+}
+exports.removeItemsFromDocument = removeItemsFromDocument;
 /**
  * Trims XML feed by cutting off anything after the last complete <item>...</item> tag.
  *

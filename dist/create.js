@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createEpisode = exports.createPodcast = void 0;
 var sanitize_1 = require("./sanitize");
+var xml_1 = require("./xml");
 /**
  * Extracts the text content from a specified XML element.
  *
@@ -23,36 +24,36 @@ function getText(element, tagName) {
  */
 function createPodcast(document, source) {
     var _a, _b, _c, _d, _e, _f;
-    var channel = document.getElementsByTagName("channel")[0];
-    var image = channel.getElementsByTagName("image")[0];
-    var feedUrl = (_b = (_a = channel.getElementsByTagName("atom:link")[0]) === null || _a === void 0 ? void 0 : _a.getAttribute("href")) !== null && _b !== void 0 ? _b : "";
+    var documentElement = (0, xml_1.removeItemsFromDocument)(document).documentElement;
+    var imageElem = documentElement.getElementsByTagName("image")[0];
+    var feedUrl = (_b = (_a = documentElement.getElementsByTagName("atom:link")[0]) === null || _a === void 0 ? void 0 : _a.getAttribute("href")) !== null && _b !== void 0 ? _b : "";
     if (feedUrl === "" && source instanceof URL) {
         feedUrl = source.toString();
     }
     return {
-        copyright: getText(channel, "copyright"),
-        contentEncoded: getText(channel, "content:encoded"),
-        description: getText(channel, "description"),
+        copyright: getText(documentElement, "copyright"),
+        contentEncoded: getText(documentElement, "content:encoded"),
+        description: getText(documentElement, "description"),
         feedUrl: feedUrl,
         image: {
-            link: getText(image, "link"),
-            title: getText(image, "title"),
-            url: getText(image, "url"),
+            link: getText(imageElem, "link"),
+            title: getText(imageElem, "title"),
+            url: getText(imageElem, "url"),
         },
-        itunesAuthor: getText(channel, "itunes:author"),
-        itunesCategory: (_d = (_c = channel.getElementsByTagName("itunes:category")[0]) === null || _c === void 0 ? void 0 : _c.getAttribute("text")) !== null && _d !== void 0 ? _d : "",
-        itunesExplicit: getText(channel, "itunes:explicit"),
-        itunesImage: (_f = (_e = channel.getElementsByTagName("itunes:image")[0]) === null || _e === void 0 ? void 0 : _e.getAttribute("href")) !== null && _f !== void 0 ? _f : "",
+        itunesAuthor: getText(documentElement, "itunes:author"),
+        itunesCategory: (_d = (_c = documentElement.getElementsByTagName("itunes:category")[0]) === null || _c === void 0 ? void 0 : _c.getAttribute("text")) !== null && _d !== void 0 ? _d : "",
+        itunesExplicit: getText(documentElement, "itunes:explicit"),
+        itunesImage: (_f = (_e = documentElement.getElementsByTagName("itunes:image")[0]) === null || _e === void 0 ? void 0 : _e.getAttribute("href")) !== null && _f !== void 0 ? _f : "",
         itunesOwner: {
-            email: getText(channel, "itunes:email"),
-            name: getText(channel, "itunes:name"),
+            email: getText(documentElement, "itunes:email"),
+            name: getText(documentElement, "itunes:name"),
         },
-        itunesSubtitle: getText(channel, "itunes:subtitle"),
-        itunesSummary: getText(channel, "itunes:summary"),
-        itunesType: getText(channel, "itunes:type"),
-        language: getText(channel, "language"),
-        link: getText(channel, "link"),
-        title: getText(channel, "title"),
+        itunesSubtitle: getText(documentElement, "itunes:subtitle"),
+        itunesSummary: getText(documentElement, "itunes:summary"),
+        itunesType: getText(documentElement, "itunes:type"),
+        language: getText(documentElement, "language"),
+        link: getText(documentElement, "link"),
+        title: getText(documentElement, "title"),
     };
 }
 exports.createPodcast = createPodcast;
