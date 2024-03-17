@@ -47,7 +47,7 @@ export default async function podcastXmlParser(
       const itunesResponse = await fetch(`https://itunes.apple.com/search?term=${podcast.title}&entity=podcast`);
       itunes = await itunesResponse.json();
       // Set podcast if the feedUrl is equal on iTunes and in the XML
-      itunes = itunes.results.find((result: any) => result.feedUrl === podcast.feedUrl);
+      itunes = itunes.results.find((result: any) => result.feedUrl === podcast.feedUrl?.href);
     }
 
     // All done, return data

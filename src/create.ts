@@ -24,9 +24,18 @@ function getText(element: Element, tagName: string): string {
 export function createPodcast(document: Document, source: string | URL | number): Podcast {
   const documentElement = removeItemsFromDocument(document).documentElement;
   const imageElem = documentElement.getElementsByTagName("image")[0];
-  let feedUrl = documentElement.getElementsByTagName("atom:link")[0]?.getAttribute("href") ?? "";
-  if (feedUrl === "" && source instanceof URL) {
-    feedUrl = source.toString();
+
+  let feedUrl: URL | null = null;
+  const feedUrlString = documentElement.getElementsByTagName("atom:link")[0]?.getAttribute("href") ?? "";
+
+  if (feedUrlString !== "") {
+    try {
+      feedUrl = new URL(feedUrlString);
+    } catch (error) {
+      feedUrl = null;
+    }
+  } else if (source instanceof URL) {
+    feedUrl = source;
   }
 
   return {

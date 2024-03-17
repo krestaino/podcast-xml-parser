@@ -26,9 +26,18 @@ function createPodcast(document, source) {
     var _a, _b, _c, _d, _e, _f;
     var documentElement = (0, xml_1.removeItemsFromDocument)(document).documentElement;
     var imageElem = documentElement.getElementsByTagName("image")[0];
-    var feedUrl = (_b = (_a = documentElement.getElementsByTagName("atom:link")[0]) === null || _a === void 0 ? void 0 : _a.getAttribute("href")) !== null && _b !== void 0 ? _b : "";
-    if (feedUrl === "" && source instanceof URL) {
-        feedUrl = source.toString();
+    var feedUrl = null;
+    var feedUrlString = (_b = (_a = documentElement.getElementsByTagName("atom:link")[0]) === null || _a === void 0 ? void 0 : _a.getAttribute("href")) !== null && _b !== void 0 ? _b : "";
+    if (feedUrlString !== "") {
+        try {
+            feedUrl = new URL(feedUrlString);
+        }
+        catch (error) {
+            feedUrl = null;
+        }
+    }
+    else if (source instanceof URL) {
+        feedUrl = source;
     }
     return {
         copyright: getText(documentElement, "copyright"),
