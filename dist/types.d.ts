@@ -5,7 +5,7 @@ export interface Podcast {
     copyright: string;
     contentEncoded: string;
     description: string;
-    feedUrl: string;
+    feedUrl: URL | null;
     image: {
         link: string;
         title: string;
