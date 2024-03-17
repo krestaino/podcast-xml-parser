@@ -115,7 +115,7 @@ export async function retrieveXmlFromSource(
     // Fetch the iTunes information for the provided ID
     const itunes = await itunesLookup(source);
 
-    if (itunes?.feedUrl == null || itunes.feedUrl === "") {
+    if (itunes?.feedUrl == null || itunes.feedUrl instanceof URL) {
       throw new Error("Invalid iTunes ID or unable to fetch associated feed URL.");
     }
 
