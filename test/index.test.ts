@@ -333,14 +333,14 @@ describe("podcastXmlParser", () => {
     `;
 
     const { podcast } = await podcastXmlParser(xmlSource);
-    expect(podcast.feedUrl).toBe("https://example.com/rss_feed.xml");
+    expect(podcast.feedUrl?.href).toBe("https://example.com/rss_feed.xml");
     assertPodcastProperties(podcast);
   });
 
   it("should return correct itunes data", async () => {
     const { podcast, episodes } = await podcastXmlParser(1559139153);
 
-    expect(podcast.feedUrl).toBe("https://feeds.megaphone.fm/climbinggold");
+    expect(podcast.feedUrl?.href).toBe("https://feeds.megaphone.fm/climbinggold");
     expect(podcast.title).toBe("Climbing Gold");
     expect(episodes[episodes.length - 1].title).toBe("Coming Soon");
     assertPodcastProperties(podcast);
@@ -392,7 +392,7 @@ describe("podcastXmlParser", () => {
   it("return itunes when config.itunes is set to true", async () => {
     const { podcast, itunes } = await podcastXmlParser(new URL("https://feeds.simplecast.com/dHoohVNH"), { itunes: true });
 
-    expect(podcast.feedUrl).toBe("https://feeds.simplecast.com/dHoohVNH");
+    expect(podcast.feedUrl?.href).toBe("https://feeds.simplecast.com/dHoohVNH");
     expect(typeof itunes).toBe("object");
   });
 });

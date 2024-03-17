@@ -15,7 +15,7 @@ describe("real feeds", () => {
       it(`should parse the XML feed of URL: ${FEED_URL}`, async () => {
         const { podcast, episodes } = await podcastXmlParser(new URL(FEED_URL));
 
-        expect(podcast.feedUrl).toBe(FEED_URL);
+        expect(podcast.feedUrl?.href).toBe(FEED_URL);
         assertPodcastProperties(podcast);
         episodes.forEach((episode) => {
           assertEpisodeProperties(episode);
