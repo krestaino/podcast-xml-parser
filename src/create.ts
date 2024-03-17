@@ -32,7 +32,6 @@ export function createPodcast(document: Document, source: string | URL | number)
     try {
       feedUrl = new URL(feedUrlString);
     } catch (error) {
-      console.error("Invalid feed URL:", feedUrlString);
       feedUrl = null;
     }
   } else if (source instanceof URL) {

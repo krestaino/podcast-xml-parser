@@ -337,6 +337,17 @@ describe("podcastXmlParser", () => {
     assertPodcastProperties(podcast);
   });
 
+  it("should return null when feedUrl from <atom:link> is an invalid URL", async () => {
+    const xmlSource = `
+      <channel>
+        <atom:link href="invalid-url" />
+      </channel>
+    `;
+    
+    const { podcast } = await podcastXmlParser(xmlSource);
+    expect(podcast.feedUrl).toBe(null);
+  });
+
   it("should return correct itunes data", async () => {
     const { podcast, episodes } = await podcastXmlParser(1559139153);
 
@@ -386,13 +397,34 @@ describe("podcastXmlParser", () => {
     const { itunes } = await podcastXmlParser(url, { itunes: true });
 
     expect(itunes).toBeDefined();
-    expect(itunes.feedUrl).toBe("https://feeds.simplecast.com/dHoohVNH");
+    expect(itunes.feedUrl).toBe(url.href);
   });
 
-  it("return itunes when config.itunes is set to true", async () => {
-    const { podcast, itunes } = await podcastXmlParser(new URL("https://feeds.simplecast.com/dHoohVNH"), { itunes: true });
+  it("should not assign iTunes data when no matching result is found", async () => {
+    const url = new URL("https://example.com/nonexistent_feed.xml");
+    const { itunes } = await podcastXmlParser(url, { itunes: true });
+  
+    expect(itunes).toBe(undefined);
+  });
 
-    expect(podcast.feedUrl?.href).toBe("https://feeds.simplecast.com/dHoohVNH");
-    expect(typeof itunes).toBe("object");
+  it("should find matching iTunes data when feedUrl is a URL", async () => {
+    const url = new URL("https://feeds.simplecast.com/dHoohVNH");
+    const { podcast, itunes } = await podcastXmlParser(url, { itunes: true });
+  
+    expect(podcast.feedUrl).toBeInstanceOf(URL);
+    expect(itunes).toBeDefined();
+    expect(itunes.feedUrl).toBe(url.href);
+  });
+  
+  it("should not find matching iTunes data when feedUrl is null", async () => {
+    const xmlSource = `
+      <channel>
+        <atom:link href="invalid-url" />
+      </channel>
+    `;
+    const { podcast, itunes } = await podcastXmlParser(xmlSource, { itunes: true });
+  
+    expect(podcast.feedUrl).toBeNull();
+    expect(itunes).toBeUndefined();
   });
 });
