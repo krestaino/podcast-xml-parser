@@ -333,7 +333,7 @@ interface Itunes {
   collectionCensoredName?: string;
   trackCensoredName?: string;
   collectionViewUrl?: string;
-  feedUrl?: string;
+  feedUrl?: URL | null;
   trackViewUrl?: string;
   artworkUrl30?: string;
   artworkUrl60?: string;

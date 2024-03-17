@@ -173,7 +173,7 @@ function retrieveXmlFromSource(source, config) {
                     return [4 /*yield*/, (0, itunes_1.itunesLookup)(source)];
                 case 3:
                     itunes = _c.sent();
-                    if ((itunes === null || itunes === void 0 ? void 0 : itunes.feedUrl) == null || itunes.feedUrl === "") {
+                    if ((itunes === null || itunes === void 0 ? void 0 : itunes.feedUrl) == null || itunes.feedUrl instanceof URL) {
                         throw new Error("Invalid iTunes ID or unable to fetch associated feed URL.");
                     }
                     _b = { itunes: itunes };
