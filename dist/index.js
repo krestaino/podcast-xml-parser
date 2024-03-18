@@ -74,7 +74,7 @@ function podcastXmlParser(source, config) {
                 case 3:
                     itunes = _c.sent();
                     // Set podcast if the feedUrl is equal on iTunes and in the XML
-                    itunes = itunes.results.find(function (result) { var _a; return result.feedUrl === ((_a = podcast.feedUrl) === null || _a === void 0 ? void 0 : _a.href); });
+                    itunes = itunes.results.find(function (result) { return result.feedUrl === podcast.feedUrl; });
                     _c.label = 4;
                 case 4: 
                 // All done, return data

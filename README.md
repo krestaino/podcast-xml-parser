@@ -266,7 +266,7 @@ interface Podcast {
   copyright: string;
   contentEncoded: string;
   description: string;
-  feedUrl: URL | null;
+  feedUrl: string;
   image: { link: string; title: string; url: string } | null;
   itunesAuthor: string;
   itunesCategory: string | null;
@@ -333,7 +333,7 @@ interface Itunes {
   collectionCensoredName?: string;
   trackCensoredName?: string;
   collectionViewUrl?: string;
-  feedUrl?: URL | null;
+  feedUrl?: string;
   trackViewUrl?: string;
   artworkUrl30?: string;
   artworkUrl60?: string;
