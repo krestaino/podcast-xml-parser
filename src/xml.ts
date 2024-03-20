@@ -90,7 +90,7 @@ export async function fetchXmlFromUrl(url: string, config: Config): Promise<stri
     }
 
     const response = await fetch(url, { headers });
-    
+
     if (!response.ok) {
       throw new Error(`HTTP error: ${response.status}`);
     }

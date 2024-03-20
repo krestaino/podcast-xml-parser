@@ -135,6 +135,9 @@ function fetchXmlFromUrl(url, config) {
                     return [4 /*yield*/, fetch(url, { headers: headers })];
                 case 1:
                     response = _b.sent();
+                    if (!response.ok) {
+                        throw new Error("HTTP error: ".concat(response.status));
+                    }
                     _a = trimXmlFeed;
                     return [4 /*yield*/, response.text()];
                 case 2: return [2 /*return*/, _a.apply(void 0, [_b.sent()])];
