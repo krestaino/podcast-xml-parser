@@ -90,6 +90,11 @@ export async function fetchXmlFromUrl(url: string, config: Config): Promise<stri
     }
 
     const response = await fetch(url, { headers });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error: ${response.status}`);
+    }
+
     return trimXmlFeed(await response.text());
   } catch (error) {
     throw new Error("Error fetching from feed: " + url);

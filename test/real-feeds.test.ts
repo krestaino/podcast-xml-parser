@@ -4,6 +4,10 @@ import podcastXmlParser from "../src";
 import { assertPodcastProperties, assertEpisodeProperties } from "./index.test";
 
 describe("real feeds", () => {
+  it("handle error on 404", async () => {
+    await expect(podcastXmlParser(1171603832)).rejects.toThrow();
+  });
+
   // NOTE: To run these tests, ensure that you set the environment variable FEED_URLS to a comma-separated list
   // of URLs of the XML feeds that you want to test. You can create an .env file to do this.
   const { FEED_URLS = "" } = process.env;
