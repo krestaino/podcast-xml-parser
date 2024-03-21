@@ -8,7 +8,7 @@
   ],
   "scripts": {
     "build": "tsc",
-    "format": "prettier --write '**/*.json' '**/*.md' '**/*.yml'",
+    "format": "prettier --write '**/*.{json,md,yml,ts}'",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "jest",
