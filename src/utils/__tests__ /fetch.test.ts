@@ -1,0 +1,36 @@
+import fetchMock from "jest-fetch-mock";
+import { fetchPodcastFeed } from "../fetch";
+
+describe("fetchPodcastFeed", () => {
+  beforeEach(() => {
+    fetchMock.resetMocks();
+  });
+
+  it("should fetch and return the podcast feed content", async () => {
+    const mockFeedContent = "<xml>Podcast Feed</xml>";
+    fetchMock.mockResponseOnce(mockFeedContent);
+
+    const url = "https://example.com/podcast.xml";
+    const result = await fetchPodcastFeed(url);
+
+    expect(result).toEqual(mockFeedContent);
+    expect(fetchMock).toHaveBeenCalledWith(url);
+  });
+
+  it("should throw an error if the fetch request fails", async () => {
+    fetchMock.mockReject(new Error("Network error"));
+
+    const url = "https://example.com/podcast.xml";
+    await expect(fetchPodcastFeed(url)).rejects.toThrow("Network error");
+  });
+
+  it("should throw an error if the response is not ok", async () => {
+    const mockStatusText = "Not Found";
+    fetchMock.mockResponseOnce("", { status: 404, statusText: mockStatusText });
+
+    const url = "https://example.com/podcast.xml";
+    await expect(fetchPodcastFeed(url)).rejects.toThrow(
+      `Failed to fetch podcast feed from ${url}: ${mockStatusText}`,
+    );
+  });
+});

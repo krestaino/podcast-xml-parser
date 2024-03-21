@@ -7,13 +7,8 @@
     "outDir": "./lib",
     "strict": true,
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"],
-      "~/*": ["./*"]
-    }
+    "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "test/index.test.ts", "test/utils/fetch.test.ts"],
   "exclude": ["node_modules"]
 }
