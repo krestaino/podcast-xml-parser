@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
-  "files": ["lib/**/*"],
+  "files": [
+    "lib/**/*"
+  ],
   "scripts": {
     "build": "tsc",
     "format": "prettier --write '**/*.json' '**/*.md' '**/*.yml'",
