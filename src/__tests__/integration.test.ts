@@ -5,8 +5,8 @@ import podcastXmlParser from "../index";
 
 dotenv.config();
 
-const IDS = process.env.PODCAST_IDS ? process.env.PODCAST_IDS.split(",") : [];
-const URLS = process.env.PODCAST_URLS ? process.env.PODCAST_URLS.split(",") : [];
+const PODCAST_IDS = process.env.PODCAST_IDS ? process.env.PODCAST_IDS.split(",") : [];
+const PODCAST_URLS = process.env.PODCAST_URLS ? process.env.PODCAST_URLS.split(",") : [];
 
 beforeAll(() => {
   global.fetch = fetch;
@@ -17,11 +17,11 @@ afterAll(() => {
 });
 
 describe("podcastXmlParser", () => {
-  (IDS.length > 0 ? test : test.skip)("parses podcast IDs", async () => {
-    expect.assertions(IDS.length * 5);
+  (PODCAST_IDS.length > 0 ? test : test.skip)("parses podcast IDs", async () => {
+    expect.assertions(PODCAST_IDS.length * 5);
 
     await Promise.all(
-      IDS.map(async (id: string) => {
+      PODCAST_IDS.map(async (id: string) => {
         const { podcast, episodes, itunes } = await podcastXmlParser(parseInt(id));
 
         expect(podcast.title).toBeDefined();
@@ -33,11 +33,11 @@ describe("podcastXmlParser", () => {
     );
   });
 
-  (URLS.length > 0 ? test : test.skip)("parses podcast URLs", async () => {
-    expect.assertions(URLS.length * 5);
+  (PODCAST_URLS.length > 0 ? test : test.skip)("parses podcast URLs", async () => {
+    expect.assertions(PODCAST_URLS.length * 5);
 
     await Promise.all(
-      URLS.map(async (url) => {
+      PODCAST_URLS.map(async (url) => {
         const { podcast, episodes, itunes } = await podcastXmlParser(new URL(url));
 
         expect(podcast.title).toBeDefined();
