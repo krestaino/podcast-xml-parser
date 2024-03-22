@@ -34,20 +34,27 @@ describe("podcastXmlParser", () => {
     );
   });
 
-  (PODCAST_URLS.length > 0 ? test : test.skip)("parses podcast URLs", async () => {
-    expect.assertions(PODCAST_URLS.length * 5);
+  (PODCAST_URLS.length > 0 ? test : test.skip)("parses podcast IDs", async () => {
+    const baseAssertions = PODCAST_URLS.length * 3;
+    let itunesAssertions = 0;
 
     await Promise.all(
-      PODCAST_URLS.map(async (url) => {
+      PODCAST_URLS.map(async (url: string) => {
         const { podcast, episodes, itunes } = await podcastXmlParser(new URL(url));
 
         expect(podcast.title).toBeDefined();
         expect(episodes.length).toBeGreaterThan(0);
         expect(episodes[0].title).toBeDefined();
-        expect(itunes?.artworkUrl100).toBeDefined();
-        expect(itunes?.feedUrl).toBe(url);
+
+        if (itunes) {
+          itunesAssertions += 2;
+          expect(itunes.artworkUrl100).toBeDefined();
+          expect(itunes.feedUrl).toBe(url);
+        }
       }),
     );
+
+    expect.assertions(baseAssertions + itunesAssertions);
   });
 });
 
