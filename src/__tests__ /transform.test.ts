@@ -25,6 +25,20 @@ describe("transformPodcastData", () => {
           <title>Podcast Title</title>
           <link>https://example.com/podcast</link>
         </image>
+        <item>
+          <title>Episode Title</title>
+          <description>Episode description.</description>
+          <pubDate>Mon, 01 Jan 2024 00:00:00 GMT</pubDate>
+          <itunes:author>Episode Author</itunes:author>
+          <itunes:duration>1200</itunes:duration>
+          <itunes:explicit>no</itunes:explicit>
+          <itunes:title>Episode Title</itunes:title>
+          <link>https://example.com/episode</link>
+          <guid>https://example.com/episode</guid>
+          <author>Episode Author</author>
+          <content:encoded>Episode content.</content:encoded>
+          <enclosure url="https://example.com/audio.mp3" type="audio/mpeg"/>
+        </item>
       </channel>
     </rss>`;
 
@@ -40,5 +54,13 @@ describe("transformPodcastData", () => {
     const invalidXml = `<?xml version="1.0" encoding="UTF-8"?><rss></rss>`;
     const parsedXml = parseXml(invalidXml);
     expect(() => transformPodcastData(parsedXml)).toThrow("Channel element not found");
+  });
+
+  it("should transform episode data correctly", () => {
+    const parsedXml = parseXml(validXml);
+    const result = transformPodcastData(parsedXml);
+    expect(result.episodes).toBeInstanceOf(Array);
+    expect(result.episodes.length).toBeGreaterThan(0);
+    expect(result.episodes[0].title).toEqual("Episode Title");
   });
 });
