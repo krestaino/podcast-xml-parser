@@ -11,12 +11,9 @@ import { getAttributeValue, getTextValue, getXmlElement, isXmlElement } from "./
  * @throws An error if the expected XML structure is not found.
  */
 export function transformPodcastData(parsedXML: XmlDocument) {
-  const rootElement = parsedXML.children[0];
-  if (!isXmlElement(rootElement)) {
-    throw new Error("Root element is not an XmlElement");
-  }
-
+  const rootElement = parsedXML.children[0] as XmlElement;
   const channel = getXmlElement(rootElement, "channel");
+
   if (!channel) {
     throw new Error("Channel element not found");
   }
