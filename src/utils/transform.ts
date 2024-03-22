@@ -3,6 +3,12 @@ import { XmlDocument } from "@rgrove/parse-xml";
 import { Podcast } from "../types/Podcast";
 import { getAttributeValue, getTextValue, getXmlElement, isXmlElement } from "./xml";
 
+/**
+ * Transforms parsed XML data into a Podcast object.
+ * @param parsedXML The parsed XML data as an XmlDocument.
+ * @returns An object containing the transformed podcast data.
+ * @throws An error if the expected XML structure is not found.
+ */
 export function transformPodcastData(parsedXML: XmlDocument) {
   const rootElement = parsedXML.children[0];
   if (!isXmlElement(rootElement)) {
