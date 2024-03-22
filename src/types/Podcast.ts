@@ -6,12 +6,19 @@ export interface Podcast {
   contentEncoded: string;
   description: string;
   feedUrl: string;
-  image: { link: string; title: string; url: string } | null;
+  image: {
+    link: string;
+    title: string;
+    url: string;
+  } | null;
   itunesAuthor: string;
   itunesCategory: string | null;
   itunesExplicit: string;
   itunesImage: string | null;
-  itunesOwner: { name: string; email: string } | null;
+  itunesOwner: {
+    name: string;
+    email: string;
+  } | null;
   itunesSubtitle: string;
   itunesSummary: string;
   itunesType: string;

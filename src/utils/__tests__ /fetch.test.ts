@@ -26,7 +26,10 @@ describe("fetchPodcastFeed", () => {
 
   it("should throw an error if the response is not ok", async () => {
     const mockStatusText = "Not Found";
-    fetchMock.mockResponseOnce("", { status: 404, statusText: mockStatusText });
+    fetchMock.mockResponseOnce("", {
+      status: 404,
+      statusText: mockStatusText,
+    });
 
     const url = "https://example.com/podcast.xml";
     await expect(fetchPodcastFeed(url)).rejects.toThrow(
