@@ -11,6 +11,6 @@
     "sourceType": "module"
   },
   "plugins": ["@typescript-eslint"],
-  "ignorePatterns": ["lib"],
+  "ignorePatterns": ["lib", "test"],
   "rules": {}
 }
