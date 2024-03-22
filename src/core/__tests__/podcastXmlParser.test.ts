@@ -114,4 +114,22 @@ describe("podcastXmlParser", () => {
 
     await expect(podcastXmlParser(itunesId)).rejects.toThrow(ERROR_MESSAGES.ITUNES_NO_FEED_URL);
   });
+
+  it("should paginate episodes based on config options", async () => {
+    const mockFeedContent = "<xml>Podcast Feed</xml>";
+    const mockPodcast = { title: "Test Podcast", feedUrl: "https://example.com/feed.xml" };
+    const allEpisodes = Array.from({ length: 20 }, (_, i) => ({ title: `Episode ${i + 1}` }));
+    (fetchPodcast as jest.Mock).mockResolvedValue(mockFeedContent);
+    (parseXml as jest.Mock).mockReturnValue({});
+    (transformPodcast as jest.Mock).mockReturnValue({ podcast: mockPodcast, episodes: allEpisodes });
+
+    const url = new URL("https://example.com/podcast.xml");
+    const config = { start: 5, limit: 5 };
+    const result = await podcastXmlParser(url, config);
+
+    expect(result.episodes).toEqual(allEpisodes.slice(5, 10));
+    expect(fetchPodcast).toHaveBeenCalledWith(url, config);
+    expect(parseXml).toHaveBeenCalledWith(mockFeedContent);
+    expect(transformPodcast).toHaveBeenCalledWith({});
+  });
 });
