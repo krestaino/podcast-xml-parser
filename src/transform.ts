@@ -1,7 +1,7 @@
 import { XmlDocument, XmlElement } from "@rgrove/parse-xml";
 
-import { Podcast } from "../types/Podcast";
-import { Episode } from "../types/Episode";
+import { Podcast } from "./types/Podcast";
+import { Episode } from "./types/Episode";
 import { getAttributeValue, getTextValue, getXmlElement, isXmlElement } from "./xml";
 
 /**

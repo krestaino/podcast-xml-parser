@@ -1,6 +1,6 @@
-import { fetchPodcastFeed, fetchItunes } from "./utils/fetch";
-import { parsePodcastXML } from "./utils/xml";
-import { transformPodcastData } from "./utils/transform";
+import { fetchPodcastFeed, fetchItunes } from "./fetch";
+import { parsePodcastXML } from "./xml";
+import { transformPodcastData } from "./transform";
 import { Itunes } from "./types/Itunes";
 
 const podcastXmlParser = async (input: URL | number | string) => {

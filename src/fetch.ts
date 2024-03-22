@@ -1,4 +1,4 @@
-import { Itunes } from "../types/Itunes";
+import { Itunes } from "./types/Itunes";
 
 /**
  * Fetches the content of a podcast XML feed from the provided URL.
