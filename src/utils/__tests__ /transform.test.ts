@@ -41,33 +41,4 @@ describe("transformPodcastData", () => {
     const parsedXml = parseXml(invalidXml);
     expect(() => transformPodcastData(parsedXml)).toThrow("Channel element not found");
   });
-
-  it("should throw an error if the image element is not found", () => {
-    const xmlWithoutImage = `<?xml version="1.0" encoding="UTF-8"?>
-      <rss>
-        <channel>
-          <title>Podcast Title</title>
-        </channel>
-      </rss>`;
-
-    const parsedXml = parseXml(xmlWithoutImage);
-    expect(() => transformPodcastData(parsedXml)).toThrow("Image element not found");
-  });
-
-  it("should throw an error if the iTunes owner element is not found", () => {
-    const xmlWithoutItunesOwner = `<?xml version="1.0" encoding="UTF-8"?>
-      <rss>
-        <channel>
-          <title>Podcast Title</title>
-          <image>
-            <url>https://example.com/image.jpg</url>
-            <title>Podcast Title</title>
-            <link>https://example.com/podcast</link>
-          </image>
-        </channel>
-      </rss>`;
-
-    const parsedXml = parseXml(xmlWithoutItunesOwner);
-    expect(() => transformPodcastData(parsedXml)).toThrow("iTunes owner element not found");
-  });
 });

@@ -10,15 +10,15 @@ export interface Podcast {
     link: string;
     title: string;
     url: string;
-  } | null;
+  };
   itunesAuthor: string;
-  itunesCategory: string | null;
+  itunesCategory: string;
   itunesExplicit: string;
-  itunesImage: string | null;
+  itunesImage: string;
   itunesOwner: {
     name: string;
     email: string;
-  } | null;
+  };
   itunesSubtitle: string;
   itunesSummary: string;
   itunesType: string;

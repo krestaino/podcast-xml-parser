@@ -58,6 +58,11 @@ describe("xmlUtils", () => {
   });
 
   describe("getTextValue", () => {
+    it("should return an empty string for an undefined element", () => {
+      const text = getTextValue(undefined, "child");
+      expect(text).toBe("Hello");
+    });
+
     it("should return the correct text value", () => {
       const root = parsedXml.children[0] as XmlElement;
       const text = getTextValue(root, "child");

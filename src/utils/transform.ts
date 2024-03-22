@@ -1,12 +1,13 @@
-import { XmlDocument } from "@rgrove/parse-xml";
+import { XmlDocument, XmlElement } from "@rgrove/parse-xml";
 
 import { Podcast } from "../types/Podcast";
+import { Episode } from "../types/Episode";
 import { getAttributeValue, getTextValue, getXmlElement, isXmlElement } from "./xml";
 
 /**
  * Transforms parsed XML data into a Podcast object.
  * @param parsedXML The parsed XML data as an XmlDocument.
- * @returns An object containing the transformed podcast data.
+ * @returns An object containing the transformed podcast and episodes data.
  * @throws An error if the expected XML structure is not found.
  */
 export function transformPodcastData(parsedXML: XmlDocument) {
@@ -21,14 +22,7 @@ export function transformPodcastData(parsedXML: XmlDocument) {
   }
 
   const image = getXmlElement(channel, "image");
-  if (!image) {
-    throw new Error("Image element not found");
-  }
-
   const itunesOwner = getXmlElement(channel, "itunes:owner");
-  if (!itunesOwner) {
-    throw new Error("iTunes owner element not found");
-  }
 
   const podcast: Podcast = {
     contentEncoded: getTextValue(channel, "content:encoded"),
@@ -56,5 +50,29 @@ export function transformPodcastData(parsedXML: XmlDocument) {
     title: getTextValue(channel, "title"),
   };
 
-  return { podcast, episodes: [] };
+  const episodes: Episode[] = channel.children
+    .filter((child): child is XmlElement => isXmlElement(child) && child.name === "item")
+    .map((item) => ({
+      title: getTextValue(item, "title"),
+      description: getTextValue(item, "description"),
+      pubDate: getTextValue(item, "pubDate"),
+      enclosure: {
+        url: getAttributeValue(item, "enclosure", "url"),
+        type: getAttributeValue(item, "enclosure", "type"),
+      },
+      itunesAuthor: getTextValue(item, "itunes:author"),
+      itunesDuration: parseInt(getTextValue(item, "itunes:duration"), 10) || 0,
+      itunesEpisode: getTextValue(item, "itunes:episode"),
+      itunesEpisodeType: getTextValue(item, "itunes:episodeType"),
+      itunesExplicit: getTextValue(item, "itunes:explicit"),
+      itunesSubtitle: getTextValue(item, "itunes:subtitle"),
+      itunesSummary: getTextValue(item, "itunes:summary"),
+      itunesTitle: getTextValue(item, "itunes:title"),
+      link: getTextValue(item, "link"),
+      guid: getTextValue(item, "guid"),
+      author: getTextValue(item, "author"),
+      contentEncoded: getTextValue(item, "content:encoded"),
+    }));
+
+  return { podcast, episodes };
 }

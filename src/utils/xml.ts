@@ -36,7 +36,11 @@ export function getXmlElement(element: XmlElement, name: string): XmlElement | u
  * @param name The name of the child XmlElement whose text value is to be retrieved.
  * @returns The text value of the found XmlElement, or an empty string if not found.
  */
-export function getTextValue(element: XmlElement, name: string): string {
+export function getTextValue(element: XmlElement | undefined, name: string): string {
+  if (element === undefined) {
+    return "";
+  }
+
   const foundElement = getXmlElement(element, name);
   return foundElement ? foundElement.children.find(isXmlText)?.text || "" : "";
 }

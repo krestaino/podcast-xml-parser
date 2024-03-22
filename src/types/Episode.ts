@@ -8,7 +8,7 @@ export interface Episode {
   enclosure: {
     url: string;
     type: string;
-  } | null;
+  };
   guid: string;
   itunesAuthor: string;
   itunesDuration: number;
