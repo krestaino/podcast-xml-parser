@@ -1,10 +1,9 @@
-import { fetchData } from "./fetch";
-import { fetchItunes } from "./itunes";
+import { fetchData } from "./utils/fetchData";
+import { fetchItunes } from "./utils/fetchItunes";
 
-import { parseXml } from "./xml";
-import { transformPodcastData } from "./transform";
-import { transformOpmlData } from "./transformOpml";
-import { Itunes } from "./types/Itunes";
+import { Podcast, Episode, Itunes } from "./types";
+import { parseXml } from "./utils/xml";
+import { transformPodcast, transformOpml } from "./utils";
 import { ERROR_MESSAGES } from "./constants";
 
 /**
@@ -14,7 +13,9 @@ import { ERROR_MESSAGES } from "./constants";
  * @returns An object containing the podcast and episodes data, along with iTunes information if available.
  * @throws {Error} If the input type is invalid, the feed URL cannot be retrieved from iTunes, or no feed is available to parse.
  */
-const podcastXmlParser = async (input: URL | number | string) => {
+export const podcastXmlParser = async (
+  input: URL | number | string,
+): Promise<{ podcast: Podcast; episodes: Episode[]; itunes?: Itunes }> => {
   let xmlText: string = "";
   let itunes: Itunes | undefined;
 
@@ -37,7 +38,7 @@ const podcastXmlParser = async (input: URL | number | string) => {
   }
 
   const parsedXML = parseXml(xmlText);
-  const { podcast, episodes } = transformPodcastData(parsedXML);
+  const { podcast, episodes } = transformPodcast(parsedXML);
 
   if (!itunes && podcast.feedUrl) {
     itunes = await fetchItunes(podcast.title, podcast.feedUrl);
@@ -69,7 +70,7 @@ export const podcastOpmlParser = async (input: URL | string): Promise<string[]> 
   }
 
   const parsedXML = parseXml(xmlText);
-  const feeds = transformOpmlData(parsedXML);
+  const feeds = transformOpml(parsedXML);
 
   return feeds;
 };

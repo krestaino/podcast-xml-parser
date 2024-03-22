@@ -1,6 +1,6 @@
 import fetchMock from "jest-fetch-mock";
-import { fetchItunes } from "../itunes";
-import { ERROR_MESSAGES } from "../constants";
+import { fetchItunes } from "../../utils";
+import { ERROR_MESSAGES } from "../../constants";
 
 describe("fetchItunes", () => {
   beforeEach(() => {

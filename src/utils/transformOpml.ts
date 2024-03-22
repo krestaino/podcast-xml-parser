@@ -8,11 +8,14 @@ import { getXmlElement, isXmlElement } from "./xml";
  * @returns An array of feed URLs extracted from the OPML data.
  * @throws {Error} If the expected XML structure is not found.
  */
-export function transformOpmlData(parsedXML: XmlDocument): string[] {
+export function transformOpml(parsedXML: XmlDocument): string[] {
   const rootElement = parsedXML.children[0] as XmlElement;
   const body = getXmlElement(rootElement, "body") as XmlElement;
-  const outline = getXmlElement(body, "outline");
+  if (!body) {
+    throw new Error("Body element not found");
+  }
 
+  const outline = getXmlElement(body, "outline") as XmlElement;
   if (!outline) {
     throw new Error("Outline element not found");
   }

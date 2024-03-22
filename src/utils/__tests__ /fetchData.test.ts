@@ -1,8 +1,8 @@
 import fetchMock from "jest-fetch-mock";
-import { fetchData } from "../fetch";
-import { ERROR_MESSAGES } from "../constants";
+import { fetchData } from "../../utils";
+import { ERROR_MESSAGES } from "../../constants";
 
-describe("fetchPodcastFeed", () => {
+describe("fetchData", () => {
   beforeEach(() => {
     fetchMock.resetMocks();
   });

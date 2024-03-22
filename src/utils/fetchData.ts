@@ -1,4 +1,4 @@
-import { ERROR_MESSAGES } from "./constants";
+import { ERROR_MESSAGES } from "../constants";
 
 /**
  * Fetches the content from the provided URL.

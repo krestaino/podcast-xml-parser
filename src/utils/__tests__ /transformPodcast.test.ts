@@ -1,7 +1,7 @@
 import { parseXml } from "@rgrove/parse-xml";
-import { transformPodcastData } from "../transform";
+import { transformPodcast } from "../../utils";
 
-describe("transformPodcastData", () => {
+describe("transformPodcast", () => {
   const validXml = `<?xml version="1.0" encoding="UTF-8"?>
     <rss>
       <channel>
@@ -58,7 +58,7 @@ describe("transformPodcastData", () => {
 
   it("should transform valid XML data into a Podcast object", () => {
     const parsedXml = parseXml(validXml);
-    const result = transformPodcastData(parsedXml);
+    const result = transformPodcast(parsedXml);
     expect(result).toBeDefined();
     expect(result.podcast).toBeInstanceOf(Object);
     expect(result.podcast.title).toEqual("Podcast Title");
@@ -67,12 +67,12 @@ describe("transformPodcastData", () => {
   it("should throw an error if the channel element is not found", () => {
     const invalidXml = `<?xml version="1.0" encoding="UTF-8"?><rss></rss>`;
     const parsedXml = parseXml(invalidXml);
-    expect(() => transformPodcastData(parsedXml)).toThrow("Channel element not found");
+    expect(() => transformPodcast(parsedXml)).toThrow("Channel element not found");
   });
 
   it("should transform episode data correctly", () => {
     const parsedXml = parseXml(validXml);
-    const result = transformPodcastData(parsedXml);
+    const result = transformPodcast(parsedXml);
     expect(result.episodes).toBeInstanceOf(Array);
     expect(result.episodes.length).toBeGreaterThan(0);
     expect(result.episodes[0].title).toEqual("Episode Title");
@@ -80,7 +80,7 @@ describe("transformPodcastData", () => {
 
   it("should set itunesDuration to 0 if itunes:duration is invalid", () => {
     const parsedXml = parseXml(validXml);
-    const result = transformPodcastData(parsedXml);
+    const result = transformPodcast(parsedXml);
     expect(result.episodes[1].itunesDuration).toBe(0);
   });
 });
