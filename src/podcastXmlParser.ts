@@ -1,5 +1,5 @@
 import { ERROR_MESSAGES } from "./constants";
-import { Podcast, Episode, Itunes } from "./types";
+import { Config, Podcast, Episode, Itunes } from "./types";
 import { fetchData, fetchItunes, parseXml, transformPodcast } from "./utils";
 
 /**
@@ -11,12 +11,13 @@ import { fetchData, fetchItunes, parseXml, transformPodcast } from "./utils";
  */
 export const podcastXmlParser = async (
   input: URL | number | string,
+  config: Config = {},
 ): Promise<{ podcast: Podcast; episodes: Episode[]; itunes?: Itunes }> => {
   let xmlText: string = "";
   let itunes: Itunes | undefined;
 
   if (input instanceof URL) {
-    xmlText = await fetchData(input);
+    xmlText = await fetchData(input, config);
   } else if (typeof input === "number") {
     itunes = await fetchItunes(input);
     if (!itunes?.feedUrl) {
@@ -36,7 +37,7 @@ export const podcastXmlParser = async (
   const parsedXML = parseXml(xmlText);
   const { podcast, episodes } = transformPodcast(parsedXML);
 
-  if (!itunes && podcast.feedUrl) {
+  if (config.itunes && !itunes && podcast.feedUrl) {
     itunes = await fetchItunes(podcast.title, podcast.feedUrl);
   }
 

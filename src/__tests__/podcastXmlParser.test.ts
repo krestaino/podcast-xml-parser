@@ -34,7 +34,7 @@ describe("podcastXmlParser", () => {
     const result = await podcastXmlParser(url);
 
     expect(result).toEqual({ podcast: mockPodcast, episodes: mockEpisodes, itunes: undefined });
-    expect(fetchData).toHaveBeenCalledWith(url);
+    expect(fetchData).toHaveBeenCalledWith(url, {});
     expect(parseXml).toHaveBeenCalledWith(mockFeedContent);
     expect(transformPodcast).toHaveBeenCalledWith({});
   });
@@ -71,6 +71,26 @@ describe("podcastXmlParser", () => {
     expect(result).toEqual({ podcast: mockPodcast, episodes: mockEpisodes, itunes: undefined });
     expect(parseXml).toHaveBeenCalledWith(mockXmlString);
     expect(transformPodcast).toHaveBeenCalledWith({});
+  });
+
+  it("should fetch iTunes information if config.itunes is true and iTunes data is not already available", async () => {
+    const mockFeedContent = "<xml>Podcast Feed</xml>";
+    const mockPodcast = { title: "Test Podcast", feedUrl: "https://example.com/feed.xml" };
+    const mockEpisodes = [{ title: "Episode 1" }];
+    const mockItunes = { feedUrl: "https://example.com/feed.xml", title: "Test Podcast" };
+    (fetchData as jest.Mock).mockResolvedValue(mockFeedContent);
+    (parseXml as jest.Mock).mockReturnValue({});
+    (transformPodcast as jest.Mock).mockReturnValue({ podcast: mockPodcast, episodes: mockEpisodes });
+    (fetchItunes as jest.Mock).mockResolvedValue(mockItunes);
+
+    const url = new URL("https://example.com/podcast.xml");
+    const result = await podcastXmlParser(url, { itunes: true });
+
+    expect(result).toEqual({ podcast: mockPodcast, episodes: mockEpisodes, itunes: mockItunes });
+    expect(fetchData).toHaveBeenCalledWith(url, { itunes: true });
+    expect(parseXml).toHaveBeenCalledWith(mockFeedContent);
+    expect(transformPodcast).toHaveBeenCalledWith({});
+    expect(fetchItunes).toHaveBeenCalledWith(mockPodcast.title, mockPodcast.feedUrl);
   });
 
   it("should throw an error if the input type is invalid", async () => {
