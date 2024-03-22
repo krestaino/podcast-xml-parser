@@ -1,6 +1,6 @@
 .DS_Store
-node_modules
-lib
-coverage
-test
 .env
+coverage
+lib
+node_modules
+test
