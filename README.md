@@ -19,6 +19,7 @@ Parse podcast feeds in browsers, React Native, or Node.js environments.
 - **🚫 Graceful Handling:** In cases of missing elements in the XML feed, the parser returns empty strings instead of throwing errors.
 - **🎧 Support for iTunes:** Additional details can be fetched from iTunes.
 - **🔢 Partial Feed Support:** Allows fetching and parsing a specific byte range of a feed.
+- **🌐 OPML Parsing:** Extracts podcast feed URLs from OPML outlines, commonly used for podcast subscriptions.
 
 <!-- HIDE_SECTION_START -->
 
@@ -72,14 +73,28 @@ A promise that resolves with an object containing:
 **Signature**:
 
 ```typescript
-podcastXmlParser(
-  source: string | URL | number,
-  config?: Config
-): Promise<{
+podcastXmlParser(source: URL | number | string, config?: Config): Promise<{
   podcast: Podcast;
   episodes: Episode[];
   itunes?: Itunes;
 }>
+```
+
+## Usage `podcastOpmlParser()`
+
+**Purpose**: Parses an OPML outline to extract podcast feed URLs.
+
+**Parameters**:
+
+- `source` _(URL | string)_: The source of the OPML content. Can be a URL object or an XML string.
+
+**Returns**:
+A promise that resolves with an array of feed URLs extracted from the OPML outline.
+
+**Signature**:
+
+```typescript
+podcastOpmlParser(source: URL | string): Promise<string[]>
 ```
 
 ## Configuration Options

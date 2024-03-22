@@ -18,7 +18,7 @@ describe("podcastOpmlParser", () => {
     (transformOpml as jest.Mock).mockReset();
   });
 
-  it("should parse and return an array of feed URLs from a URL input", async () => {
+  it("should parse and return an array of feed URLs from a URL source", async () => {
     const mockFeedContent = "<opml>Podcast OPML</opml>";
     const mockFeeds = ["https://example.com/feed1.xml", "https://example.com/feed2.xml"];
     fetchMock.mockResponseOnce(mockFeedContent);
@@ -34,7 +34,7 @@ describe("podcastOpmlParser", () => {
     expect(transformOpml).toHaveBeenCalledWith({});
   });
 
-  it("should parse and return an array of feed URLs from an XML string input", async () => {
+  it("should parse and return an array of feed URLs from an XML string source", async () => {
     const mockXmlString = "<opml>Podcast OPML</opml>";
     const mockFeeds = ["https://example.com/feed1.xml", "https://example.com/feed2.xml"];
     (parseXml as jest.Mock).mockReturnValue({});
@@ -47,11 +47,11 @@ describe("podcastOpmlParser", () => {
     expect(transformOpml).toHaveBeenCalledWith({});
   });
 
-  it("should throw an error if the input type is invalid", async () => {
-    const invalidInput = 123;
+  it("should throw an error if the source type is invalid", async () => {
+    const invalidSource = 123;
 
-    await expect(podcastOpmlParser(invalidInput as unknown as URL | string)).rejects.toThrow(
-      ERROR_MESSAGES.OPML_INVALID_INPUT,
+    await expect(podcastOpmlParser(invalidSource as unknown as URL | string)).rejects.toThrow(
+      ERROR_MESSAGES.OPML_INVALID_SOURCE,
     );
   });
 

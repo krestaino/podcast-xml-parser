@@ -4,15 +4,15 @@ import { Itunes } from "../../types";
 /**
  * Fetches podcast data from iTunes using the provided iTunes ID or search term.
  * Optionally, matches the result with a provided feed URL.
- * @param input The iTunes ID (number) or search term (string) of the podcast.
+ * @param source The iTunes ID (number) or search term (string) of the podcast.
  * @param feedUrl Optional feed URL to match with the search results.
  * @returns A promise that resolves to the podcast data.
  */
-export async function fetchItunes(input: number | string, feedUrl?: string): Promise<Itunes | undefined> {
+export async function fetchItunes(source: number | string, feedUrl?: string): Promise<Itunes | undefined> {
   const url =
-    typeof input === "number"
-      ? `https://itunes.apple.com/lookup?id=${input}&entity=podcast`
-      : `https://itunes.apple.com/search?term=${encodeURIComponent(input)}&entity=podcast`;
+    typeof source === "number"
+      ? `https://itunes.apple.com/lookup?id=${source}&entity=podcast`
+      : `https://itunes.apple.com/search?term=${encodeURIComponent(source)}&entity=podcast`;
 
   const response = await fetch(url);
   if (!response.ok) {
@@ -29,7 +29,7 @@ export async function fetchItunes(input: number | string, feedUrl?: string): Pro
   }
 
   const matchingResult = data.results.find((result) => {
-    const matchesId = typeof input === "number" ? result.collectionId === input : false;
+    const matchesId = typeof source === "number" ? result.collectionId === source : false;
     const matchesFeedUrl = feedUrl ? result.feedUrl === feedUrl : false;
     return matchesId || matchesFeedUrl;
   });
