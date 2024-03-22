@@ -18,7 +18,7 @@ afterAll(() => {
 
 describe("podcastXmlParser", () => {
   (IDS.length > 0 ? test : test.skip)("parses podcast IDs", async () => {
-    expect.assertions(IDS.length * 4);
+    expect.assertions(IDS.length * 5);
 
     await Promise.all(
       IDS.map(async (id: string) => {
@@ -28,12 +28,13 @@ describe("podcastXmlParser", () => {
         expect(episodes.length).toBeGreaterThan(0);
         expect(episodes[0].title).toBeDefined();
         expect(itunes?.artworkUrl100).toBeDefined();
+        expect(itunes?.collectionId).toBe(parseInt(id));
       }),
     );
   });
 
   (URLS.length > 0 ? test : test.skip)("parses podcast URLs", async () => {
-    expect.assertions(URLS.length * 4);
+    expect.assertions(URLS.length * 5);
 
     await Promise.all(
       URLS.map(async (url) => {
@@ -43,6 +44,7 @@ describe("podcastXmlParser", () => {
         expect(episodes.length).toBeGreaterThan(0);
         expect(episodes[0].title).toBeDefined();
         expect(itunes?.artworkUrl100).toBeDefined();
+        expect(itunes?.feedUrl).toBe(url);
       }),
     );
   });
