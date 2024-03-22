@@ -1,6 +1,6 @@
 import fetchMock from "jest-fetch-mock";
 
-import podcastXmlParser from "../../";
+import { podcastXmlParser } from "../../";
 import { ERROR_MESSAGES } from "../../constants";
 import { fetchItunes, fetchPodcast, parseXml, transformPodcast } from "../../utils";
 

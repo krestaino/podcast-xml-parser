@@ -1,7 +1,7 @@
 // This file is for testing real public feeds using podcast IDs and URLs from environment variables
 
 import dotenv from "dotenv";
-import podcastXmlParser, { podcastOpmlParser } from "../index";
+import { podcastOpmlParser, podcastXmlParser } from "../index";
 
 dotenv.config();
 
