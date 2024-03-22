@@ -1,29 +1,7 @@
-import { XmlDocument, XmlElement, XmlNode, XmlText } from "@rgrove/parse-xml";
+import { XmlDocument } from "@rgrove/parse-xml";
+
 import { Podcast } from "../types/Podcast";
-
-function isXmlElement(node: XmlNode): node is XmlElement {
-  return node.type === "element";
-}
-
-function isXmlText(node: XmlNode): node is XmlText {
-  return node.type === "text";
-}
-
-function getXmlElement(element: XmlElement, name: string): XmlElement | undefined {
-  return element.children.find(
-    (child: XmlNode): child is XmlElement => isXmlElement(child) && child.name === name,
-  );
-}
-
-function getTextValue(element: XmlElement, name: string): string {
-  const foundElement = getXmlElement(element, name);
-  return foundElement ? foundElement.children.find(isXmlText)?.text || "" : "";
-}
-
-function getAttributeValue(element: XmlElement, name: string, attribute: string): string {
-  const foundElement = getXmlElement(element, name);
-  return foundElement ? foundElement.attributes[attribute] || "" : "";
-}
+import { getAttributeValue, getTextValue, getXmlElement, isXmlElement } from "./xml";
 
 export function transformPodcastData(parsedXML: XmlDocument) {
   const rootElement = parsedXML.children[0];
