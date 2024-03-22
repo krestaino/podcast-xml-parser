@@ -60,7 +60,7 @@ describe("xmlUtils", () => {
   describe("getTextValue", () => {
     it("should return an empty string for an undefined element", () => {
       const text = getTextValue(undefined, "child");
-      expect(text).toBe("Hello");
+      expect(text).toBe("");
     });
 
     it("should return the correct text value", () => {
