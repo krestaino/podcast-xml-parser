@@ -1,6 +1,3 @@
-/**
- * Represents the config.
- */
 export interface Config {
   start?: number;
   limit?: number;

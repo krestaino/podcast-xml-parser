@@ -1,6 +1,3 @@
-/**
- * Represents the podcast.
- */
 export interface Podcast {
   copyright: string;
   contentEncoded: string;

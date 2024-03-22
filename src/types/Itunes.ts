@@ -1,6 +1,3 @@
-/**
- * Represents the additional details that can be fetched from iTunes.
- */
 export interface Itunes {
   wrapperType?: string;
   kind?: string;

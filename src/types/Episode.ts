@@ -1,6 +1,3 @@
-/**
- * Represents an individual podcast episode.
- */
 export interface Episode {
   author: string;
   contentEncoded: string;

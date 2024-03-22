@@ -1,4 +1,5 @@
-import { XmlDocument, XmlElement, XmlText, parseXml as parseXmlFn } from "@rgrove/parse-xml";
+import { parseXml as parseXmlFn, XmlDocument, XmlElement, XmlText } from "@rgrove/parse-xml";
+
 import { isXmlElement, isXmlText, getXmlElement, getTextValue, getAttributeValue, parseXml } from "../../utils";
 
 describe("xmlUtils", () => {

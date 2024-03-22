@@ -1,6 +1,5 @@
-import { fetchData } from "./utils/fetchData";
-import { parseXml, transformOpml } from "./utils";
 import { ERROR_MESSAGES } from "./constants";
+import { fetchData, parseXml, transformOpml } from "./utils";
 
 /**
  * Parses an OPML feed and returns an array of podcast feed URLs.

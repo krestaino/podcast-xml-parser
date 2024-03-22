@@ -1,5 +1,5 @@
-import { Itunes } from "../types/Itunes";
 import { ERROR_MESSAGES } from "../constants";
+import { Itunes } from "../types";
 
 /**
  * Fetches podcast data from iTunes using the provided iTunes ID or search term.
