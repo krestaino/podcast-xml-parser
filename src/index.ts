@@ -5,6 +5,13 @@ import { parsePodcastXML } from "./xml";
 import { transformPodcastData } from "./transform";
 import { Itunes } from "./types/Itunes";
 
+/**
+ * Parses a podcast feed from various input types and returns podcast and episodes data, along with iTunes information if available.
+ *
+ * @param input - A URL, iTunes ID, or XML string representing the podcast feed.
+ * @returns An object containing the podcast and episodes data, along with iTunes information if available.
+ * @throws {Error} If the input type is invalid, the feed URL cannot be retrieved from iTunes, or no feed is available to parse.
+ */
 const podcastXmlParser = async (input: URL | number | string) => {
   let xmlText: string = "";
   let itunes: Itunes | undefined;
