@@ -1,4 +1,6 @@
-import { fetchPodcastFeed, fetchItunes } from "./fetch";
+import { fetchPodcastFeed } from "./fetch";
+import { fetchItunes } from "./itunes";
+
 import { parsePodcastXML } from "./xml";
 import { transformPodcastData } from "./transform";
 import { Itunes } from "./types/Itunes";
