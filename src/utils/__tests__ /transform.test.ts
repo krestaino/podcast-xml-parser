@@ -35,7 +35,7 @@ describe("transformPodcastData", () => {
     expect(result.podcast).toBeInstanceOf(Object);
     expect(result.podcast.title).toEqual("Podcast Title");
   });
-  
+
   it("should throw an error if the channel element is not found", () => {
     const invalidXml = `<?xml version="1.0" encoding="UTF-8"?><rss></rss>`;
     const parsedXml = parseXml(invalidXml);
