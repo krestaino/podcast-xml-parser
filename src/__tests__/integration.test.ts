@@ -1,10 +1,11 @@
 // This file is for testing real public feeds using podcast IDs and URLs from environment variables
 
 import dotenv from "dotenv";
-import podcastXmlParser from "../index";
+import podcastXmlParser, { podcastOpmlParser } from "../index";
 
 dotenv.config();
 
+const OPML_URLS = process.env.OPML_URLS ? process.env.OPML_URLS.split(",") : [];
 const PODCAST_IDS = process.env.PODCAST_IDS ? process.env.PODCAST_IDS.split(",") : [];
 const PODCAST_URLS = process.env.PODCAST_URLS ? process.env.PODCAST_URLS.split(",") : [];
 
@@ -45,6 +46,21 @@ describe("podcastXmlParser", () => {
         expect(episodes[0].title).toBeDefined();
         expect(itunes?.artworkUrl100).toBeDefined();
         expect(itunes?.feedUrl).toBe(url);
+      }),
+    );
+  });
+});
+
+describe("podcastOpmlParser", () => {
+  (OPML_URLS ? test : test.skip)("parses OPML feeds", async () => {
+    expect.assertions(OPML_URLS.length * 2);
+
+    await Promise.all(
+      OPML_URLS.map(async (url) => {
+        const feeds = await podcastOpmlParser(new URL(url));
+
+        expect(feeds).toBeDefined();
+        expect(feeds.length).toBeGreaterThan(0);
       }),
     );
   });

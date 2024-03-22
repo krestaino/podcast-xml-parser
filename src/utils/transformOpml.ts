@@ -15,14 +15,25 @@ export function transformOpml(parsedXML: XmlDocument): string[] {
     throw new Error("Body element not found");
   }
 
-  const outline = getXmlElement(body, "outline") as XmlElement;
-  if (!outline) {
-    throw new Error("Outline element not found");
-  }
+  const outlines: XmlElement[] = [];
+  body.children.forEach((child) => {
+    if (isXmlElement(child) && child.name === "outline") {
+      // Check if the outline element has nested outline elements
+      if (child.children.some((nestedChild) => isXmlElement(nestedChild) && nestedChild.name === "outline")) {
+        // Add nested outline elements to the array
+        outlines.push(
+          ...child.children.filter(
+            (nestedChild): nestedChild is XmlElement => isXmlElement(nestedChild) && nestedChild.name === "outline",
+          ),
+        );
+      } else {
+        // Add the outline element itself to the array
+        outlines.push(child);
+      }
+    }
+  });
 
-  const feeds: string[] = outline.children
-    .filter((child): child is XmlElement => isXmlElement(child) && child.name === "outline")
-    .map((item) => item.attributes["xmlUrl"]);
+  const feeds: string[] = outlines.map((item) => item.attributes["xmlUrl"]);
 
   return feeds;
 }

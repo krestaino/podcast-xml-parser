@@ -29,12 +29,6 @@ describe("transformOpml", () => {
     expect(() => transformOpml(parsedXml)).toThrow("Body element not found");
   });
 
-  it("should throw an error if the outline element is not found", () => {
-    const invalidXml = `<?xml version="1.0" encoding="UTF-8"?><opml version="1.0"><body></body></opml>`;
-    const parsedXml = parseXml(invalidXml);
-    expect(() => transformOpml(parsedXml)).toThrow("Outline element not found");
-  });
-
   it("should transform episode data correctly", () => {
     const parsedXml = parseXml(validXml);
     const result = transformOpml(parsedXml);
