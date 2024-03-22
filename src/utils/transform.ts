@@ -9,81 +9,68 @@ function isXmlText(node: XmlNode): node is XmlText {
   return node.type === "text";
 }
 
-function getValue(element: XmlElement, name: string, attribute?: string): string {
-  const foundElement = element.children.find(
+function getXmlElement(element: XmlElement, name: string): XmlElement | undefined {
+  return element.children.find(
     (child: XmlNode): child is XmlElement => isXmlElement(child) && child.name === name,
   );
+}
 
-  if (attribute && foundElement && isXmlElement(foundElement)) {
-    return foundElement.attributes[attribute] || "";
-  }
+function getTextValue(element: XmlElement, name: string): string {
+  const foundElement = getXmlElement(element, name);
+  return foundElement ? foundElement.children.find(isXmlText)?.text || "" : "";
+}
 
-  return foundElement && isXmlElement(foundElement)
-    ? foundElement.children.find(isXmlText)?.text || ""
-    : "";
+function getAttributeValue(element: XmlElement, name: string, attribute: string): string {
+  const foundElement = getXmlElement(element, name);
+  return foundElement ? foundElement.attributes[attribute] || "" : "";
 }
 
 export function transformPodcastData(parsedXML: XmlDocument) {
-  const root = parsedXML;
-
-  if (!isXmlElement(root.children[0])) {
+  const rootElement = parsedXML.children[0];
+  if (!isXmlElement(rootElement)) {
     throw new Error("Root element is not an XmlElement");
   }
 
-  const channel = root.children[0].children.find(
-    (element: XmlNode): element is XmlElement =>
-      isXmlElement(element) && element.name === "channel",
-  );
-
+  const channel = getXmlElement(rootElement, "channel");
   if (!channel) {
     throw new Error("Channel element not found");
   }
 
-  const image = channel.children.find(
-    (element: XmlNode): element is XmlElement => isXmlElement(element) && element.name === "image",
-  );
-
+  const image = getXmlElement(channel, "image");
   if (!image) {
     throw new Error("Image element not found");
   }
 
-  const itunesOwner = channel.children.find(
-    (element: XmlNode): element is XmlElement =>
-      isXmlElement(element) && element.name === "itunes:owner",
-  );
-
+  const itunesOwner = getXmlElement(channel, "itunes:owner");
   if (!itunesOwner) {
     throw new Error("iTunes owner element not found");
   }
 
   const podcast: Podcast = {
-    contentEncoded: getValue(channel, "content:encoded"),
-    copyright: getValue(channel, "copyright"),
-    description: getValue(channel, "description"),
-    feedUrl: getValue(channel, "atom:link", "href"),
+    contentEncoded: getTextValue(channel, "content:encoded"),
+    copyright: getTextValue(channel, "copyright"),
+    description: getTextValue(channel, "description"),
+    feedUrl: getAttributeValue(channel, "atom:link", "href"),
     image: {
-      link: getValue(image, "link"),
-      title: getValue(image, "title"),
-      url: getValue(image, "url"),
+      link: getTextValue(image, "link"),
+      title: getTextValue(image, "title"),
+      url: getTextValue(image, "url"),
     },
-    itunesAuthor: getValue(channel, "itunes:author"),
-    itunesCategory: getValue(channel, "itunes:category", "text"),
-    itunesExplicit: getValue(channel, "itunes:explicit"),
-    itunesImage: getValue(channel, "itunes:image", "href"),
+    itunesAuthor: getTextValue(channel, "itunes:author"),
+    itunesCategory: getAttributeValue(channel, "itunes:category", "text"),
+    itunesExplicit: getTextValue(channel, "itunes:explicit"),
+    itunesImage: getAttributeValue(channel, "itunes:image", "href"),
     itunesOwner: {
-      email: getValue(itunesOwner, "itunes:email"),
-      name: getValue(itunesOwner, "itunes:name"),
+      email: getTextValue(itunesOwner, "itunes:email"),
+      name: getTextValue(itunesOwner, "itunes:name"),
     },
-    itunesSubtitle: getValue(channel, "itunes:subtitle"),
-    itunesSummary: getValue(channel, "itunes:summary"),
-    itunesType: getValue(channel, "itunes:type"),
-    language: getValue(channel, "language"),
-    link: getValue(channel, "link"),
-    title: getValue(channel, "title"),
+    itunesSubtitle: getTextValue(channel, "itunes:subtitle"),
+    itunesSummary: getTextValue(channel, "itunes:summary"),
+    itunesType: getTextValue(channel, "itunes:type"),
+    language: getTextValue(channel, "language"),
+    link: getTextValue(channel, "link"),
+    title: getTextValue(channel, "title"),
   };
 
-  return {
-    podcast,
-    episodes: [],
-  };
+  return { podcast, episodes: [] };
 }
