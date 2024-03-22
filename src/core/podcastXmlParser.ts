@@ -1,6 +1,6 @@
-import { ERROR_MESSAGES } from "./constants";
-import { Config, Podcast, Episode, Itunes } from "./types";
-import { fetchItunes, fetchPodcast, parseXml, transformPodcast } from "./utils";
+import { ERROR_MESSAGES } from "../constants";
+import { Config, Podcast, Episode, Itunes } from "../types";
+import { fetchItunes, fetchPodcast, parseXml, transformPodcast } from "../utils";
 
 /**
  * Parses a podcast feed from various input types and returns podcast and episodes data, along with iTunes information if available.
