@@ -28,10 +28,13 @@ function fixIncompleteFeed(xmlData: string): string {
 }
 
 /**
- * Fetches the content from the provided URL.
- * @param url The URL of the content.
- * @param config Optional configuration object for fetch request.
- * @returns A promise that resolves to the text content of the response.
+ * Fetches the podcast content from the provided URL.
+ * @param url The URL of the podcast.
+ * @param config Optional configuration object for the fetch request.
+ *   - requestHeaders: Headers to include in the fetch request.
+ *   - requestSize: The maximum size of the response in bytes. If specified,
+ *     the response is truncated to this size and any incomplete XML is fixed.
+ * @returns A promise that resolves to the text content of the podcast response.
  */
 export async function fetchPodcast(url: URL, config?: Config): Promise<string> {
   const headers = new Headers(config?.requestHeaders);
