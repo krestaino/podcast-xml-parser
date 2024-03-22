@@ -1,6 +1,6 @@
 import { parseXml as parseXmlFn, XmlDocument, XmlElement, XmlText } from "@rgrove/parse-xml";
 
-import { isXmlElement, isXmlText, getXmlElement, getTextValue, getAttributeValue, parseXml } from "../../utils";
+import { isXmlElement, isXmlText, getXmlElement, getTextValue, getAttributeValue, parseXml } from "..";
 
 describe("parseXml", () => {
   const sampleXml = `

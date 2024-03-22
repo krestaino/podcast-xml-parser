@@ -1,5 +1,5 @@
-import { ERROR_MESSAGES } from "../constants";
-import { Config } from "../types";
+import { ERROR_MESSAGES } from "../../constants";
+import { Config } from "../../types";
 
 /**
  * Fixes an incomplete XML feed by ensuring it ends with a complete <item> tag

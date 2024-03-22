@@ -1,6 +1,6 @@
 import { parseXml } from "@rgrove/parse-xml";
 
-import { transformPodcast } from "../../utils";
+import { transformPodcast } from "..";
 
 describe("transformPodcast", () => {
   const validXml = `<?xml version="1.0" encoding="UTF-8"?>

@@ -1,7 +1,7 @@
 import fetchMock from "jest-fetch-mock";
 
 import { ERROR_MESSAGES } from "../../constants";
-import { fetchItunes } from "../../utils";
+import { fetchItunes } from "..";
 
 fetchMock.enableMocks();
 
