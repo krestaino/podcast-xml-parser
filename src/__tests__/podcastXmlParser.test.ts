@@ -89,7 +89,7 @@ describe("podcastXmlParser", () => {
 
   it("should throw an error if the feed URL cannot be retrieved from iTunes", async () => {
     const itunesId = 123456;
-    (fetchItunes as jest.Mock).mockResolvedValue({});
+    (fetchItunes as jest.Mock).mockResolvedValue(undefined);
 
     await expect(podcastXmlParser(itunesId)).rejects.toThrow(ERROR_MESSAGES.ITUNES_NO_FEED_URL);
   });
