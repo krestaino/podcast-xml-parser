@@ -1,9 +1,9 @@
 import fetchMock from "jest-fetch-mock";
-import { podcastOpmlParser } from "..";
-import { ERROR_MESSAGES } from "../constants";
-import { parseXml, transformOpml } from "../utils";
+import { podcastOpmlParser } from "../../";
+import { ERROR_MESSAGES } from "../../constants";
+import { parseXml, transformOpml } from "../../utils";
 
-jest.mock("../utils", () => ({
+jest.mock("../../utils", () => ({
   parseXml: jest.fn(),
   transformOpml: jest.fn(),
 }));

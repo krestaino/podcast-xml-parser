@@ -1,10 +1,10 @@
 import fetchMock from "jest-fetch-mock";
 
-import podcastXmlParser from "..";
-import { ERROR_MESSAGES } from "../constants";
-import { fetchItunes, fetchPodcast, parseXml, transformPodcast } from "../utils";
+import podcastXmlParser from "../../";
+import { ERROR_MESSAGES } from "../../constants";
+import { fetchItunes, fetchPodcast, parseXml, transformPodcast } from "../../utils";
 
-jest.mock("../utils", () => ({
+jest.mock("../../utils", () => ({
   fetchPodcast: jest.fn(),
   fetchItunes: jest.fn(),
   parseXml: jest.fn(),
