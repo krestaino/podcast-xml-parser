@@ -1,7 +1,7 @@
 import { XmlDocument, XmlElement } from "@rgrove/parse-xml";
 
 import { Podcast, Episode } from "../types";
-import { getAttributeValue, getTextValue, getXmlElement, isXmlElement } from "./xml";
+import { getAttributeValue, getTextValue, getXmlElement, isXmlElement } from "./parseXml";
 
 /**
  * Transforms parsed XML data into a Podcast object.

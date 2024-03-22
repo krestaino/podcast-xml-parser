@@ -1,6 +1,6 @@
 import { XmlDocument, XmlElement } from "@rgrove/parse-xml";
 
-import { getXmlElement, isXmlElement } from "./xml";
+import { getXmlElement, isXmlElement } from "./parseXml";
 
 /**
  * Transforms parsed OPML XML data into an array of feed URLs.
