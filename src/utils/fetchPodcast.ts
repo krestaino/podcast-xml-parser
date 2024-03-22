@@ -33,7 +33,7 @@ function fixIncompleteFeed(xmlData: string): string {
  * @param config Optional configuration object for fetch request.
  * @returns A promise that resolves to the text content of the response.
  */
-export async function fetchData(url: URL, config?: Config): Promise<string> {
+export async function fetchPodcast(url: URL, config?: Config): Promise<string> {
   const headers = new Headers(config?.requestHeaders);
 
   if (config?.requestSize) {

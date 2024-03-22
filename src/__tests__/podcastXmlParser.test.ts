@@ -2,10 +2,10 @@ import fetchMock from "jest-fetch-mock";
 
 import podcastXmlParser from "..";
 import { ERROR_MESSAGES } from "../constants";
-import { fetchData, fetchItunes, parseXml, transformPodcast } from "../utils";
+import { fetchItunes, fetchPodcast, parseXml, transformPodcast } from "../utils";
 
 jest.mock("../utils", () => ({
-  fetchData: jest.fn(),
+  fetchPodcast: jest.fn(),
   fetchItunes: jest.fn(),
   parseXml: jest.fn(),
   transformPodcast: jest.fn(),
@@ -16,7 +16,7 @@ fetchMock.enableMocks();
 describe("podcastXmlParser", () => {
   beforeEach(() => {
     fetchMock.resetMocks();
-    (fetchData as jest.Mock).mockReset();
+    (fetchPodcast as jest.Mock).mockReset();
     (fetchItunes as jest.Mock).mockReset();
     (parseXml as jest.Mock).mockReset();
     (transformPodcast as jest.Mock).mockReset();
@@ -26,7 +26,7 @@ describe("podcastXmlParser", () => {
     const mockFeedContent = "<xml>Podcast Feed</xml>";
     const mockPodcast = { title: "Test Podcast", feedUrl: "https://example.com/feed.xml" };
     const mockEpisodes = [{ title: "Episode 1" }];
-    (fetchData as jest.Mock).mockResolvedValue(mockFeedContent);
+    (fetchPodcast as jest.Mock).mockResolvedValue(mockFeedContent);
     (parseXml as jest.Mock).mockReturnValue({});
     (transformPodcast as jest.Mock).mockReturnValue({ podcast: mockPodcast, episodes: mockEpisodes });
 
@@ -34,7 +34,7 @@ describe("podcastXmlParser", () => {
     const result = await podcastXmlParser(url);
 
     expect(result).toEqual({ podcast: mockPodcast, episodes: mockEpisodes, itunes: undefined });
-    expect(fetchData).toHaveBeenCalledWith(url, {});
+    expect(fetchPodcast).toHaveBeenCalledWith(url, {});
     expect(parseXml).toHaveBeenCalledWith(mockFeedContent);
     expect(transformPodcast).toHaveBeenCalledWith({});
   });
@@ -45,7 +45,7 @@ describe("podcastXmlParser", () => {
     const mockPodcast = { title: "Test Podcast", feedUrl: "https://example.com/feed.xml" };
     const mockEpisodes = [{ title: "Episode 1" }];
     (fetchItunes as jest.Mock).mockResolvedValue(mockItunes);
-    (fetchData as jest.Mock).mockResolvedValue(mockFeedContent);
+    (fetchPodcast as jest.Mock).mockResolvedValue(mockFeedContent);
     (parseXml as jest.Mock).mockReturnValue({});
     (transformPodcast as jest.Mock).mockReturnValue({ podcast: mockPodcast, episodes: mockEpisodes });
 
@@ -54,7 +54,7 @@ describe("podcastXmlParser", () => {
 
     expect(result).toEqual({ podcast: mockPodcast, episodes: mockEpisodes, itunes: mockItunes });
     expect(fetchItunes).toHaveBeenCalledWith(itunesId);
-    expect(fetchData).toHaveBeenCalledWith(new URL(mockItunes.feedUrl));
+    expect(fetchPodcast).toHaveBeenCalledWith(new URL(mockItunes.feedUrl));
     expect(parseXml).toHaveBeenCalledWith(mockFeedContent);
     expect(transformPodcast).toHaveBeenCalledWith({});
   });
@@ -78,7 +78,7 @@ describe("podcastXmlParser", () => {
     const mockPodcast = { title: "Test Podcast", feedUrl: "https://example.com/feed.xml" };
     const mockEpisodes = [{ title: "Episode 1" }];
     const mockItunes = { feedUrl: "https://example.com/feed.xml", title: "Test Podcast" };
-    (fetchData as jest.Mock).mockResolvedValue(mockFeedContent);
+    (fetchPodcast as jest.Mock).mockResolvedValue(mockFeedContent);
     (parseXml as jest.Mock).mockReturnValue({});
     (transformPodcast as jest.Mock).mockReturnValue({ podcast: mockPodcast, episodes: mockEpisodes });
     (fetchItunes as jest.Mock).mockResolvedValue(mockItunes);
@@ -87,7 +87,7 @@ describe("podcastXmlParser", () => {
     const result = await podcastXmlParser(url, { itunes: true });
 
     expect(result).toEqual({ podcast: mockPodcast, episodes: mockEpisodes, itunes: mockItunes });
-    expect(fetchData).toHaveBeenCalledWith(url, { itunes: true });
+    expect(fetchPodcast).toHaveBeenCalledWith(url, { itunes: true });
     expect(parseXml).toHaveBeenCalledWith(mockFeedContent);
     expect(transformPodcast).toHaveBeenCalledWith({});
     expect(fetchItunes).toHaveBeenCalledWith(mockPodcast.title, mockPodcast.feedUrl);

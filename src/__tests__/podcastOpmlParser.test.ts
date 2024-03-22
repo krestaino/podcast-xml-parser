@@ -1,11 +1,9 @@
 import fetchMock from "jest-fetch-mock";
-
 import { podcastOpmlParser } from "..";
 import { ERROR_MESSAGES } from "../constants";
-import { fetchData, parseXml, transformOpml } from "../utils";
+import { parseXml, transformOpml } from "../utils";
 
 jest.mock("../utils", () => ({
-  fetchData: jest.fn(),
   parseXml: jest.fn(),
   transformOpml: jest.fn(),
 }));
@@ -15,7 +13,6 @@ fetchMock.enableMocks();
 describe("podcastOpmlParser", () => {
   beforeEach(() => {
     fetchMock.resetMocks();
-    (fetchData as jest.Mock).mockReset();
     (parseXml as jest.Mock).mockReset();
     (transformOpml as jest.Mock).mockReset();
   });
@@ -23,7 +20,7 @@ describe("podcastOpmlParser", () => {
   it("should parse and return an array of feed URLs from a URL input", async () => {
     const mockFeedContent = "<opml>Podcast OPML</opml>";
     const mockFeeds = ["https://example.com/feed1.xml", "https://example.com/feed2.xml"];
-    (fetchData as jest.Mock).mockResolvedValue(mockFeedContent);
+    fetchMock.mockResponseOnce(mockFeedContent);
     (parseXml as jest.Mock).mockReturnValue({});
     (transformOpml as jest.Mock).mockReturnValue(mockFeeds);
 
@@ -31,7 +28,7 @@ describe("podcastOpmlParser", () => {
     const result = await podcastOpmlParser(url);
 
     expect(result).toEqual(mockFeeds);
-    expect(fetchData).toHaveBeenCalledWith(url);
+    expect(fetch).toHaveBeenCalledWith(url.toString());
     expect(parseXml).toHaveBeenCalledWith(mockFeedContent);
     expect(transformOpml).toHaveBeenCalledWith({});
   });
@@ -62,5 +59,12 @@ describe("podcastOpmlParser", () => {
     const url = new URL("https://example.com/podcast.opml");
 
     await expect(podcastOpmlParser(url)).rejects.toThrow(ERROR_MESSAGES.NO_FEED_TO_PARSE);
+  });
+
+  it("should throw an error if the fetch request fails", async () => {
+    fetchMock.mockResponseOnce("", { status: 404 });
+    const url = new URL("https://example.com/podcast.opml");
+
+    await expect(podcastOpmlParser(url)).rejects.toThrow(ERROR_MESSAGES.FETCH_FAILED);
   });
 });

@@ -1,11 +1,11 @@
 import fetchMock from "jest-fetch-mock";
 
 import { ERROR_MESSAGES } from "../../constants";
-import { fetchData } from "../../utils";
+import { fetchPodcast } from "../../utils";
 
 fetchMock.enableMocks();
 
-describe("fetchData", () => {
+describe("fetchPodcast", () => {
   beforeEach(() => {
     fetchMock.resetMocks();
   });
@@ -15,7 +15,7 @@ describe("fetchData", () => {
     fetchMock.mockResponseOnce(mockFeedContent);
 
     const url = new URL("https://example.com/podcast.xml");
-    const result = await fetchData(url);
+    const result = await fetchPodcast(url);
 
     expect(result).toEqual(mockFeedContent);
     expect(fetchMock).toHaveBeenCalledWith(url.toString(), { headers: new Headers({}) });
@@ -27,7 +27,7 @@ describe("fetchData", () => {
 
     const url = new URL("https://example.com/podcast.xml");
     const customHeaders = { "X-Custom-Header": "Value" };
-    const result = await fetchData(url, { requestHeaders: customHeaders });
+    const result = await fetchPodcast(url, { requestHeaders: customHeaders });
 
     expect(result).toEqual(mockFeedContent);
     expect(fetchMock).toHaveBeenCalledWith(url.toString(), {
@@ -41,7 +41,7 @@ describe("fetchData", () => {
 
     const url = new URL("https://example.com/podcast.xml");
     const requestSize = 500;
-    const result = await fetchData(url, { requestSize });
+    const result = await fetchPodcast(url, { requestSize });
 
     expect(result).toEqual(mockFeedContent);
     expect(fetchMock).toHaveBeenCalledWith(url.toString(), {
@@ -53,7 +53,7 @@ describe("fetchData", () => {
     fetchMock.mockReject(new Error("Network error"));
 
     const url = new URL("https://example.com/podcast.xml");
-    await expect(fetchData(url)).rejects.toThrow("Network error");
+    await expect(fetchPodcast(url)).rejects.toThrow("Network error");
   });
 
   it("should throw an error if the response is not ok", async () => {
@@ -64,7 +64,7 @@ describe("fetchData", () => {
     });
 
     const url = new URL("https://example.com/podcast.xml");
-    await expect(fetchData(url)).rejects.toThrow(ERROR_MESSAGES.FETCH_FAILED);
+    await expect(fetchPodcast(url)).rejects.toThrow(ERROR_MESSAGES.FETCH_FAILED);
   });
 
   it("should fix incomplete XML feed if requestSize is provided", async () => {
@@ -76,7 +76,7 @@ describe("fetchData", () => {
 
     const url = new URL("https://example.com/podcast.xml");
     const requestSize = 100;
-    const result = await fetchData(url, { requestSize });
+    const result = await fetchPodcast(url, { requestSize });
 
     expect(result).toEqual(fixedFeedContent);
     expect(fetchMock).toHaveBeenCalledWith(url.toString(), {

@@ -1,5 +1,5 @@
 import { ERROR_MESSAGES } from "./constants";
-import { fetchData, parseXml, transformOpml } from "./utils";
+import { parseXml, transformOpml } from "./utils";
 
 /**
  * Parses an OPML feed and returns an array of podcast feed URLs.
@@ -12,7 +12,11 @@ export const podcastOpmlParser = async (input: URL | string): Promise<string[]> 
   let xmlText: string = "";
 
   if (input instanceof URL) {
-    xmlText = await fetchData(input);
+    const response = await fetch(input.toString());
+    if (!response.ok) {
+      throw new Error(ERROR_MESSAGES.FETCH_FAILED);
+    }
+    xmlText = await response.text();
   } else if (typeof input === "string") {
     xmlText = input;
   } else {

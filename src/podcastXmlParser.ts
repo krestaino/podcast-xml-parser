@@ -1,6 +1,6 @@
 import { ERROR_MESSAGES } from "./constants";
 import { Config, Podcast, Episode, Itunes } from "./types";
-import { fetchData, fetchItunes, parseXml, transformPodcast } from "./utils";
+import { fetchItunes, fetchPodcast, parseXml, transformPodcast } from "./utils";
 
 /**
  * Parses a podcast feed from various input types and returns podcast and episodes data, along with iTunes information if available.
@@ -17,13 +17,13 @@ export const podcastXmlParser = async (
   let itunes: Itunes | undefined;
 
   if (input instanceof URL) {
-    xmlText = await fetchData(input, config);
+    xmlText = await fetchPodcast(input, config);
   } else if (typeof input === "number") {
     itunes = await fetchItunes(input);
     if (!itunes?.feedUrl) {
       throw new Error(ERROR_MESSAGES.ITUNES_NO_FEED_URL);
     }
-    xmlText = await fetchData(new URL(itunes.feedUrl));
+    xmlText = await fetchPodcast(new URL(itunes.feedUrl));
   } else if (typeof input === "string") {
     xmlText = input;
   } else {
