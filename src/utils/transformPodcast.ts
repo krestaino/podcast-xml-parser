@@ -1,7 +1,6 @@
 import { XmlDocument, XmlElement } from "@rgrove/parse-xml";
 
-import { Podcast } from "../types/Podcast";
-import { Episode } from "../types/Episode";
+import { Podcast, Episode } from "../types";
 import { getAttributeValue, getTextValue, getXmlElement, isXmlElement } from "./xml";
 
 /**
@@ -10,7 +9,7 @@ import { getAttributeValue, getTextValue, getXmlElement, isXmlElement } from "./
  * @returns An object containing the transformed podcast and episodes data.
  * @throws An error if the expected XML structure is not found.
  */
-export function transformPodcast(parsedXML: XmlDocument) {
+export function transformPodcast(parsedXML: XmlDocument): { podcast: Podcast; episodes: Episode[] } {
   const rootElement = parsedXML.children[0] as XmlElement;
   const channel = getXmlElement(rootElement, "channel");
 

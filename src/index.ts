@@ -2,8 +2,7 @@ import { fetchData } from "./utils/fetchData";
 import { fetchItunes } from "./utils/fetchItunes";
 
 import { Podcast, Episode, Itunes } from "./types";
-import { parseXml } from "./utils/xml";
-import { transformPodcast, transformOpml } from "./utils";
+import { parseXml, transformOpml, transformPodcast } from "./utils";
 import { ERROR_MESSAGES } from "./constants";
 
 /**
