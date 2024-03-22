@@ -1,3 +1,5 @@
+import { ERROR_MESSAGES } from "./constants";
+
 /**
  * Fetches the content of a podcast XML feed from the provided URL.
  * @param url The URL of the podcast XML feed.
@@ -6,7 +8,7 @@
 export async function fetchPodcastFeed(url: URL): Promise<string> {
   const response = await fetch(url.toString());
   if (!response.ok) {
-    throw new Error(`Failed to fetch podcast feed from ${url}: ${response.statusText}`);
+    throw new Error(ERROR_MESSAGES.FETCH_FAILED);
   }
   return response.text();
 }

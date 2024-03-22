@@ -1,4 +1,5 @@
 import { Itunes } from "./types/Itunes";
+import { ERROR_MESSAGES } from "./constants";
 
 /**
  * Fetches podcast data from iTunes using the provided iTunes ID or search term.
@@ -7,10 +8,7 @@ import { Itunes } from "./types/Itunes";
  * @param feedUrl Optional feed URL to match with the search results.
  * @returns A promise that resolves to the podcast data.
  */
-export async function fetchItunes(
-  input: number | string,
-  feedUrl?: string,
-): Promise<Itunes | undefined> {
+export async function fetchItunes(input: number | string, feedUrl?: string): Promise<Itunes | undefined> {
   const url =
     typeof input === "number"
       ? `https://itunes.apple.com/lookup?id=${input}&entity=podcast`
@@ -18,7 +16,7 @@ export async function fetchItunes(
 
   const response = await fetch(url);
   if (!response.ok) {
-    throw new Error(`Failed to fetch iTunes data for ${input}: ${response.statusText}`);
+    throw new Error(ERROR_MESSAGES.ITUNES_FETCH_FAILED);
   }
 
   const data = (await response.json()) as {
@@ -27,7 +25,7 @@ export async function fetchItunes(
   };
 
   if (data.resultCount === 0) {
-    throw new Error(`No podcast found for ${input}`);
+    throw new Error(ERROR_MESSAGES.ITUNES_NO_PODCASTS_FOUND);
   }
 
   const matchingResult = data.results.find((result) => {

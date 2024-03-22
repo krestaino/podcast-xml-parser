@@ -1,5 +1,6 @@
 import fetchMock from "jest-fetch-mock";
 import { fetchPodcastFeed } from "../fetch";
+import { ERROR_MESSAGES } from "../constants";
 
 describe("fetchPodcastFeed", () => {
   beforeEach(() => {
@@ -32,8 +33,6 @@ describe("fetchPodcastFeed", () => {
     });
 
     const url = new URL("https://example.com/podcast.xml");
-    await expect(fetchPodcastFeed(url)).rejects.toThrow(
-      `Failed to fetch podcast feed from ${url}: ${mockStatusText}`,
-    );
+    await expect(fetchPodcastFeed(url)).rejects.toThrow(ERROR_MESSAGES.FETCH_FAILED);
   });
 });

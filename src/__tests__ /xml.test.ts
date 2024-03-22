@@ -1,12 +1,5 @@
 import { XmlDocument, XmlElement, XmlText, parseXml } from "@rgrove/parse-xml";
-import {
-  isXmlElement,
-  isXmlText,
-  getXmlElement,
-  getTextValue,
-  getAttributeValue,
-  parsePodcastXML,
-} from "../xml";
+import { isXmlElement, isXmlText, getXmlElement, getTextValue, getAttributeValue, parsePodcastXML } from "../xml";
 
 describe("xmlUtils", () => {
   const sampleXml = `

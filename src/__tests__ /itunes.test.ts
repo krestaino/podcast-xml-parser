@@ -1,5 +1,6 @@
 import fetchMock from "jest-fetch-mock";
 import { fetchItunes } from "../itunes";
+import { ERROR_MESSAGES } from "../constants";
 
 describe("fetchItunes", () => {
   beforeEach(() => {
@@ -16,9 +17,7 @@ describe("fetchItunes", () => {
     const result = await fetchItunes(12345);
 
     expect(result).toEqual(mockData.results[0]);
-    expect(fetchMock).toHaveBeenCalledWith(
-      "https://itunes.apple.com/lookup?id=12345&entity=podcast",
-    );
+    expect(fetchMock).toHaveBeenCalledWith("https://itunes.apple.com/lookup?id=12345&entity=podcast");
   });
 
   it("should fetch and return the podcast data using search term", async () => {
@@ -31,9 +30,7 @@ describe("fetchItunes", () => {
     const result = await fetchItunes("Test Podcast", "https://example.com/feed");
 
     expect(result).toEqual(mockData.results[0]);
-    expect(fetchMock).toHaveBeenCalledWith(
-      "https://itunes.apple.com/search?term=Test%20Podcast&entity=podcast",
-    );
+    expect(fetchMock).toHaveBeenCalledWith("https://itunes.apple.com/search?term=Test%20Podcast&entity=podcast");
   });
 
   it("should return the matching podcast when provided with a feed URL", async () => {
@@ -55,9 +52,7 @@ describe("fetchItunes", () => {
     const mockData = { resultCount: 0, results: [] };
     fetchMock.mockResponseOnce(JSON.stringify(mockData));
 
-    await expect(fetchItunes("Nonexistent Podcast")).rejects.toThrow(
-      "No podcast found for Nonexistent Podcast",
-    );
+    await expect(fetchItunes("Nonexistent Podcast")).rejects.toThrow(ERROR_MESSAGES.ITUNES_NO_PODCASTS_FOUND);
   });
 
   it("should throw an error if no matching podcast is found with the provided feed URL", async () => {
@@ -85,8 +80,6 @@ describe("fetchItunes", () => {
       statusText: mockStatusText,
     });
 
-    await expect(fetchItunes(12345)).rejects.toThrow(
-      `Failed to fetch iTunes data for 12345: ${mockStatusText}`,
-    );
+    await expect(fetchItunes(12345)).rejects.toThrow(ERROR_MESSAGES.ITUNES_FETCH_FAILED);
   });
 });

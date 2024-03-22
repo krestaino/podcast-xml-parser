@@ -4,6 +4,7 @@ import { fetchItunes } from "./itunes";
 import { parsePodcastXML } from "./xml";
 import { transformPodcastData } from "./transform";
 import { Itunes } from "./types/Itunes";
+import { ERROR_MESSAGES } from "./constants";
 
 /**
  * Parses a podcast feed from various input types and returns podcast and episodes data, along with iTunes information if available.
@@ -21,18 +22,17 @@ const podcastXmlParser = async (input: URL | number | string) => {
   } else if (typeof input === "number") {
     itunes = await fetchItunes(input);
     if (!itunes?.feedUrl) {
-      throw new Error("Unable to retrieve podcast feed URL from iTunes");
-    } else if (itunes.feedUrl) {
-      xmlText = await fetchPodcastFeed(new URL(itunes.feedUrl));
+      throw new Error(ERROR_MESSAGES.ITUNES_NO_FEED_URL);
     }
+    xmlText = await fetchPodcastFeed(new URL(itunes.feedUrl));
   } else if (typeof input === "string") {
     xmlText = input;
   } else {
-    throw new Error("Invalid input type. Expected URL, number, or string.");
+    throw new Error(ERROR_MESSAGES.INVALID_INPUT);
   }
 
-  if (xmlText === "") {
-    throw new Error("No feed to parse");
+  if (!xmlText) {
+    throw new Error(ERROR_MESSAGES.NO_FEED_TO_PARSE);
   }
 
   const parsedXML = parsePodcastXML(xmlText);

@@ -25,9 +25,7 @@ export function isXmlText(node: XmlNode): node is XmlText {
  * @returns The found XmlElement, or undefined if not found.
  */
 export function getXmlElement(element: XmlElement, name: string): XmlElement | undefined {
-  return element.children.find(
-    (child: XmlNode): child is XmlElement => isXmlElement(child) && child.name === name,
-  );
+  return element.children.find((child: XmlNode): child is XmlElement => isXmlElement(child) && child.name === name);
 }
 
 /**
