@@ -66,4 +66,21 @@ describe("fetchData", () => {
     const url = new URL("https://example.com/podcast.xml");
     await expect(fetchData(url)).rejects.toThrow(ERROR_MESSAGES.FETCH_FAILED);
   });
+
+  it("should fix incomplete XML feed if requestSize is provided", async () => {
+    const incompleteFeedContent =
+      "<rss><channel><item><title>Episode 1</title></item><item><title>Episode 2</title></item><ite";
+    const fixedFeedContent =
+      "<rss><channel><item><title>Episode 1</title></item><item><title>Episode 2</title></item></channel></rss>";
+    fetchMock.mockResponseOnce(incompleteFeedContent);
+
+    const url = new URL("https://example.com/podcast.xml");
+    const requestSize = 100;
+    const result = await fetchData(url, { requestSize });
+
+    expect(result).toEqual(fixedFeedContent);
+    expect(fetchMock).toHaveBeenCalledWith(url.toString(), {
+      headers: new Headers({ Range: `bytes=0-${requestSize}` }),
+    });
+  });
 });
