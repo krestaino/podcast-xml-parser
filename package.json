@@ -1,11 +1,9 @@
 {
   "name": "podcast-xml-parser",
   "version": "0.0.0",
+  "description": "🎙 Parse podcast feeds in browsers, React Native, or Node.js environments.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
-  "files": [
-    "lib/**/*"
-  ],
   "scripts": {
     "build": "tsc",
     "format": "prettier --write '**/*.{json,md,yml,ts}'",
@@ -15,18 +13,26 @@
     "test:coverage": "jest --coverage",
     "prepare": "husky"
   },
-  "author": "",
+  "keywords": [
+    "podcast",
+    "xml",
+    "parse",
+    "node",
+    "javascript",
+    "typescript",
+    "react-native",
+    "itunes"
+  ],
+  "author": "Kevin Restaino <github@kmr.io> (https://kmr.io)",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/krestaino/podcast-xml-parser.git"
   },
-  "keywords": [],
   "bugs": {
     "url": "https://github.com/krestaino/podcast-xml-parser/issues"
   },
-  "homepage": "https://github.com/krestaino/podcast-xml-parser#readme",
-  "description": "",
+  "homepage": "https://podcast-xml-parser.kmr.io",
   "devDependencies": {
     "@types/jest": "^29.5.12",
     "@typescript-eslint/eslint-plugin": "^7.3.1",
@@ -44,5 +50,8 @@
   },
   "dependencies": {
     "@rgrove/parse-xml": "^4.1.0"
-  }
+  },
+  "files": [
+    "lib/**/*"
+  ]
 }
