@@ -2,6 +2,8 @@ import fetchMock from "jest-fetch-mock";
 import { fetchData } from "../../utils";
 import { ERROR_MESSAGES } from "../../constants";
 
+fetchMock.enableMocks();
+
 describe("fetchData", () => {
   beforeEach(() => {
     fetchMock.resetMocks();

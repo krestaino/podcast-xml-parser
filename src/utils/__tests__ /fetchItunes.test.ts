@@ -2,6 +2,8 @@ import fetchMock from "jest-fetch-mock";
 import { fetchItunes } from "../../utils";
 import { ERROR_MESSAGES } from "../../constants";
 
+fetchMock.enableMocks();
+
 describe("fetchItunes", () => {
   beforeEach(() => {
     fetchMock.resetMocks();
