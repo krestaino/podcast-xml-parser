@@ -50,7 +50,7 @@ describe("podcastOpmlParser", () => {
     const invalidInput = 123;
 
     await expect(podcastOpmlParser(invalidInput as unknown as URL | string)).rejects.toThrow(
-      ERROR_MESSAGES.INVALID_INPUT
+      ERROR_MESSAGES.INVALID_INPUT,
     );
   });
 
