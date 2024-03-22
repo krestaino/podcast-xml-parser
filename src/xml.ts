@@ -1,4 +1,4 @@
-import { parseXml, XmlDocument, XmlElement, XmlNode, XmlText } from "@rgrove/parse-xml";
+import { parseXml as parseXmlFn, XmlDocument, XmlElement, XmlNode, XmlText } from "@rgrove/parse-xml";
 
 /**
  * Checks if a given XML node is an XmlElement.
@@ -60,6 +60,6 @@ export function getAttributeValue(element: XmlElement, name: string, attribute: 
  * @param xmlText The XML text to parse.
  * @returns A JavaScript object representation of the XML.
  */
-export function parsePodcastXML(xmlText: string): XmlDocument {
-  return parseXml(xmlText);
+export function parseXml(xmlText: string): XmlDocument {
+  return parseXmlFn(xmlText);
 }

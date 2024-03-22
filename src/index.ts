@@ -1,8 +1,9 @@
-import { fetchPodcastFeed } from "./fetch";
+import { fetchData } from "./fetch";
 import { fetchItunes } from "./itunes";
 
-import { parsePodcastXML } from "./xml";
+import { parseXml } from "./xml";
 import { transformPodcastData } from "./transform";
+import { transformOpmlData } from "./transformOpml";
 import { Itunes } from "./types/Itunes";
 import { ERROR_MESSAGES } from "./constants";
 
@@ -18,13 +19,13 @@ const podcastXmlParser = async (input: URL | number | string) => {
   let itunes: Itunes | undefined;
 
   if (input instanceof URL) {
-    xmlText = await fetchPodcastFeed(input);
+    xmlText = await fetchData(input);
   } else if (typeof input === "number") {
     itunes = await fetchItunes(input);
     if (!itunes?.feedUrl) {
       throw new Error(ERROR_MESSAGES.ITUNES_NO_FEED_URL);
     }
-    xmlText = await fetchPodcastFeed(new URL(itunes.feedUrl));
+    xmlText = await fetchData(new URL(itunes.feedUrl));
   } else if (typeof input === "string") {
     xmlText = input;
   } else {
@@ -35,7 +36,7 @@ const podcastXmlParser = async (input: URL | number | string) => {
     throw new Error(ERROR_MESSAGES.NO_FEED_TO_PARSE);
   }
 
-  const parsedXML = parsePodcastXML(xmlText);
+  const parsedXML = parseXml(xmlText);
   const { podcast, episodes } = transformPodcastData(parsedXML);
 
   if (!itunes && podcast.feedUrl) {
@@ -43,6 +44,34 @@ const podcastXmlParser = async (input: URL | number | string) => {
   }
 
   return { podcast, episodes, itunes };
+};
+
+/**
+ * Parses an OPML feed and returns an array of podcast feed URLs.
+ *
+ * @param input - A URL or XML string representing the OPML feed.
+ * @returns An array of feed URLs extracted from the OPML data.
+ * @throws {Error} If the input type is invalid or no feed is available to parse.
+ */
+export const podcastOpmlParser = async (input: URL | string): Promise<string[]> => {
+  let xmlText: string = "";
+
+  if (input instanceof URL) {
+    xmlText = await fetchData(input);
+  } else if (typeof input === "string") {
+    xmlText = input;
+  } else {
+    throw new Error(ERROR_MESSAGES.INVALID_INPUT);
+  }
+
+  if (!xmlText) {
+    throw new Error(ERROR_MESSAGES.NO_FEED_TO_PARSE);
+  }
+
+  const parsedXML = parseXml(xmlText);
+  const feeds = transformOpmlData(parsedXML);
+
+  return feeds;
 };
 
 export default podcastXmlParser;

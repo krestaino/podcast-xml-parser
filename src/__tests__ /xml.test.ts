@@ -1,5 +1,5 @@
-import { XmlDocument, XmlElement, XmlText, parseXml } from "@rgrove/parse-xml";
-import { isXmlElement, isXmlText, getXmlElement, getTextValue, getAttributeValue, parsePodcastXML } from "../xml";
+import { XmlDocument, XmlElement, XmlText, parseXml as parseXmlFn } from "@rgrove/parse-xml";
+import { isXmlElement, isXmlText, getXmlElement, getTextValue, getAttributeValue, parseXml } from "../xml";
 
 describe("xmlUtils", () => {
   const sampleXml = `
@@ -9,7 +9,7 @@ describe("xmlUtils", () => {
     </root>
   `;
 
-  const parsedXml = parseXml(sampleXml);
+  const parsedXml = parseXmlFn(sampleXml);
 
   describe("isXmlElement", () => {
     it("should return true for XmlElement", () => {
@@ -101,9 +101,9 @@ describe("xmlUtils", () => {
     });
   });
 
-  describe("parsePodcastXML", () => {
+  describe("parseXML", () => {
     it("should parse XML text into a JavaScript object", () => {
-      const xmlObject = parsePodcastXML(sampleXml);
+      const xmlObject = parseXml(sampleXml);
       expect(xmlObject).toBeDefined();
       expect(xmlObject.type).toBe("document");
     });

@@ -1,5 +1,5 @@
 import fetchMock from "jest-fetch-mock";
-import { fetchPodcastFeed } from "../fetch";
+import { fetchData } from "../fetch";
 import { ERROR_MESSAGES } from "../constants";
 
 describe("fetchPodcastFeed", () => {
@@ -12,7 +12,7 @@ describe("fetchPodcastFeed", () => {
     fetchMock.mockResponseOnce(mockFeedContent);
 
     const url = new URL("https://example.com/podcast.xml");
-    const result = await fetchPodcastFeed(url);
+    const result = await fetchData(url);
 
     expect(result).toEqual(mockFeedContent);
     expect(fetchMock).toHaveBeenCalledWith(url.toString());
@@ -22,7 +22,7 @@ describe("fetchPodcastFeed", () => {
     fetchMock.mockReject(new Error("Network error"));
 
     const url = new URL("https://example.com/podcast.xml");
-    await expect(fetchPodcastFeed(url)).rejects.toThrow("Network error");
+    await expect(fetchData(url)).rejects.toThrow("Network error");
   });
 
   it("should throw an error if the response is not ok", async () => {
@@ -33,6 +33,6 @@ describe("fetchPodcastFeed", () => {
     });
 
     const url = new URL("https://example.com/podcast.xml");
-    await expect(fetchPodcastFeed(url)).rejects.toThrow(ERROR_MESSAGES.FETCH_FAILED);
+    await expect(fetchData(url)).rejects.toThrow(ERROR_MESSAGES.FETCH_FAILED);
   });
 });
