@@ -60,7 +60,7 @@ console.log(podcast.title); // "Conan O’Brien Needs A Friend"
 
 **Parameters**:
 
-- `source` _(string | URL | number)_: The source of the XML content. Can be a URL object, an iTunes ID, or an XML string.
+- `source` _(URL | number | string)_: The source of the XML content. Can be a URL object, an iTunes ID, or an XML string.
 - `config` _(Config)_: Configuration options for the request, like request size, request headers, pagination, or to additionally return iTunes details.
 
 **Returns**:
