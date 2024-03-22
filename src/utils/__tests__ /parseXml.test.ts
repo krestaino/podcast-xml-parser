@@ -2,7 +2,7 @@ import { parseXml as parseXmlFn, XmlDocument, XmlElement, XmlText } from "@rgrov
 
 import { isXmlElement, isXmlText, getXmlElement, getTextValue, getAttributeValue, parseXml } from "../../utils";
 
-describe("xmlUtils", () => {
+describe("parseXml", () => {
   const sampleXml = `
     <root>
       <child id="1">Hello</child>
