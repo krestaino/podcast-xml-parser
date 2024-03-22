@@ -97,7 +97,7 @@ describe("podcastXmlParser", () => {
     const invalidInput = {};
 
     await expect(podcastXmlParser(invalidInput as unknown as URL | number | string)).rejects.toThrow(
-      ERROR_MESSAGES.INVALID_INPUT,
+      ERROR_MESSAGES.XML_INVALID_INPUT,
     );
   });
 
@@ -105,7 +105,7 @@ describe("podcastXmlParser", () => {
     fetchMock.mockResponseOnce("");
     const url = new URL("https://example.com/podcast.xml");
 
-    await expect(podcastXmlParser(url)).rejects.toThrow(ERROR_MESSAGES.NO_FEED_TO_PARSE);
+    await expect(podcastXmlParser(url)).rejects.toThrow(ERROR_MESSAGES.XML_NO_FEED_TO_PARSE);
   });
 
   it("should throw an error if the feed URL cannot be retrieved from iTunes", async () => {

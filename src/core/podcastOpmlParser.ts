@@ -20,11 +20,11 @@ export const podcastOpmlParser = async (input: URL | string): Promise<string[]> 
   } else if (typeof input === "string") {
     xmlText = input;
   } else {
-    throw new Error(ERROR_MESSAGES.INVALID_INPUT);
+    throw new Error(ERROR_MESSAGES.OPML_INVALID_INPUT);
   }
 
   if (!xmlText) {
-    throw new Error(ERROR_MESSAGES.NO_FEED_TO_PARSE);
+    throw new Error(ERROR_MESSAGES.OPML_NO_FEED_TO_PARSE);
   }
 
   const parsedXML = parseXml(xmlText);

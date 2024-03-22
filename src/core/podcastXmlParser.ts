@@ -27,11 +27,11 @@ export const podcastXmlParser = async (
   } else if (typeof input === "string") {
     xmlText = input;
   } else {
-    throw new Error(ERROR_MESSAGES.INVALID_INPUT);
+    throw new Error(ERROR_MESSAGES.XML_INVALID_INPUT);
   }
 
   if (!xmlText) {
-    throw new Error(ERROR_MESSAGES.NO_FEED_TO_PARSE);
+    throw new Error(ERROR_MESSAGES.XML_NO_FEED_TO_PARSE);
   }
 
   const parsedXML = parseXml(xmlText);

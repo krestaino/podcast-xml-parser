@@ -50,7 +50,7 @@ describe("podcastOpmlParser", () => {
     const invalidInput = 123;
 
     await expect(podcastOpmlParser(invalidInput as unknown as URL | string)).rejects.toThrow(
-      ERROR_MESSAGES.INVALID_INPUT,
+      ERROR_MESSAGES.OPML_INVALID_INPUT,
     );
   });
 
@@ -58,7 +58,7 @@ describe("podcastOpmlParser", () => {
     fetchMock.mockResponseOnce("");
     const url = new URL("https://example.com/podcast.opml");
 
-    await expect(podcastOpmlParser(url)).rejects.toThrow(ERROR_MESSAGES.NO_FEED_TO_PARSE);
+    await expect(podcastOpmlParser(url)).rejects.toThrow(ERROR_MESSAGES.OPML_NO_FEED_TO_PARSE);
   });
 
   it("should throw an error if the fetch request fails", async () => {
