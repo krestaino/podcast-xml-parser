@@ -28,7 +28,7 @@ describe("fetchItunes", () => {
     };
     fetchMock.mockResponseOnce(JSON.stringify(mockData));
 
-    const result = await fetchItunes("Test Podcast");
+    const result = await fetchItunes("Test Podcast", "https://example.com/feed");
 
     expect(result).toEqual(mockData.results[0]);
     expect(fetchMock).toHaveBeenCalledWith(
@@ -67,9 +67,9 @@ describe("fetchItunes", () => {
     };
     fetchMock.mockResponseOnce(JSON.stringify(mockData));
 
-    await expect(fetchItunes("Test Podcast", "https://example.com/matching-feed")).rejects.toThrow(
-      "No matching podcast found for Test Podcast",
-    );
+    const result = await fetchItunes("Test Podcast", "https://example.com/matching-feed");
+
+    expect(result).toBeUndefined();
   });
 
   it("should throw an error if the fetch request fails", async () => {

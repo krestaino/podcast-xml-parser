@@ -7,7 +7,10 @@ import { Itunes } from "./types/Itunes";
  * @param feedUrl Optional feed URL to match with the search results.
  * @returns A promise that resolves to the podcast data.
  */
-export async function fetchItunes(input: number | string, feedUrl?: string): Promise<Itunes> {
+export async function fetchItunes(
+  input: number | string,
+  feedUrl?: string,
+): Promise<Itunes | undefined> {
   const url =
     typeof input === "number"
       ? `https://itunes.apple.com/lookup?id=${input}&entity=podcast`
@@ -28,13 +31,13 @@ export async function fetchItunes(input: number | string, feedUrl?: string): Pro
   }
 
   const matchingResult = data.results.find((result) => {
-    const matchesId = typeof input === "number" ? result.collectionId === input : true;
-    const matchesFeedUrl = feedUrl ? result.feedUrl === feedUrl : true;
-    return matchesId && matchesFeedUrl;
+    const matchesId = typeof input === "number" ? result.collectionId === input : false;
+    const matchesFeedUrl = feedUrl ? result.feedUrl === feedUrl : false;
+    return matchesId || matchesFeedUrl;
   });
 
   if (!matchingResult) {
-    throw new Error(`No matching podcast found for ${input}`);
+    return undefined;
   }
 
   return matchingResult;
