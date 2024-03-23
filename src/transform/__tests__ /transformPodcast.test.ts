@@ -1,13 +1,9 @@
 import { transformPodcast } from "../transformPodcast";
-import { parseXml } from "../../utils/parseXml";
-import { getDuration } from "../../utils/sanitize";
+import { getDuration, parseXml } from "../../utils";
 
-jest.mock("../../utils/parseXml", () => ({
-  parseXml: jest.fn(),
-}));
-
-jest.mock("../../utils/sanitize", () => ({
+jest.mock("../../utils", () => ({
   getDuration: jest.fn(),
+  parseXml: jest.fn(),
 }));
 
 describe("transformPodcast", () => {

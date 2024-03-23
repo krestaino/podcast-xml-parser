@@ -2,9 +2,9 @@ import fetchMock from "jest-fetch-mock";
 
 import { podcastOpmlParser } from "../../";
 import { ERROR_MESSAGES } from "../../constants";
-import { transformOpml } from "../../transform/transformOpml";
+import { transformOpml } from "../../transform";
 
-jest.mock("../../transform/transformOpml", () => ({
+jest.mock("../../transform", () => ({
   transformOpml: jest.fn(),
 }));
 

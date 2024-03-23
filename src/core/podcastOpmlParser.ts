@@ -1,5 +1,5 @@
 import { ERROR_MESSAGES } from "../constants";
-import { transformOpml } from "../transform/transformOpml";
+import { transformOpml } from "../transform";
 
 /**
  * Parses an OPML feed and returns an array of podcast feed URLs.
