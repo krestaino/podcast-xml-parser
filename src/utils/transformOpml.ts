@@ -1,10 +1,20 @@
 import { parseXml } from "./parseXml";
 
+type Outline = {
+  "@_xmlUrl"?: string;
+};
+
+type OutlineContainer = {
+  outline?: Outline | Outline[];
+};
+
+type OpmlBody = {
+  outline?: Outline | Outline[] | OutlineContainer;
+};
+
 type Opml = {
   opml: {
-    body: {
-      outline?: Array<{ "@_xmlUrl"?: string }> | { "@_xmlUrl"?: string };
-    };
+    body?: OpmlBody;
   };
 };
 
@@ -22,12 +32,23 @@ export function transformOpml(xmlText: string): string[] {
     throw new Error("Expected XML structure not found");
   }
 
-  const outlines = opml.body.outline
-    ? Array.isArray(opml.body.outline)
-      ? opml.body.outline
-      : [opml.body.outline]
-    : [];
-  const feed = outlines.map((outline) => outline["@_xmlUrl"]).filter((url): url is string => !!url);
+  let outlines: Outline[] = [];
+  if (opml.body.outline) {
+    if (Array.isArray(opml.body.outline)) {
+      outlines = opml.body.outline;
+    } else if (typeof opml.body.outline === "object" && "outline" in opml.body.outline) {
+      const container = opml.body.outline as OutlineContainer;
+      if (Array.isArray(container.outline)) {
+        outlines = container.outline;
+      } else if (container.outline) {
+        outlines = [container.outline];
+      }
+    } else {
+      outlines = [opml.body.outline as Outline];
+    }
+  }
 
-  return feed;
+  const feedUrls = outlines.map((outline: Outline) => outline["@_xmlUrl"]).filter((url): url is string => !!url);
+
+  return feedUrls;
 }

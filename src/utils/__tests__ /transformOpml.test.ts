@@ -43,6 +43,25 @@ describe("transformOpml", () => {
     expect(result).toEqual(["https://example.com/feed.xml"]);
   });
 
+  it("should extract feed URLs from nested outlines", () => {
+    const xmlText =
+      '<opml><body><outline><outline xmlUrl="https://example.com/feed1.xml"/><outline xmlUrl="https://example.com/feed2.xml"/></outline></body></opml>';
+    const parsedXml = {
+      opml: {
+        body: {
+          outline: {
+            outline: [{ "@_xmlUrl": "https://example.com/feed1.xml" }, { "@_xmlUrl": "https://example.com/feed2.xml" }],
+          },
+        },
+      },
+    };
+    (parseXml as jest.Mock).mockReturnValue(parsedXml);
+
+    const result = transformOpml(xmlText);
+
+    expect(result).toEqual(["https://example.com/feed1.xml", "https://example.com/feed2.xml"]);
+  });
+
   it("should handle empty outlines", () => {
     const xmlText = "<opml><body></body></opml>";
     const parsedXml = {
@@ -79,5 +98,42 @@ describe("transformOpml", () => {
     const result = transformOpml(xmlText);
 
     expect(result).toEqual(["https://example.com/feed1.xml"]);
+  });
+
+  it("should extract feed URL from OPML XML data with a single outline nested inside an outline container", () => {
+    const xmlText = '<opml><body><outline><outline xmlUrl="https://example.com/feed.xml"/></outline></body></opml>';
+    const parsedXml = {
+      opml: {
+        body: {
+          outline: {
+            outline: { "@_xmlUrl": "https://example.com/feed.xml" },
+          },
+        },
+      },
+    };
+    (parseXml as jest.Mock).mockReturnValue(parsedXml);
+
+    const result = transformOpml(xmlText);
+
+    expect(result).toEqual(["https://example.com/feed.xml"]);
+  });
+
+  it("should extract feed URLs from OPML XML data with multiple outlines nested inside an outline container", () => {
+    const xmlText =
+      '<opml><body><outline><outline xmlUrl="https://example.com/feed1.xml"/><outline xmlUrl="https://example.com/feed2.xml"/></outline></body></opml>';
+    const parsedXml = {
+      opml: {
+        body: {
+          outline: {
+            outline: [{ "@_xmlUrl": "https://example.com/feed1.xml" }, { "@_xmlUrl": "https://example.com/feed2.xml" }],
+          },
+        },
+      },
+    };
+    (parseXml as jest.Mock).mockReturnValue(parsedXml);
+
+    const result = transformOpml(xmlText);
+
+    expect(result).toEqual(["https://example.com/feed1.xml", "https://example.com/feed2.xml"]);
   });
 });
