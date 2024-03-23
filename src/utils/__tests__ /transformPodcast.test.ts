@@ -17,6 +17,90 @@ describe("transformPodcast", () => {
     (getDuration as jest.Mock).mockImplementation((duration) => (duration ? parseInt(duration, 10) : 0));
   });
 
+  it("should handle null or undefined rss or channel objects", () => {
+    const xmlText = `<rss></rss>`;
+    const parsedXml = {
+      rss: null,
+    };
+    (parseXml as jest.Mock).mockReturnValue(parsedXml);
+
+    const result = transformPodcast(xmlText);
+
+    expect(result.podcast.feedUrl).toEqual("");
+  });
+
+  it("should extract feedUrl from atom:link", () => {
+    const xmlText = `
+      <rss>
+        <channel>
+          <title>Podcast Title</title>
+          <link>http://example.com</link>
+          <atom:link href="http://example.com/feed" rel="self" type="application/rss+xml" />
+          <description>Podcast Description</description>
+        </channel>
+      </rss>
+    `;
+    const parsedXml = {
+      rss: {
+        channel: {
+          title: "Podcast Title",
+          link: "http://example.com",
+          "atom:link": {
+            "@_href": "http://example.com/feed",
+            "@_rel": "self",
+            "@_type": "application/rss+xml",
+          },
+          description: "Podcast Description",
+        },
+      },
+    };
+    (parseXml as jest.Mock).mockReturnValue(parsedXml);
+
+    const result = transformPodcast(xmlText);
+
+    expect(result.podcast.feedUrl).toEqual("http://example.com/feed");
+  });
+
+  it("should extract feedUrl from an array of atom:link elements", () => {
+    const xmlText = `
+      <rss>
+        <channel>
+          <title>Podcast Title</title>
+          <link>http://example.com</link>
+          <atom:link href="http://example.com/other" rel="alternate" type="text/html" />
+          <atom:link href="http://example.com/feed" rel="self" type="application/rss+xml" />
+          <description>Podcast Description</description>
+        </channel>
+      </rss>
+    `;
+    const parsedXml = {
+      rss: {
+        channel: {
+          title: "Podcast Title",
+          link: "http://example.com",
+          "atom:link": [
+            {
+              "@_href": "http://example.com/other",
+              "@_rel": "alternate",
+              "@_type": "text/html",
+            },
+            {
+              "@_href": "http://example.com/feed",
+              "@_rel": "self",
+              "@_type": "application/rss+xml",
+            },
+          ],
+          description: "Podcast Description",
+        },
+      },
+    };
+    (parseXml as jest.Mock).mockReturnValue(parsedXml);
+
+    const result = transformPodcast(xmlText);
+
+    expect(result.podcast.feedUrl).toEqual("http://example.com/feed");
+  });
+
   it("should transform parsed XML data into a Podcast object with episodes", () => {
     const xmlText = `
       <rss>
