@@ -1,4 +1,4 @@
-import { parseXml } from "./parseXml";
+import { parseXml } from "../utils/parseXml";
 
 type Outline = {
   "@_xmlUrl"?: string;

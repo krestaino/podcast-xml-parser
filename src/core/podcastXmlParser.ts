@@ -1,8 +1,8 @@
 import { ERROR_MESSAGES } from "../constants";
 import { Config, Podcast, Episode, Itunes } from "../types";
-import { fetchItunes } from "../utils/fetchItunes";
-import { fetchPodcast } from "../utils/fetchPodcast";
-import { transformPodcast } from "../utils/transformPodcast";
+import { fetchItunes } from "../fetch/fetchItunes";
+import { fetchPodcast } from "../fetch/fetchPodcast";
+import { transformPodcast } from "../transform/transformPodcast";
 
 /**
  * Paginates the episodes array based on the start and limit parameters.

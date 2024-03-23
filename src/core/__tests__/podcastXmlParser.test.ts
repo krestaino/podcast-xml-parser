@@ -2,17 +2,17 @@ import fetchMock from "jest-fetch-mock";
 
 import { podcastXmlParser } from "../../";
 import { ERROR_MESSAGES } from "../../constants";
-import { fetchItunes } from "../../utils/fetchItunes";
-import { fetchPodcast } from "../../utils/fetchPodcast";
-import { transformPodcast } from "../../utils/transformPodcast";
+import { fetchItunes } from "../../fetch/fetchItunes";
+import { fetchPodcast } from "../../fetch/fetchPodcast";
+import { transformPodcast } from "../../transform/transformPodcast";
 
-jest.mock("../../utils/fetchPodcast", () => ({
+jest.mock("../../fetch/fetchPodcast", () => ({
   fetchPodcast: jest.fn(),
 }));
-jest.mock("../../utils/fetchItunes", () => ({
+jest.mock("../../fetch/fetchItunes", () => ({
   fetchItunes: jest.fn(),
 }));
-jest.mock("../../utils/transformPodcast", () => ({
+jest.mock("../../transform/transformPodcast", () => ({
   transformPodcast: jest.fn(),
 }));
 

@@ -1,7 +1,7 @@
-import { parseXml } from "../parseXml";
+import { parseXml } from "../../utils/parseXml";
 import { transformOpml } from "../transformOpml";
 
-jest.mock("../parseXml", () => ({
+jest.mock("../../utils/parseXml", () => ({
   parseXml: jest.fn(),
 }));
 

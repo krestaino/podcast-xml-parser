@@ -1,6 +1,6 @@
 import { Podcast, Episode } from "../types";
-import { getDuration } from "./sanitize";
-import { parseXml } from "./parseXml";
+import { getDuration } from "../utils/sanitize";
+import { parseXml } from "../utils/parseXml";
 
 function getAttribute(obj: any, path: string, defaultValue = ""): string {
   return path.split(".").reduce((acc, part) => acc && acc[part], obj) ?? defaultValue;
