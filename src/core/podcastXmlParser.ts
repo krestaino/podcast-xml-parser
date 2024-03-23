@@ -35,7 +35,7 @@ export const podcastXmlParser = async (
     if (!itunes?.feedUrl) {
       throw new Error(ERROR_MESSAGES.ITUNES_NO_FEED_URL);
     }
-    xmlText = await fetchPodcast(new URL(itunes.feedUrl));
+    xmlText = await fetchPodcast(new URL(itunes.feedUrl), config);
   } else if (typeof source === "string") {
     xmlText = source;
   } else {

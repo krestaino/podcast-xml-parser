@@ -54,7 +54,7 @@ describe("podcastXmlParser", () => {
 
     expect(result).toEqual({ podcast: mockPodcast, episodes: mockEpisodes, itunes: mockItunes });
     expect(fetchItunes).toHaveBeenCalledWith(itunesId);
-    expect(fetchPodcast).toHaveBeenCalledWith(new URL(mockItunes.feedUrl));
+    expect(fetchPodcast).toHaveBeenCalledWith(new URL(mockItunes.feedUrl), {});
     expect(parseXml).toHaveBeenCalledWith(mockFeedContent);
     expect(transformPodcast).toHaveBeenCalledWith({});
   });
