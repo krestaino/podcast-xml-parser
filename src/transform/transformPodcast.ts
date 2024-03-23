@@ -1,6 +1,7 @@
 import { Episode, ParsedXML, Podcast } from "../types";
 import { getDuration, parseXml } from "../utils";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getAttribute(obj: any, path: string, defaultValue = ""): string {
   return path.split(".").reduce((acc, part) => acc && acc[part], obj) ?? defaultValue;
 }
