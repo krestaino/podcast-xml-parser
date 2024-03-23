@@ -1,4 +1,4 @@
-import { Podcast, Episode } from "../types";
+import { Episode, ParsedXML, Podcast } from "../types";
 import { getDuration, parseXml } from "../utils";
 
 function getAttribute(obj: any, path: string, defaultValue = ""): string {
@@ -12,13 +12,13 @@ function getAttribute(obj: any, path: string, defaultValue = ""): string {
  * @throws An error if the expected XML structure is not found.
  */
 export function transformPodcast(xmlText: string): { podcast: Podcast; episodes: Episode[] } {
-  const parsedXML = parseXml(xmlText);
-  const { rss } = parsedXML as any;
+  const parsedXML = parseXml(xmlText) as ParsedXML;
+  const { rss } = parsedXML;
   const channel = rss?.channel;
 
   let atomLink = channel?.["atom:link"];
   if (Array.isArray(atomLink)) {
-    atomLink = atomLink.find((link: any) => link["@_rel"] === "self");
+    atomLink = atomLink.find((link) => link["@_rel"] === "self");
   }
   const feedUrl = atomLink?.["@_href"] ?? "";
 
@@ -48,7 +48,7 @@ export function transformPodcast(xmlText: string): { podcast: Podcast; episodes:
     title: getAttribute(channel, "title"),
   };
 
-  const episodes: Episode[] = (Array.isArray(channel?.item) ? channel.item : []).map((item: any) => ({
+  const episodes: Episode[] = (Array.isArray(channel?.item) ? channel.item : []).map((item) => ({
     title: getAttribute(item, "title"),
     description: getAttribute(item, "description"),
     pubDate: getAttribute(item, "pubDate"),
