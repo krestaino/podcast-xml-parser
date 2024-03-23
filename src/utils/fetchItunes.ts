@@ -30,7 +30,11 @@ export async function fetchItunes(source: number | string, feedUrl?: string): Pr
 
   const matchingResult = data.results.find((result) => {
     const matchesId = typeof source === "number" ? result.collectionId === source : false;
-    const matchesFeedUrl = feedUrl ? result.feedUrl === feedUrl : false;
+    const matchesFeedUrl = feedUrl
+      ? result.feedUrl &&
+        result.feedUrl.replace(/^https?:\/\//, "").replace(/\/$/, "") ===
+          feedUrl.replace(/^https?:\/\//, "").replace(/\/$/, "")
+      : false;
     return matchesId || matchesFeedUrl;
   });
 
