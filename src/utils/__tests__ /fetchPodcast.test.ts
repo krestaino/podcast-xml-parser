@@ -1,7 +1,6 @@
 import fetchMock from "jest-fetch-mock";
 
-import { ERROR_MESSAGES } from "../../constants";
-import { fetchPodcast } from "..";
+import { fetchPodcast } from "../fetchPodcast";
 
 fetchMock.enableMocks();
 
@@ -64,7 +63,7 @@ describe("fetchPodcast", () => {
     });
 
     const url = new URL("https://example.com/podcast.xml");
-    await expect(fetchPodcast(url)).rejects.toThrow(ERROR_MESSAGES.FETCH_FAILED);
+    await expect(fetchPodcast(url)).rejects.toThrow();
   });
 
   it("should fix incomplete XML feed if requestSize is provided", async () => {

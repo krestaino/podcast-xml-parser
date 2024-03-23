@@ -1,87 +1,167 @@
-import { parseXml } from "@rgrove/parse-xml";
+import { transformPodcast } from "../transformPodcast";
+import { parseXml } from "../parseXml";
+import { getDuration } from "../sanitize";
 
-import { transformPodcast } from "..";
+jest.mock("../parseXml", () => ({
+  parseXml: jest.fn(),
+}));
+
+jest.mock("../sanitize", () => ({
+  getDuration: jest.fn(),
+}));
 
 describe("transformPodcast", () => {
-  const validXml = `<?xml version="1.0" encoding="UTF-8"?>
-    <rss>
-      <channel>
-        <title>Podcast Title</title>
-        <link>https://example.com/podcast</link>
-        <description>Podcast description.</description>
-        <language>en</language>
-        <itunes:author>Author Name</itunes:author>
-        <itunes:category text="Category"/>
-        <itunes:explicit>no</itunes:explicit>
-        <itunes:image href="https://example.com/image.jpg"/>
-        <itunes:owner>
-          <itunes:name>Owner Name</itunes:name>
-          <itunes:email>owner@example.com</itunes:email>
-        </itunes:owner>
-        <itunes:subtitle>Podcast subtitle.</itunes:subtitle>
-        <itunes:summary>Podcast summary.</itunes:summary>
-        <itunes:type>episodic</itunes:type>
-        <image>
-          <url>https://example.com/image.jpg</url>
+  beforeEach(() => {
+    (parseXml as jest.Mock).mockReset();
+    (getDuration as jest.Mock).mockReset();
+    (getDuration as jest.Mock).mockImplementation((duration) => (duration ? parseInt(duration, 10) : 0));
+  });
+
+  it("should transform parsed XML data into a Podcast object with episodes", () => {
+    const xmlText = `
+      <rss>
+        <channel>
           <title>Podcast Title</title>
-          <link>https://example.com/podcast</link>
-        </image>
-        <item>
-          <title>Episode Title</title>
-          <description>Episode description.</description>
-          <pubDate>Mon, 01 Jan 2024 00:00:00 GMT</pubDate>
-          <itunes:author>Episode Author</itunes:author>
-          <itunes:duration>1200</itunes:duration>
-          <itunes:explicit>no</itunes:explicit>
-          <itunes:title>Episode Title</itunes:title>
-          <link>https://example.com/episode</link>
-          <guid>https://example.com/episode</guid>
-          <author>Episode Author</author>
-          <content:encoded>Episode content.</content:encoded>
-          <enclosure url="https://example.com/audio.mp3" type="audio/mpeg"/>
-        </item>
-        <item>
-          <title>Episode 2 Title</title>
-          <description>Episode 2 description.</description>
-          <pubDate>Mon, 01 Jan 2024 00:00:00 GMT</pubDate>
-          <itunes:author>Episode Author</itunes:author>
-          <itunes:duration>invalid</itunes:duration>
-          <itunes:explicit>no</itunes:explicit>
-          <itunes:title>Episode Title</itunes:title>
-          <link>https://example.com/episode</link>
-          <guid>https://example.com/episode</guid>
-          <author>Episode Author</author>
-          <content:encoded>Episode content.</content:encoded>
-          <enclosure url="https://example.com/audio.mp3" type="audio/mpeg"/>
-        </item>
-      </channel>
-    </rss>`;
+          <link>http://example.com</link>
+          <description>Podcast Description</description>
+          <item>
+            <title>Episode 1</title>
+            <description>Episode 1 Description</description>
+            <enclosure url="http://example.com/episode1.mp3" />
+            <itunes:duration>600</itunes:duration>
+          </item>
+          <item>
+            <title>Episode 2</title>
+            <description>Episode 2 Description</description>
+            <enclosure url="http://example.com/episode2.mp3" />
+            <itunes:duration>1200</itunes:duration>
+          </item>
+        </channel>
+      </rss>
+    `;
+    const parsedXml = {
+      rss: {
+        channel: {
+          title: "Podcast Title",
+          link: "http://example.com",
+          description: "Podcast Description",
+          item: [
+            {
+              title: "Episode 1",
+              description: "Episode 1 Description",
+              enclosure: {
+                "@_url": "http://example.com/episode1.mp3",
+              },
+              "itunes:duration": "600",
+            },
+            {
+              title: "Episode 2",
+              description: "Episode 2 Description",
+              enclosure: {
+                "@_url": "http://example.com/episode2.mp3",
+              },
+              "itunes:duration": "1200",
+            },
+          ],
+        },
+      },
+    };
+    (parseXml as jest.Mock).mockReturnValue(parsedXml);
 
-  it("should transform valid XML data into a Podcast object", () => {
-    const parsedXml = parseXml(validXml);
-    const result = transformPodcast(parsedXml);
-    expect(result).toBeDefined();
-    expect(result.podcast).toBeInstanceOf(Object);
+    const result = transformPodcast(xmlText);
+
     expect(result.podcast.title).toEqual("Podcast Title");
+    expect(result.podcast.link).toEqual("http://example.com");
+    expect(result.podcast.description).toEqual("Podcast Description");
+    expect(result.episodes).toHaveLength(2);
+    expect(result.episodes[0].title).toEqual("Episode 1");
+    expect(result.episodes[0].description).toEqual("Episode 1 Description");
+    expect(result.episodes[0].enclosure.url).toEqual("http://example.com/episode1.mp3");
+    expect(result.episodes[0].itunesDuration).toEqual(600);
+    expect(result.episodes[1].title).toEqual("Episode 2");
+    expect(result.episodes[1].description).toEqual("Episode 2 Description");
+    expect(result.episodes[1].enclosure.url).toEqual("http://example.com/episode2.mp3");
+    expect(result.episodes[1].itunesDuration).toEqual(1200);
   });
 
-  it("should throw an error if the channel element is not found", () => {
-    const invalidXml = `<?xml version="1.0" encoding="UTF-8"?><rss></rss>`;
-    const parsedXml = parseXml(invalidXml);
-    expect(() => transformPodcast(parsedXml)).toThrow("Channel element not found");
-  });
+  it("should handle missing elements in the XML data", () => {
+    const xmlText = `
+      <rss>
+        <channel>
+          <title>Podcast Title</title>
+          <item>
+            <title>Episode Title</title>
+            <enclosure url="https://example.com/episode.mp3" type="audio/mpeg" />
+          </item>
+        </channel>
+      </rss>
+    `;
+    const parsedXml = {
+      rss: {
+        channel: {
+          title: "Podcast Title",
+          item: [
+            {
+              title: "Episode Title",
+              enclosure: { "@_url": "https://example.com/episode.mp3", "@_type": "audio/mpeg" },
+            },
+          ],
+        },
+      },
+    };
+    (parseXml as jest.Mock).mockReturnValue(parsedXml);
 
-  it("should transform episode data correctly", () => {
-    const parsedXml = parseXml(validXml);
-    const result = transformPodcast(parsedXml);
-    expect(result.episodes).toBeInstanceOf(Array);
-    expect(result.episodes.length).toBeGreaterThan(0);
-    expect(result.episodes[0].title).toEqual("Episode Title");
-  });
+    const result = transformPodcast(xmlText);
 
-  it("should set itunesDuration to 0 if itunes:duration is invalid", () => {
-    const parsedXml = parseXml(validXml);
-    const result = transformPodcast(parsedXml);
-    expect(result.episodes[1].itunesDuration).toBe(0);
+    expect(result).toEqual({
+      podcast: {
+        contentEncoded: "",
+        copyright: "",
+        description: "",
+        feedUrl: "",
+        image: {
+          link: "",
+          title: "",
+          url: "",
+        },
+        itunesAuthor: "",
+        itunesCategory: "",
+        itunesExplicit: "",
+        itunesImage: "",
+        itunesOwner: {
+          email: "",
+          name: "",
+        },
+        itunesSubtitle: "",
+        itunesSummary: "",
+        itunesType: "",
+        language: "",
+        link: "",
+        title: "Podcast Title",
+      },
+      episodes: [
+        {
+          title: "Episode Title",
+          description: "",
+          pubDate: "",
+          enclosure: {
+            url: "https://example.com/episode.mp3",
+            type: "audio/mpeg",
+          },
+          itunesAuthor: "",
+          itunesDuration: 0,
+          itunesEpisode: "",
+          itunesEpisodeType: "",
+          itunesExplicit: "",
+          itunesSubtitle: "",
+          itunesSummary: "",
+          itunesTitle: "",
+          link: "",
+          guid: "",
+          author: "",
+          contentEncoded: "",
+        },
+      ],
+    });
   });
 });

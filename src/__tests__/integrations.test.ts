@@ -17,7 +17,7 @@ afterAll(() => {
   jest.restoreAllMocks();
 });
 
-describe("podcastXmlParser", () => {
+describe("integrations: podcastXmlParser", () => {
   (PODCAST_IDS.length > 0 ? test : test.skip)("parses podcast IDs", async () => {
     expect.assertions(PODCAST_IDS.length * 5);
 
@@ -58,7 +58,7 @@ describe("podcastXmlParser", () => {
   });
 });
 
-describe("podcastOpmlParser", () => {
+describe("integrations: podcastOpmlParser", () => {
   (OPML_URLS ? test : test.skip)("parses OPML feeds", async () => {
     expect.assertions(OPML_URLS.length * 2);
 

@@ -1,5 +1,4 @@
-import { ERROR_MESSAGES } from "../../constants";
-import { Config } from "../../types";
+import { Config } from "../types";
 
 /**
  * Fixes an incomplete XML feed by ensuring it ends with a complete <item> tag
@@ -45,7 +44,7 @@ export async function fetchPodcast(url: URL, config?: Config): Promise<string> {
 
   const response = await fetch(url.toString(), { headers });
   if (!response.ok) {
-    throw new Error(ERROR_MESSAGES.FETCH_FAILED);
+    throw new Error(response.statusText);
   }
   let text = await response.text();
 

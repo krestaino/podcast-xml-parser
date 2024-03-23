@@ -1,6 +1,8 @@
 import { ERROR_MESSAGES } from "../constants";
 import { Config, Podcast, Episode, Itunes } from "../types";
-import { fetchItunes, fetchPodcast, parseXml, transformPodcast } from "../utils";
+import { fetchItunes } from "../utils/fetchItunes";
+import { fetchPodcast } from "../utils/fetchPodcast";
+import { transformPodcast } from "../utils/transformPodcast";
 
 /**
  * Paginates the episodes array based on the start and limit parameters.
@@ -46,8 +48,7 @@ export const podcastXmlParser = async (
     throw new Error(ERROR_MESSAGES.XML_NO_FEED_TO_PARSE);
   }
 
-  const parsedXML = parseXml(xmlText);
-  const { podcast, episodes } = transformPodcast(parsedXML);
+  const { podcast, episodes } = transformPodcast(xmlText);
 
   let paginatedEpisodes = episodes;
   if (config.start !== undefined && config.limit !== undefined) {

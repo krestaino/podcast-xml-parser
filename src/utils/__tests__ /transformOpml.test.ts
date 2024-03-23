@@ -1,40 +1,83 @@
-import { parseXml } from "@rgrove/parse-xml";
+import { parseXml } from "../parseXml";
+import { transformOpml } from "../transformOpml";
 
-import { transformOpml } from "..";
+jest.mock("../parseXml", () => ({
+  parseXml: jest.fn(),
+}));
 
 describe("transformOpml", () => {
-  const validXml = `<?xml version="1.0" encoding="utf-8" standalone="no"?>
-  <opml version="1.0">
-    <head>
-      <title>Podcasts Feeds</title>
-    </head>
-    <body>
-      <outline text="feeds">
-        <outline xmlUrl="https://example.com/podcast" type="rss" text="Podcast Title" />
-        <outline xmlUrl="https://example.com/podcast-2" type="rss" text="Podcast 2 Title" />
-      </outline>
-    </body>
-  </opml>`;
-
-  it("should transform valid XML data into a string array", () => {
-    const parsedXml = parseXml(validXml);
-    const result = transformOpml(parsedXml);
-    expect(result).toBeDefined();
-    expect(result).toBeInstanceOf(Array);
+  beforeEach(() => {
+    (parseXml as jest.Mock).mockReset();
   });
 
-  it("should throw an error if the body element is not found", () => {
-    const invalidXml = `<?xml version="1.0" encoding="UTF-8"?><opml version="1.0"></opml>`;
-    const parsedXml = parseXml(invalidXml);
-    expect(() => transformOpml(parsedXml)).toThrow("Body element not found");
+  it("should extract feed URLs from OPML XML data with multiple outlines", () => {
+    const xmlText =
+      '<opml><body><outline xmlUrl="https://example.com/feed1.xml"/><outline xmlUrl="https://example.com/feed2.xml"/></body></opml>';
+    const parsedXml = {
+      opml: {
+        body: {
+          outline: [{ "@_xmlUrl": "https://example.com/feed1.xml" }, { "@_xmlUrl": "https://example.com/feed2.xml" }],
+        },
+      },
+    };
+    (parseXml as jest.Mock).mockReturnValue(parsedXml);
+
+    const result = transformOpml(xmlText);
+
+    expect(result).toEqual(["https://example.com/feed1.xml", "https://example.com/feed2.xml"]);
   });
 
-  it("should transform episode data correctly", () => {
-    const parsedXml = parseXml(validXml);
-    const result = transformOpml(parsedXml);
-    expect(result).toBeInstanceOf(Array);
-    expect(result.length).toBe(2);
-    expect(result[0]).toEqual("https://example.com/podcast");
-    expect(result[1]).toEqual("https://example.com/podcast-2");
+  it("should extract feed URL from OPML XML data with a single outline", () => {
+    const xmlText = '<opml><body><outline xmlUrl="https://example.com/feed.xml"/></body></opml>';
+    const parsedXml = {
+      opml: {
+        body: {
+          outline: { "@_xmlUrl": "https://example.com/feed.xml" },
+        },
+      },
+    };
+    (parseXml as jest.Mock).mockReturnValue(parsedXml);
+
+    const result = transformOpml(xmlText);
+
+    expect(result).toEqual(["https://example.com/feed.xml"]);
+  });
+
+  it("should handle empty outlines", () => {
+    const xmlText = "<opml><body></body></opml>";
+    const parsedXml = {
+      opml: {
+        body: {},
+      },
+    };
+    (parseXml as jest.Mock).mockReturnValue(parsedXml);
+
+    const result = transformOpml(xmlText);
+
+    expect(result).toEqual([]);
+  });
+
+  it("should throw an error if the expected XML structure is not found", () => {
+    const xmlText = "<invalid></invalid>";
+    const parsedXml = {};
+    (parseXml as jest.Mock).mockReturnValue(parsedXml);
+
+    expect(() => transformOpml(xmlText)).toThrow("Expected XML structure not found");
+  });
+
+  it("should filter out undefined URLs", () => {
+    const xmlText = '<opml><body><outline xmlUrl="https://example.com/feed1.xml"/><outline/></body></opml>';
+    const parsedXml = {
+      opml: {
+        body: {
+          outline: [{ "@_xmlUrl": "https://example.com/feed1.xml" }, {}],
+        },
+      },
+    };
+    (parseXml as jest.Mock).mockReturnValue(parsedXml);
+
+    const result = transformOpml(xmlText);
+
+    expect(result).toEqual(["https://example.com/feed1.xml"]);
   });
 });

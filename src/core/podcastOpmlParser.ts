@@ -1,5 +1,5 @@
 import { ERROR_MESSAGES } from "../constants";
-import { parseXml, transformOpml } from "../utils";
+import { transformOpml } from "../utils/transformOpml";
 
 /**
  * Parses an OPML feed and returns an array of podcast feed URLs.
@@ -27,8 +27,5 @@ export const podcastOpmlParser = async (source: URL | string): Promise<string[]>
     throw new Error(ERROR_MESSAGES.OPML_NO_FEED_TO_PARSE);
   }
 
-  const parsedXML = parseXml(xmlText);
-  const feeds = transformOpml(parsedXML);
-
-  return feeds;
+  return transformOpml(xmlText);
 };
