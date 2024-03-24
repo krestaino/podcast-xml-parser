@@ -51,14 +51,7 @@ describe("fetchItunes", () => {
     expect(result).toEqual(mockData.results[1]);
   });
 
-  it("should throw an error if no podcast is found", async () => {
-    const mockData = { resultCount: 0, results: [] };
-    fetchMock.mockResponseOnce(JSON.stringify(mockData));
-
-    await expect(fetchItunes("Nonexistent Podcast")).rejects.toThrow(ERROR_MESSAGES.ITUNES_NO_PODCASTS_FOUND);
-  });
-
-  it("should throw an error if no matching podcast is found with the provided feed URL", async () => {
+  it("should return undefined if no matching podcast is found with the provided feed URL", async () => {
     const mockData = {
       resultCount: 1,
       results: [{ collectionId: 123, feedUrl: "https://example.com/non-matching-feed" }],

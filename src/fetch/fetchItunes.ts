@@ -24,10 +24,6 @@ export async function fetchItunes(source: number | string, feedUrl?: string): Pr
     results: Array<Itunes>;
   };
 
-  if (data.resultCount === 0) {
-    throw new Error(ERROR_MESSAGES.ITUNES_NO_PODCASTS_FOUND);
-  }
-
   const matchingResult = data.results.find((result) => {
     const matchesId = typeof source === "number" ? result.collectionId === source : false;
     const matchesFeedUrl = feedUrl
