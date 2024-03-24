@@ -66,7 +66,7 @@ export function transformPodcast(xmlText: string): { podcast: Podcast; episodes:
     itunesSummary: getAttribute(item, "itunes:summary"),
     itunesTitle: getAttribute(item, "itunes:title"),
     link: getAttribute(item, "link"),
-    guid: getAttribute(item, "guid"),
+    guid: getAttribute(item, "guid.#text"),
     author: getAttribute(item, "author"),
     contentEncoded: getAttribute(item, "content:encoded"),
   }));
