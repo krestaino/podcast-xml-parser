@@ -246,7 +246,7 @@ describe("transformPodcast", () => {
     });
   });
 
-  it("should return the first text attribute if an array", () => {
+  it("should handle an array with '@_text' attribute in getAttribute", () => {
     const xmlText = `
       <rss>
         <channel>
@@ -281,7 +281,7 @@ describe("transformPodcast", () => {
     expect(result.podcast.itunesCategory).toEqual("Category A");
   });
 
-  it("should return text if an object", () => {
+  it("should handle an object with '#text' attribute in getAttribute", () => {
     const xmlText = `
       <rss>
         <channel>
