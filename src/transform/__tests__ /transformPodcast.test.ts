@@ -245,4 +245,71 @@ describe("transformPodcast", () => {
       ],
     });
   });
+
+  it("should return the first text attribute if an array", () => {
+    const xmlText = `
+      <rss>
+        <channel>
+          <itunes:category text="True Crime"/>
+          <itunes:category text="Society & Culture">
+            <itunes:category text="Documentary"/>
+          </itunes:category>
+        </channel>
+      </rss>
+    `;
+    const parsedXml = {
+      rss: {
+        channel: {
+          "itunes:category": [
+            {
+              "@_text": "Category A",
+            },
+            {
+              "itunes:category": {
+                "@_text": "Category B",
+              },
+              "@_text": "Category C",
+            },
+          ],
+        },
+      },
+    };
+    (parseXml as jest.Mock).mockReturnValue(parsedXml);
+
+    const result = transformPodcast(xmlText);
+
+    expect(result.podcast.itunesCategory).toEqual("Category A");
+  });
+
+  it("should return text if an object", () => {
+    const xmlText = `
+      <rss>
+        <channel>
+          <item>
+            <guid isPermaLink="false">
+              <![CDATA[ 123-456-789 ]]>
+            </guid>
+          </item>
+        </channel>
+      </rss>
+    `;
+
+    const parsedXml = {
+      rss: {
+        channel: {
+          item: {
+            guid: {
+              "#text": " 123-456-789 ",
+              "@_isPermaLink": "false",
+            },
+          },
+        },
+      },
+    };
+    (parseXml as jest.Mock).mockReturnValue(parsedXml);
+
+    const result = transformPodcast(xmlText);
+
+    expect(result.episodes[0].guid).toEqual("123-456-789");
+  });
 });

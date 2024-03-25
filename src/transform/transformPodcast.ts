@@ -3,7 +3,18 @@ import { getDuration, parseXml } from "../utils";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getAttribute(obj: any, path: string, defaultValue = ""): string {
-  return path.split(".").reduce((acc, part) => acc && acc[part], obj) ?? defaultValue;
+  const value = path.split(".").reduce((acc, part) => acc && acc[part], obj);
+  let returnValue = defaultValue;
+
+  if (Array.isArray(value) && value[0]?.["@_text"]) {
+    returnValue = value[0]["@_text"];
+  } else if (typeof value === "object" && value?.["#text"]) {
+    returnValue = value["#text"];
+  } else if (value !== undefined && value !== null) {
+    returnValue = value;
+  }
+
+  return typeof returnValue === "string" ? returnValue.trim() : returnValue;
 }
 
 /**
@@ -34,7 +45,7 @@ export function transformPodcast(xmlText: string): { podcast: Podcast; episodes:
       url: getAttribute(channel, "image.url"),
     },
     itunesAuthor: getAttribute(channel, "itunes:author"),
-    itunesCategory: getAttribute(channel, "itunes:category.@_href"),
+    itunesCategory: getAttribute(channel, "itunes:category"),
     itunesExplicit: getAttribute(channel, "itunes:explicit"),
     itunesImage: getAttribute(channel, "itunes:image.@_href"),
     itunesOwner: {
@@ -49,7 +60,7 @@ export function transformPodcast(xmlText: string): { podcast: Podcast; episodes:
     title: getAttribute(channel, "title"),
   };
 
-  const episodes: Episode[] = (Array.isArray(channel?.item) ? channel.item : []).map((item) => ({
+  const episodes: Episode[] = (Array.isArray(channel?.item) ? channel.item : [channel?.item]).map((item) => ({
     title: getAttribute(item, "title"),
     description: getAttribute(item, "description"),
     pubDate: getAttribute(item, "pubDate"),
@@ -67,7 +78,7 @@ export function transformPodcast(xmlText: string): { podcast: Podcast; episodes:
     itunesSummary: getAttribute(item, "itunes:summary"),
     itunesTitle: getAttribute(item, "itunes:title"),
     link: getAttribute(item, "link"),
-    guid: getAttribute(item, "guid.#text"),
+    guid: getAttribute(item, "guid"),
     author: getAttribute(item, "author"),
     contentEncoded: getAttribute(item, "content:encoded"),
   }));
