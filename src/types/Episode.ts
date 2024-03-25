@@ -12,6 +12,7 @@ export interface Episode {
   itunesEpisode: string;
   itunesEpisodeType: string;
   itunesExplicit: string;
+  itunesImage: string;
   itunesSubtitle: string;
   itunesSummary: string;
   itunesTitle: string;
