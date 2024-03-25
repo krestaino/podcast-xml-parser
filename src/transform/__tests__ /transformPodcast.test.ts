@@ -1,10 +1,64 @@
-import { transformPodcast } from "../transformPodcast";
+import { getAttribute, transformPodcast } from "../transformPodcast";
 import { getDuration, parseXml } from "../../utils";
 
 jest.mock("../../utils", () => ({
   getDuration: jest.fn(),
   parseXml: jest.fn(),
 }));
+
+describe("getAttribute", () => {
+  it("should return the default value for undefined paths", () => {
+    const obj = { key: "value" };
+    expect(getAttribute(obj, "nonexistent")).toBe("");
+    expect(getAttribute(obj, "nonexistent", "default")).toBe("default");
+  });
+
+  it("should return the value at the specified path", () => {
+    const obj = { key: "value" };
+    expect(getAttribute(obj, "key")).toBe("value");
+  });
+
+  it("should return the value at a nested path", () => {
+    const obj = { level1: { level2: "value" } };
+    expect(getAttribute(obj, "level1.level2")).toBe("value");
+  });
+
+  it("should return the text value from an array of objects", () => {
+    const obj = { key: [{ "@_text": "value" }] };
+    expect(getAttribute(obj, "key")).toBe("value");
+  });
+
+  it("should return the text value from an object", () => {
+    const obj = { key: { "#text": "value" } };
+    expect(getAttribute(obj, "key")).toBe("value");
+  });
+
+  it("should return the default value for null or undefined values", () => {
+    const obj = { key: null };
+    expect(getAttribute(obj, "key", "default")).toBe("default");
+
+    const obj2 = { key: undefined };
+    expect(getAttribute(obj2, "key", "default")).toBe("default");
+  });
+
+  it("should trim the returned string", () => {
+    const obj = { key: "  value  " };
+    expect(getAttribute(obj, "key")).toBe("value");
+  });
+
+  it("should return non-string values as they are", () => {
+    const obj = { key: 123 };
+    expect(getAttribute(obj, "key")).toBe(123);
+
+    const obj2 = { key: true };
+    expect(getAttribute(obj2, "key")).toBe(true);
+  });
+
+  it('should return the default value for an array without "@_text" property', () => {
+    const obj = { key: [{}] };
+    expect(getAttribute(obj, "key", "default")).toBe("default");
+  });
+});
 
 describe("transformPodcast", () => {
   beforeEach(() => {
@@ -244,72 +298,5 @@ describe("transformPodcast", () => {
         },
       ],
     });
-  });
-
-  it("should handle an array with '@_text' attribute in getAttribute", () => {
-    const xmlText = `
-      <rss>
-        <channel>
-          <itunes:category text="True Crime"/>
-          <itunes:category text="Society & Culture">
-            <itunes:category text="Documentary"/>
-          </itunes:category>
-        </channel>
-      </rss>
-    `;
-    const parsedXml = {
-      rss: {
-        channel: {
-          "itunes:category": [
-            {
-              "@_text": "Category A",
-            },
-            {
-              "itunes:category": {
-                "@_text": "Category B",
-              },
-              "@_text": "Category C",
-            },
-          ],
-        },
-      },
-    };
-    (parseXml as jest.Mock).mockReturnValue(parsedXml);
-
-    const result = transformPodcast(xmlText);
-
-    expect(result.podcast.itunesCategory).toEqual("Category A");
-  });
-
-  it("should handle an object with '#text' attribute in getAttribute", () => {
-    const xmlText = `
-      <rss>
-        <channel>
-          <item>
-            <guid isPermaLink="false">
-              <![CDATA[ 123-456-789 ]]>
-            </guid>
-          </item>
-        </channel>
-      </rss>
-    `;
-
-    const parsedXml = {
-      rss: {
-        channel: {
-          item: {
-            guid: {
-              "#text": " 123-456-789 ",
-              "@_isPermaLink": "false",
-            },
-          },
-        },
-      },
-    };
-    (parseXml as jest.Mock).mockReturnValue(parsedXml);
-
-    const result = transformPodcast(xmlText);
-
-    expect(result.episodes[0].guid).toEqual("123-456-789");
   });
 });

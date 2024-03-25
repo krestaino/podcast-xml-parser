@@ -2,12 +2,14 @@ import { Episode, ParsedXML, Podcast } from "../types";
 import { getDuration, parseXml } from "../utils";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function getAttribute(obj: any, path: string, defaultValue = ""): string {
+export function getAttribute(obj: any, path: string, defaultValue = ""): string {
   const value = path.split(".").reduce((acc, part) => acc && acc[part], obj);
   let returnValue = defaultValue;
 
-  if (Array.isArray(value) && value[0]?.["@_text"]) {
-    returnValue = value[0]["@_text"];
+  if (Array.isArray(value)) {
+    if (value.length > 0 && value[0]["@_text"]) {
+      returnValue = value[0]["@_text"];
+    }
   } else if (typeof value === "object" && value?.["#text"]) {
     returnValue = value["#text"];
   } else if (value !== undefined && value !== null) {
