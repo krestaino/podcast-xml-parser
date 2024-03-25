@@ -62,7 +62,7 @@ export function transformPodcast(xmlText: string): { podcast: Podcast; episodes:
     itunesEpisode: getAttribute(item, "itunes:episode"),
     itunesEpisodeType: getAttribute(item, "itunes:episodeType"),
     itunesExplicit: getAttribute(item, "itunes:explicit"),
-    itunesImage: getAttribute(channel, "itunes:image.@_href"),
+    itunesImage: getAttribute(item, "itunes:image.@_href"),
     itunesSubtitle: getAttribute(item, "itunes:subtitle"),
     itunesSummary: getAttribute(item, "itunes:summary"),
     itunesTitle: getAttribute(item, "itunes:title"),
