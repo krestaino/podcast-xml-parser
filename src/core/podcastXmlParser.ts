@@ -4,18 +4,6 @@ import { fetchItunes, fetchPodcast } from "../fetch";
 import { transformPodcast } from "../transform";
 
 /**
- * Paginates the episodes array based on the start and limit parameters.
- *
- * @param episodes - The array of episodes to paginate.
- * @param start - The starting index for pagination.
- * @param limit - The number of episodes to include in the paginated result.
- * @returns A paginated array of episodes.
- */
-const paginateEpisodes = (episodes: Episode[], start: number, limit: number): Episode[] => {
-  return episodes.slice(start, start + limit);
-};
-
-/**
  * Parses a podcast feed from various source types and returns podcast and episodes data, along with iTunes information if available.
  *
  * @param source - A URL, iTunes ID, or XML string representing the podcast feed.
@@ -51,7 +39,7 @@ export const podcastXmlParser = async (
 
   let paginatedEpisodes = episodes;
   if (config.start !== undefined && config.limit !== undefined) {
-    paginatedEpisodes = paginateEpisodes(episodes, config.start, config.limit);
+    paginatedEpisodes = episodes.slice(config.start, config.start + config.limit);
   }
 
   if (config.itunes && !itunes && podcast.feedUrl) {
