@@ -19,6 +19,14 @@ export function getAttribute(obj: any, path: string, defaultValue = ""): string 
   return typeof returnValue === "string" ? returnValue.trim() : returnValue;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function ensureArray(item: any): any[] {
+  if (Array.isArray(item)) {
+    return item;
+  }
+  return item ? [item] : [];
+}
+
 /**
  * Transforms parsed XML data into a Podcast object.
  * @param parsedXML The parsed XML data as an XmlDocument.
@@ -62,7 +70,7 @@ export function transformPodcast(xmlText: string): { podcast: Podcast; episodes:
     title: getAttribute(channel, "title"),
   };
 
-  const episodes: Episode[] = (Array.isArray(channel?.item) ? channel.item : [channel?.item]).map((item) => ({
+  const episodes: Episode[] = ensureArray(channel?.item).map((item) => ({
     title: getAttribute(item, "title"),
     description: getAttribute(item, "description"),
     pubDate: getAttribute(item, "pubDate"),

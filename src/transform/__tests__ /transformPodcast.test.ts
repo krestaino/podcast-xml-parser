@@ -1,4 +1,4 @@
-import { getAttribute, transformPodcast } from "../transformPodcast";
+import { ensureArray, getAttribute, transformPodcast } from "../transformPodcast";
 import { getDuration, parseXml } from "../../utils";
 
 jest.mock("../../utils", () => ({
@@ -297,6 +297,25 @@ describe("transformPodcast", () => {
           contentEncoded: "",
         },
       ],
+    });
+  });
+
+  describe("ensureArray", () => {
+    it("should return the input as is if it is already an array", () => {
+      const input = [1, 2, 3];
+      const result = ensureArray(input);
+      expect(result).toBe(input);
+    });
+
+    it("should wrap a single object in an array", () => {
+      const input = { key: "value" };
+      const result = ensureArray(input);
+      expect(result).toEqual([input]);
+    });
+
+    it("should return an empty array for null or undefined input", () => {
+      expect(ensureArray(null)).toEqual([]);
+      expect(ensureArray(undefined)).toEqual([]);
     });
   });
 });
