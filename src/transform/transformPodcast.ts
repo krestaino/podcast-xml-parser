@@ -1,3 +1,4 @@
+import { ERROR_MESSAGES } from "../constants";
 import { Episode, ParsedXML, Podcast } from "../types";
 import { getDuration, parseXml } from "../utils";
 
@@ -35,10 +36,13 @@ export function ensureArray(item: any): any[] {
  */
 export function transformPodcast(xmlText: string): { podcast: Podcast; episodes: Episode[] } {
   const parsedXML = parseXml(xmlText) as ParsedXML;
-  const { rss } = parsedXML;
-  const channel = rss?.channel;
+  const channel = parsedXML.rss?.channel;
 
-  let atomLink = channel?.["atom:link"];
+  if (!channel) {
+    throw new Error(ERROR_MESSAGES.XML_NO_FEED_TO_PARSE);
+  }
+
+  let atomLink = channel["atom:link"];
   if (Array.isArray(atomLink)) {
     atomLink = atomLink.find((link) => link["@_rel"] === "self");
   }
@@ -70,7 +74,7 @@ export function transformPodcast(xmlText: string): { podcast: Podcast; episodes:
     title: getAttribute(channel, "title"),
   };
 
-  const episodes: Episode[] = ensureArray(channel?.item).map((item) => ({
+  const episodes: Episode[] = ensureArray(channel.item).map((item) => ({
     title: getAttribute(item, "title"),
     description: getAttribute(item, "description"),
     pubDate: getAttribute(item, "pubDate"),

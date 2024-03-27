@@ -1,3 +1,4 @@
+import { ERROR_MESSAGES } from "../../constants";
 import { ensureArray, getAttribute, transformPodcast } from "../transformPodcast";
 import { getDuration, parseXml } from "../../utils";
 
@@ -74,9 +75,7 @@ describe("transformPodcast", () => {
     };
     (parseXml as jest.Mock).mockReturnValue(parsedXml);
 
-    const result = transformPodcast(xmlText);
-
-    expect(result.podcast.feedUrl).toEqual("");
+    expect(() => transformPodcast(xmlText)).toThrow(ERROR_MESSAGES.XML_NO_FEED_TO_PARSE);
   });
 
   it("should extract feedUrl from atom:link", () => {
