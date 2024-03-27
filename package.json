@@ -1,6 +1,6 @@
 {
   "name": "podcast-xml-parser",
-  "version": "3.0.0-beta.5",
+  "version": "3.0.0-beta.6",
   "description": "🎙 Parse podcast feeds in browsers, React Native, or Node.js environments.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
