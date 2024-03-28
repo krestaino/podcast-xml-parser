@@ -10,7 +10,7 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": ["@typescript-eslint"],
+  "plugins": ["@typescript-eslint", "tsdoc"],
   "ignorePatterns": ["lib", "test"],
-  "rules": {}
+  "rules": { "tsdoc/syntax": "warn" }
 }

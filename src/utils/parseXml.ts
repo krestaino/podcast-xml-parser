@@ -8,7 +8,7 @@ const parser = new XMLParser(options);
 
 /**
  * Parses the provided XML text into a JavaScript object.
- * @param xmlText The XML text to parse.
+ * @param xmlText - The XML text to parse.
  * @returns A JavaScript object representation of the XML.
  */
 export function parseXml(xmlText: string): unknown {

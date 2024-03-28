@@ -8,7 +8,7 @@ import { transformPodcast } from "../transform";
  *
  * @param source - A URL, iTunes ID, or XML string representing the podcast feed.
  * @returns An object containing the podcast and episodes data, along with iTunes information if available.
- * @throws {Error} If the source type is invalid, the feed URL cannot be retrieved from iTunes, or no feed is available to parse.
+ * @throws If the source type is invalid, the feed URL cannot be retrieved from iTunes, or no feed is available to parse.
  */
 export const podcastXmlParser = async (
   source: URL | number | string,

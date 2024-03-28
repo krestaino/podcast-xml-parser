@@ -30,7 +30,7 @@ export function ensureArray(item: any): any[] {
 
 /**
  * Transforms parsed XML data into a Podcast object.
- * @param parsedXML The parsed XML data as an XmlDocument.
+ * @param parsedXML - The parsed XML data as an XmlDocument.
  * @returns An object containing the transformed podcast and episodes data.
  * @throws An error if the expected XML structure is not found.
  */
