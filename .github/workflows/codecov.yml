@@ -17,9 +17,9 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: "18"
 
-      - name: 'Create env file'
+      - name: "Create env file"
         run: |
           touch .env
           echo FEED_URLS=${{ secrets.FEED_URLS }} >> .env
