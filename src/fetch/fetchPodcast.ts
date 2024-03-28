@@ -42,7 +42,7 @@ export async function fetchPodcast(url: URL, config?: Config): Promise<string> {
     headers.set("Range", `bytes=0-${config.requestSize}`);
   }
 
-  const response = await fetch(url.toString(), { headers });
+  const response = await fetch(url.toString(), { headers, redirect: "follow" });
   if (!response.ok) {
     throw new Error(response.statusText);
   }

@@ -17,7 +17,7 @@ describe("fetchPodcast", () => {
     const result = await fetchPodcast(url);
 
     expect(result).toEqual(mockFeedContent);
-    expect(fetchMock).toHaveBeenCalledWith(url.toString(), { headers: new Headers({}) });
+    expect(fetchMock).toHaveBeenCalledWith(url.toString(), { headers: new Headers({}), redirect: "follow" });
   });
 
   it("should apply custom headers if provided", async () => {
@@ -31,6 +31,7 @@ describe("fetchPodcast", () => {
     expect(result).toEqual(mockFeedContent);
     expect(fetchMock).toHaveBeenCalledWith(url.toString(), {
       headers: new Headers(customHeaders),
+      redirect: "follow",
     });
   });
 
@@ -45,6 +46,7 @@ describe("fetchPodcast", () => {
     expect(result).toEqual(mockFeedContent);
     expect(fetchMock).toHaveBeenCalledWith(url.toString(), {
       headers: new Headers({ Range: `bytes=0-${requestSize}` }),
+      redirect: "follow",
     });
   });
 
@@ -80,6 +82,7 @@ describe("fetchPodcast", () => {
     expect(result).toEqual(fixedFeedContent);
     expect(fetchMock).toHaveBeenCalledWith(url.toString(), {
       headers: new Headers({ Range: `bytes=0-${requestSize}` }),
+      redirect: "follow",
     });
   });
 });
