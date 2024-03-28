@@ -4,9 +4,11 @@ import { fetchItunes, fetchPodcast } from "../fetch";
 import { transformPodcast } from "../transform";
 
 /**
- * Parses a podcast feed from various source types and returns podcast and episodes data, along with iTunes information if available.
+ * Parses a podcast feed from various source types and returns podcast and episodes data,
+ * along with iTunes information if available.
  *
  * @param source - A URL, iTunes ID, or XML string representing the podcast feed.
+ * @param config - Optional configuration object for parsing options.
  * @returns An object containing the podcast and episodes data, along with iTunes information if available.
  * @throws If the source type is invalid, the feed URL cannot be retrieved from iTunes, or no feed is available to parse.
  */

@@ -4,9 +4,11 @@ import { Itunes } from "../types";
 /**
  * Fetches podcast data from iTunes using the provided iTunes ID or search term.
  * Optionally, matches the result with a provided feed URL.
+ *
  * @param source - The iTunes ID (number) or search term (string) of the podcast.
  * @param feedUrl - Optional feed URL to match with the search results.
  * @returns A promise that resolves to the podcast data.
+ * @throws If the fetch request fails or no matching result is found.
  */
 export async function fetchItunes(source: number | string, feedUrl?: string): Promise<Itunes | undefined> {
   const url =

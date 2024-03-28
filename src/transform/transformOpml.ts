@@ -20,6 +20,7 @@ type Opml = {
 
 /**
  * Transforms parsed OPML XML data into an array of feed URLs.
+ *
  * @param xmlText - The OPML XML data as a string.
  * @returns An array of feed URLs extracted from the OPML data.
  * @throws If the expected XML structure is not found.

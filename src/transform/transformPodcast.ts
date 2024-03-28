@@ -2,6 +2,14 @@ import { ERROR_MESSAGES } from "../constants";
 import { Episode, ParsedXML, Podcast } from "../types";
 import { getDuration, parseXml } from "../utils";
 
+/**
+ * Retrieves the value of a specified attribute from an object or an array of objects.
+ *
+ * @param obj - The object or array of objects to search.
+ * @param path - The path to the attribute, separated by dots.
+ * @param defaultValue - The default value to return if the attribute is not found.
+ * @returns The value of the attribute, or the default value if not found.
+ */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function getAttribute(obj: any, path: string, defaultValue = ""): string {
   const value = path.split(".").reduce((acc, part) => acc && acc[part], obj);
@@ -20,6 +28,13 @@ export function getAttribute(obj: any, path: string, defaultValue = ""): string 
   return typeof returnValue === "string" ? returnValue.trim() : returnValue;
 }
 
+/**
+ * Ensures that the input is an array. If the input is not an array, it is wrapped in an array.
+ * If the input is null or undefined, an empty array is returned.
+ *
+ * @param item - The input to ensure as an array.
+ * @returns An array containing the input, or an empty array if the input is null or undefined.
+ */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function ensureArray(item: any): any[] {
   if (Array.isArray(item)) {
@@ -30,6 +45,7 @@ export function ensureArray(item: any): any[] {
 
 /**
  * Transforms parsed XML data into a Podcast object.
+ *
  * @param parsedXML - The parsed XML data as an XmlDocument.
  * @returns An object containing the transformed podcast and episodes data.
  * @throws An error if the expected XML structure is not found.
