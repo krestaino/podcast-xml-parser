@@ -318,10 +318,11 @@ interface Episode {
   guid: string;
   itunesAuthor: string;
   itunesDuration: number;
-  itunesEpisode: string;
+  itunesEpisode: number;
   itunesEpisodeType: string;
   itunesExplicit: string;
   itunesImage: string;
+  itunesSeason: number;
   itunesSubtitle: string;
   itunesSummary: string;
   itunesTitle: string;

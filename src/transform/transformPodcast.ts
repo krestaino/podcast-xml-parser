@@ -11,7 +11,7 @@ import { getDuration, parseXml } from "../utils";
  * @returns The value of the attribute, or the default value if not found.
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function getAttribute(obj: any, path: string, defaultValue = ""): string {
+export function getAttribute(obj: any, path: string, defaultValue = ""): string | number {
   const value = path.split(".").reduce((acc, part) => acc && acc[part], obj);
   let returnValue = defaultValue;
 
@@ -65,52 +65,53 @@ export function transformPodcast(xmlText: string): { podcast: Podcast; episodes:
   const feedUrl = atomLink?.["@_href"] ?? "";
 
   const podcast: Podcast = {
-    contentEncoded: getAttribute(channel, "content:encoded"),
-    copyright: getAttribute(channel, "copyright"),
-    description: getAttribute(channel, "description"),
+    contentEncoded: getAttribute(channel, "content:encoded") as string,
+    copyright: getAttribute(channel, "copyright") as string,
+    description: getAttribute(channel, "description") as string,
     feedUrl,
     image: {
-      link: getAttribute(channel, "image.link"),
-      title: getAttribute(channel, "image.title"),
-      url: getAttribute(channel, "image.url"),
+      link: getAttribute(channel, "image.link") as string,
+      title: getAttribute(channel, "image.title") as string,
+      url: getAttribute(channel, "image.url") as string,
     },
-    itunesAuthor: getAttribute(channel, "itunes:author"),
-    itunesCategory: getAttribute(channel, "itunes:category"),
-    itunesExplicit: getAttribute(channel, "itunes:explicit"),
-    itunesImage: getAttribute(channel, "itunes:image.@_href"),
+    itunesAuthor: getAttribute(channel, "itunes:author") as string,
+    itunesCategory: getAttribute(channel, "itunes:category") as string,
+    itunesExplicit: getAttribute(channel, "itunes:explicit") as string,
+    itunesImage: getAttribute(channel, "itunes:image.@_href") as string,
     itunesOwner: {
-      email: getAttribute(channel, "itunes:owner.itunes:email"),
-      name: getAttribute(channel, "itunes:owner.itunes:name"),
+      email: getAttribute(channel, "itunes:owner.itunes:email") as string,
+      name: getAttribute(channel, "itunes:owner.itunes:name") as string,
     },
-    itunesSubtitle: getAttribute(channel, "itunes:subtitle"),
-    itunesSummary: getAttribute(channel, "itunes:summary"),
-    itunesType: getAttribute(channel, "itunes:type"),
-    language: getAttribute(channel, "language"),
-    link: getAttribute(channel, "link"),
-    title: getAttribute(channel, "title"),
+    itunesSubtitle: getAttribute(channel, "itunes:subtitle") as string,
+    itunesSummary: getAttribute(channel, "itunes:summary") as string,
+    itunesType: getAttribute(channel, "itunes:type") as string,
+    language: getAttribute(channel, "language") as string,
+    link: getAttribute(channel, "link") as string,
+    title: getAttribute(channel, "title") as string,
   };
 
   const episodes: Episode[] = ensureArray(channel.item).map((item) => ({
-    title: getAttribute(item, "title"),
-    description: getAttribute(item, "description"),
-    pubDate: getAttribute(item, "pubDate"),
+    title: getAttribute(item, "title") as string,
+    description: getAttribute(item, "description") as string,
+    pubDate: getAttribute(item, "pubDate") as string,
     enclosure: {
-      url: getAttribute(item, "enclosure.@_url"),
-      type: getAttribute(item, "enclosure.@_type"),
+      url: getAttribute(item, "enclosure.@_url") as string,
+      type: getAttribute(item, "enclosure.@_type") as string,
     },
-    itunesAuthor: getAttribute(item, "itunes:author"),
+    itunesAuthor: getAttribute(item, "itunes:author") as string,
     itunesDuration: getDuration(getAttribute(item, "itunes:duration")),
-    itunesEpisode: getAttribute(item, "itunes:episode"),
-    itunesEpisodeType: getAttribute(item, "itunes:episodeType"),
-    itunesExplicit: getAttribute(item, "itunes:explicit"),
-    itunesImage: getAttribute(item, "itunes:image.@_href"),
-    itunesSubtitle: getAttribute(item, "itunes:subtitle"),
-    itunesSummary: getAttribute(item, "itunes:summary"),
-    itunesTitle: getAttribute(item, "itunes:title"),
-    link: getAttribute(item, "link"),
-    guid: getAttribute(item, "guid"),
-    author: getAttribute(item, "author"),
-    contentEncoded: getAttribute(item, "content:encoded"),
+    itunesEpisode: getAttribute(item, "itunes:episode") as number,
+    itunesEpisodeType: getAttribute(item, "itunes:episodeType") as string,
+    itunesExplicit: getAttribute(item, "itunes:explicit") as string,
+    itunesImage: getAttribute(item, "itunes:image.@_href") as string,
+    itunesSeason: getAttribute(item, "itunes:season") as number,
+    itunesSubtitle: getAttribute(item, "itunes:subtitle") as string,
+    itunesSummary: getAttribute(item, "itunes:summary") as string,
+    itunesTitle: getAttribute(item, "itunes:title") as string,
+    link: getAttribute(item, "link") as string,
+    guid: getAttribute(item, "guid") as string,
+    author: getAttribute(item, "author") as string,
+    contentEncoded: getAttribute(item, "content:encoded") as string,
   }));
 
   return { podcast, episodes };

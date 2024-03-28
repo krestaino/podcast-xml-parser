@@ -287,6 +287,7 @@ describe("transformPodcast", () => {
           itunesEpisodeType: "",
           itunesExplicit: "",
           itunesImage: "",
+          itunesSeason: "",
           itunesSubtitle: "",
           itunesSummary: "",
           itunesTitle: "",
