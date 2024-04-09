@@ -8,7 +8,7 @@ import { transformOpml } from "../transform";
  * @returns An array of feed URLs extracted from the OPML data.
  * @throws If the source type is invalid or no feed is available to parse.
  */
-export const podcastOpmlParser = async (source: URL | string): Promise<string[]> => {
+export const podcastOpmlParser = async (source: URL | string): Promise<{ title?: string; url: string }[]> => {
   let xmlText: string = "";
 
   if (source instanceof URL) {

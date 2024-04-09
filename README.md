@@ -82,19 +82,19 @@ podcastXmlParser(source: URL | number | string, config?: Config): Promise<{
 
 ## Usage `podcastOpmlParser()`
 
-**Purpose**: Parses an OPML outline to extract podcast feed URLs.
+**Purpose**: Parses an OPML outline to extract podcast feed URLs and optional titles.
 
 **Parameters**:
 
 - `source` _(URL | string)_: The source of the OPML content. Can be a URL object or an XML string.
 
 **Returns**:
-A promise that resolves with an array of feed URLs extracted from the OPML outline.
+A promise that resolves with an array of objects, each containing a feed URL and an optional title extracted from the OPML outline.
 
 **Signature**:
 
 ```typescript
-podcastOpmlParser(source: URL | string): Promise<string[]>
+podcastOpmlParser(source: URL | string): Promise<{ title?: string; url: string }[]>
 ```
 
 ## Configuration Options

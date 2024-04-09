@@ -1,6 +1,7 @@
 import { parseXml } from "../utils";
 
 type Outline = {
+  "@_text"?: string;
   "@_xmlUrl"?: string;
 };
 
@@ -19,13 +20,13 @@ type Opml = {
 };
 
 /**
- * Transforms parsed OPML XML data into an array of feed URLs.
+ * Transforms parsed OPML XML data into an array of objects containing feed URLs and titles.
  *
  * @param xmlText - The OPML XML data as a string.
- * @returns An array of feed URLs extracted from the OPML data.
+ * @returns An array of objects with each object containing a feed URL and an optional title.
  * @throws If the expected XML structure is not found.
  */
-export function transformOpml(xmlText: string): string[] {
+export function transformOpml(xmlText: string): { title?: string; url: string }[] {
   const parsedXML = parseXml(xmlText) as Opml;
   const { opml } = parsedXML;
 
@@ -49,7 +50,10 @@ export function transformOpml(xmlText: string): string[] {
     }
   }
 
-  const feedUrls = outlines.map((outline: Outline) => outline["@_xmlUrl"]).filter((url): url is string => !!url);
-
-  return feedUrls;
+  return outlines
+    .filter((outline: Outline) => outline["@_xmlUrl"] !== undefined)
+    .map((outline: Outline) => ({
+      title: outline["@_text"],
+      url: outline["@_xmlUrl"]!,
+    }));
 }
