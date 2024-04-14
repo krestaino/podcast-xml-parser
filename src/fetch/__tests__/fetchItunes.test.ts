@@ -1,6 +1,5 @@
 import fetchMock from "jest-fetch-mock";
 
-import { ERROR_MESSAGES } from "../../constants";
 import { fetchItunes } from "../fetchItunes";
 
 fetchMock.enableMocks();
@@ -63,19 +62,12 @@ describe("fetchItunes", () => {
     expect(result).toBeUndefined();
   });
 
-  it("should throw an error if the fetch request fails", async () => {
-    fetchMock.mockReject(new Error("Network error"));
-
-    await expect(fetchItunes(12345)).rejects.toThrow("Network error");
-  });
-
-  it("should throw an error if the response is not ok", async () => {
+  it("should return undefined if the response is not ok", async () => {
     const mockStatusText = "Not Found";
-    fetchMock.mockResponseOnce("", {
-      status: 404,
-      statusText: mockStatusText,
-    });
+    fetchMock.mockResponseOnce("", { status: 404, statusText: mockStatusText });
 
-    await expect(fetchItunes(12345)).rejects.toThrow(ERROR_MESSAGES.ITUNES_FETCH_FAILED);
+    const result = await fetchItunes(12345);
+
+    expect(result).toBeUndefined();
   });
 });

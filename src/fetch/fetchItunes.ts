@@ -1,4 +1,3 @@
-import { ERROR_MESSAGES } from "../constants";
 import { Itunes } from "../types";
 
 /**
@@ -7,8 +6,7 @@ import { Itunes } from "../types";
  *
  * @param source - The iTunes ID (number) or search term (string) of the podcast.
  * @param feedUrl - Optional feed URL to match with the search results.
- * @returns A promise that resolves to the podcast data.
- * @throws If the fetch request fails or no matching result is found.
+ * @returns A promise that resolves to the podcast data or undefined if no matching result is found.
  */
 export async function fetchItunes(source: number | string, feedUrl?: string): Promise<Itunes | undefined> {
   const url =
@@ -18,7 +16,7 @@ export async function fetchItunes(source: number | string, feedUrl?: string): Pr
 
   const response = await fetch(url);
   if (!response.ok) {
-    throw new Error(ERROR_MESSAGES.ITUNES_FETCH_FAILED);
+    return undefined;
   }
 
   const data = (await response.json()) as {
@@ -35,10 +33,6 @@ export async function fetchItunes(source: number | string, feedUrl?: string): Pr
       : false;
     return matchesId || matchesFeedUrl;
   });
-
-  if (!matchingResult) {
-    return undefined;
-  }
 
   return matchingResult;
 }
