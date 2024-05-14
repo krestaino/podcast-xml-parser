@@ -1,6 +1,6 @@
 {
   "name": "podcast-xml-parser",
-  "version": "3.0.0-beta.10",
+  "version": "3.0.0",
   "description": "🎙 Parse podcast feeds in browsers, React Native, or Node.js environments.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -36,8 +36,8 @@
   "homepage": "https://podcast-xml-parser.kmr.io",
   "devDependencies": {
     "@types/jest": "^29.5.12",
-    "@typescript-eslint/eslint-plugin": "^7.3.1",
-    "@typescript-eslint/parser": "^7.3.1",
+    "@typescript-eslint/eslint-plugin": "^7.9.0",
+    "@typescript-eslint/parser": "^7.9.0",
     "dotenv": "^16.4.5",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
@@ -46,10 +46,10 @@
     "jest": "^29.7.0",
     "jest-fetch-mock": "^3.0.3",
     "prettier": "^3.2.5",
-    "rimraf": "^5.0.5",
+    "rimraf": "^5.0.7",
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
-    "typescript": "^5.4.3"
+    "typescript": "^5.4.5"
   },
   "dependencies": {
     "fast-xml-parser": "^4.3.6"
