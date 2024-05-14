@@ -1,1 +1,0 @@
-ignores: ["@types/babel__core", "@types/jest", "webpack-cli"]

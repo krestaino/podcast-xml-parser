@@ -19,6 +19,7 @@ Parse podcast feeds in browsers, React Native, or Node.js environments.
 - **🚫 Graceful Handling:** In cases of missing elements in the XML feed, the parser returns empty strings instead of throwing errors.
 - **🎧 Support for iTunes:** Additional details can be fetched from iTunes.
 - **🔢 Partial Feed Support:** Allows fetching and parsing a specific byte range of a feed.
+- **🌐 OPML Parsing:** Extracts podcast feed URLs from OPML outlines, commonly used for podcast subscriptions.
 
 <!-- HIDE_SECTION_START -->
 
@@ -45,7 +46,7 @@ yarn add podcast-xml-parser
 ## Basic Example
 
 ```javascript
-import podcastXmlParser from "podcast-xml-parser";
+import { podcastXmlParser } from "podcast-xml-parser";
 
 const url = new URL("https://feeds.simplecast.com/dHoohVNH");
 const { podcast } = await podcastXmlParser(url);
@@ -59,7 +60,7 @@ console.log(podcast.title); // "Conan O’Brien Needs A Friend"
 
 **Parameters**:
 
-- `source` _(string | URL | number)_: The source of the XML content. Can be a URL object, an iTunes ID, or an XML string.
+- `source` _(URL | number | string)_: The source of the XML content. Can be a URL object, an iTunes ID, or an XML string.
 - `config` _(Config)_: Configuration options for the request, like request size, request headers, pagination, or to additionally return iTunes details.
 
 **Returns**:
@@ -72,14 +73,28 @@ A promise that resolves with an object containing:
 **Signature**:
 
 ```typescript
-podcastXmlParser(
-  source: string | URL | number,
-  config?: Config
-): Promise<{
+podcastXmlParser(source: URL | number | string, config?: Config): Promise<{
   podcast: Podcast;
   episodes: Episode[];
   itunes?: Itunes;
 }>
+```
+
+## Usage `podcastOpmlParser()`
+
+**Purpose**: Parses an OPML outline to extract podcast feed URLs and optional titles.
+
+**Parameters**:
+
+- `source` _(URL | string)_: The source of the OPML content. Can be a URL object or an XML string.
+
+**Returns**:
+A promise that resolves with an array of objects, each containing a feed URL and an optional title extracted from the OPML outline.
+
+**Signature**:
+
+```typescript
+podcastOpmlParser(source: URL | string): Promise<{ title?: string; url: string }[]>
 ```
 
 ## Configuration Options
@@ -137,7 +152,7 @@ const config = { itunes: true }; // Fetch additional details from iTunes
 When parsing a URL, you must call `new URL()` otherwise the library will try to parse the URL as XML, rather than the contents of the URL.
 
 ```javascript
-import podcastXmlParser from "podcast-xml-parser";
+import { podcastXmlParser } from "podcast-xml-parser";
 
 const url = new URL("https://feeds.simplecast.com/dHoohVNH"); // Use 'new URL()' to ensure the library treats it as a URL
 const { podcast, episodes, itunes } = await podcastXmlParser(url);
@@ -152,7 +167,7 @@ console.log(itunes.collectionId); // 1438054347
 When parsing from an iTunes ID, make sure the value is a number.
 
 ```javascript
-import podcastXmlParser from "podcast-xml-parser";
+import { podcastXmlParser } from "podcast-xml-parser";
 
 const collectionId = 1438054347; // iTunes collectionId
 const { podcast } = await podcastXmlParser(collectionId);
@@ -168,7 +183,7 @@ You can read from the filesystem or pass a string.
 
 ```javascript
 import fs from "fs";
-import podcastXmlParser from "podcast-xml-parser";
+import { podcastXmlParser } from "podcast-xml-parser";
 
 const xmlData = fs.readFileSync("test.xml", "utf-8");
 const { podcast } = await podcastXmlParser(xmlData);
@@ -179,7 +194,7 @@ console.log(podcast.title);
 #### From a string
 
 ```javascript
-import podcastXmlParser from "podcast-xml-parser";
+import { podcastXmlParser } from "podcast-xml-parser";
 
 const xmlString = `
   <rss version="2.0">
@@ -203,7 +218,7 @@ console.log(episodes[0].title); // Episode 1 Title
 You can optionally return additional data from iTunes. This can be useful for obtaining consistent and reasonable artwork. Some podcast feeds use large uncompressed artwork. The artwork returned from the iTunes response is compressed and standardized, making it much easier to work with. You can see the data structure in the [iTunes Search API documentation](https://developer.apple.com/library/archive/documentation/AudioVideo/Conceptual/iTuneSearchAPI/UnderstandingSearchResults.html). Enabling this feature requires an additional network request.
 
 ```javascript
-import podcastXmlParser from "podcast-xml-parser";
+import { podcastXmlParser } from "podcast-xml-parser";
 
 const url = new URL("https://feeds.simplecast.com/dHoohVNH"); // From a URL
 const config = { itunes: true }; // Enable additional details from iTunes
@@ -220,7 +235,7 @@ console.log(itunes.artworkUrl600); // "https://is1-ssl.mzstatic.com/image/thumb/
 You can limit the request size of the XML fetch to improve response times. This can be useful to return the latest episodes quickly when you don't need the entire feed.
 
 ```javascript
-import podcastXmlParser from "podcast-xml-parser";
+import { podcastXmlParser } from "podcast-xml-parser";
 
 const url = new URL("https://feeds.simplecast.com/54nAGcIl"); // From a URL with a huge feed
 const config = { requestSize: 50000, itunes: true }; // First 50,000 bytes of the feed
@@ -236,7 +251,7 @@ console.log(episodes.length !== itunes.trackCount); // true
 Pagination allows you to control the number of episodes returned by the parser. It lets you define the starting point and the limit for fetching the episodes. When parsing a partial feed with `requestSize` set, be aware that the episodes you request may not be in the feed.
 
 ```javascript
-import podcastXmlParser from "podcast-xml-parser";
+import { podcastXmlParser } from "podcast-xml-parser";
 
 const config = { start: 0, limit: 10 }; // Last 10 episodes
 const { episodes } = await podcastXmlParser(1438054347, config); // From an iTunes ID
@@ -247,7 +262,7 @@ console.log(episodes.length); // 10
 ## TypeScript
 
 ```typescript
-import podcastXmlParser, { Podcast, Episode, Itunes } from "podcast-xml-parser";
+import { podcastXmlParser, Podcast, Episode, Itunes } from "podcast-xml-parser";
 
 const url = new URL("https://feeds.simplecast.com/dHoohVNH"); // From a URL
 const { podcast }: { podcast: Podcast } = await podcastXmlParser(url);
@@ -267,12 +282,19 @@ interface Podcast {
   contentEncoded: string;
   description: string;
   feedUrl: string;
-  image: { link: string; title: string; url: string } | null;
+  image: {
+    link: string;
+    title: string;
+    url: string;
+  };
   itunesAuthor: string;
-  itunesCategory: string | null;
+  itunesCategory: string;
   itunesExplicit: string;
-  itunesImage: string | null;
-  itunesOwner: { name: string; email: string } | null;
+  itunesImage: string;
+  itunesOwner: {
+    name: string;
+    email: string;
+  };
   itunesSubtitle: string;
   itunesSummary: string;
   itunesType: string;
@@ -289,13 +311,18 @@ interface Episode {
   author: string;
   contentEncoded: string;
   description: string;
-  enclosure: { url: string; type: string } | null;
+  enclosure: {
+    url: string;
+    type: string;
+  };
   guid: string;
   itunesAuthor: string;
   itunesDuration: number;
-  itunesEpisode: string;
+  itunesEpisode: number;
   itunesEpisodeType: string;
   itunesExplicit: string;
+  itunesImage: string;
+  itunesSeason: number;
   itunesSubtitle: string;
   itunesSummary: string;
   itunesTitle: string;
