@@ -1,5 +1,5 @@
 import { ERROR_MESSAGES } from "../../constants";
-import { ensureArray, getAttribute, transformPodcast } from "../transformPodcast";
+import { ensureArray, getAttribute, toBoolean, toNumber, transformPodcast } from "../transformPodcast";
 import { getDuration, parseXml } from "../../utils";
 
 jest.mock("../../utils", () => ({
@@ -58,6 +58,49 @@ describe("getAttribute", () => {
   it('should return the default value for an array without "@_text" property', () => {
     const obj = { key: [{}] };
     expect(getAttribute(obj, "key", "default")).toBe("default");
+  });
+});
+
+describe("toBoolean", () => {
+  it("should return the boolean value as is", () => {
+    expect(toBoolean(true)).toBe(true);
+    expect(toBoolean(false)).toBe(false);
+  });
+
+  it("should return true for case-insensitive 'Yes'", () => {
+    expect(toBoolean("Yes")).toBe(true);
+    expect(toBoolean("yes")).toBe(true);
+    expect(toBoolean("YES")).toBe(true);
+  });
+
+  it("should return false for case-insensitive 'No'", () => {
+    expect(toBoolean("No")).toBe(false);
+    expect(toBoolean("no")).toBe(false);
+    expect(toBoolean("NO")).toBe(false);
+  });
+
+  it("should return false for other strings", () => {
+    expect(toBoolean("maybe")).toBe(false);
+    expect(toBoolean("")).toBe(false);
+    expect(toBoolean("1")).toBe(false);
+  });
+});
+
+describe("toNumber", () => {
+  it("should convert a string to a number", () => {
+    expect(toNumber("123")).toBe(123);
+    expect(toNumber("0")).toBe(0);
+    expect(toNumber("-123")).toBeNull();
+  });
+
+  it("should return null for non-numeric strings", () => {
+    expect(toNumber("abc")).toBeNull();
+    expect(toNumber("123abc")).toBeNull();
+    expect(toNumber("")).toBeNull();
+  });
+
+  it("should return null for NaN", () => {
+    expect(toNumber("NaN")).toBeNull();
   });
 });
 
@@ -259,7 +302,7 @@ describe("transformPodcast", () => {
         },
         itunesAuthor: "",
         itunesCategory: "",
-        itunesExplicit: "",
+        itunesExplicit: false,
         itunesImage: "",
         itunesOwner: {
           email: "",
@@ -283,11 +326,11 @@ describe("transformPodcast", () => {
           },
           itunesAuthor: "",
           itunesDuration: 0,
-          itunesEpisode: "",
+          itunesEpisode: null,
           itunesEpisodeType: "",
-          itunesExplicit: "",
+          itunesExplicit: false,
           itunesImage: "",
-          itunesSeason: "",
+          itunesSeason: null,
           itunesSubtitle: "",
           itunesSummary: "",
           itunesTitle: "",

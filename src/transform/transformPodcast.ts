@@ -10,10 +10,13 @@ import { getDuration, parseXml } from "../utils";
  * @param defaultValue - The default value to return if the attribute is not found.
  * @returns The value of the attribute, or the default value if not found.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function getAttribute(obj: any, path: string, defaultValue = ""): string | number {
+export function getAttribute(
+  obj: any, // eslint-disable-line @typescript-eslint/no-explicit-any
+  path: string,
+  defaultValue: string | boolean | number = "",
+): string | boolean | number {
   const value = path.split(".").reduce((acc, part) => acc && acc[part], obj);
-  let returnValue = defaultValue;
+  let returnValue: string | boolean | number = defaultValue;
 
   if (Array.isArray(value)) {
     if (value.length > 0 && value[0]["@_text"]) {
@@ -41,6 +44,35 @@ export function ensureArray(item: any): any[] {
     return item;
   }
   return item ? [item] : [];
+}
+
+/**
+ * Converts a string to a boolean value. Handles case-insensitive "Yes" and "No" strings.
+ *
+ * @param value - The string value to convert.
+ * @returns A boolean representation of the value.
+ */
+export function toBoolean(value: string | boolean): boolean {
+  if (typeof value === "boolean") return value;
+  if (typeof value === "string") {
+    const lowerValue = value.toLowerCase();
+    if (lowerValue === "yes") return true;
+    if (lowerValue === "no") return false;
+  }
+  return false;
+}
+
+/**
+ * Converts a string to a number. Returns null if the conversion fails or if the string contains non-numeric characters.
+ *
+ * @param value - The string value to convert.
+ * @returns A number representation of the value, or null if the conversion fails or contains non-numeric characters.
+ */
+export function toNumber(value: string): number | null {
+  if (/^\d+$/.test(value)) {
+    return parseInt(value, 10);
+  }
+  return null;
 }
 
 /**
@@ -76,7 +108,7 @@ export function transformPodcast(xmlText: string): { podcast: Podcast; episodes:
     },
     itunesAuthor: getAttribute(channel, "itunes:author") as string,
     itunesCategory: getAttribute(channel, "itunes:category.@_text") as string,
-    itunesExplicit: getAttribute(channel, "itunes:explicit") as string,
+    itunesExplicit: toBoolean(getAttribute(channel, "itunes:explicit", false) as string | boolean),
     itunesImage: getAttribute(channel, "itunes:image.@_href") as string,
     itunesOwner: {
       email: getAttribute(channel, "itunes:owner.itunes:email") as string,
@@ -100,11 +132,11 @@ export function transformPodcast(xmlText: string): { podcast: Podcast; episodes:
     },
     itunesAuthor: getAttribute(item, "itunes:author") as string,
     itunesDuration: getDuration(getAttribute(item, "itunes:duration")),
-    itunesEpisode: getAttribute(item, "itunes:episode") as number,
+    itunesEpisode: toNumber(getAttribute(item, "itunes:episode") as string),
     itunesEpisodeType: getAttribute(item, "itunes:episodeType") as string,
-    itunesExplicit: getAttribute(item, "itunes:explicit") as string,
+    itunesExplicit: toBoolean(getAttribute(item, "itunes:explicit", "false") as string | boolean),
     itunesImage: getAttribute(item, "itunes:image.@_href") as string,
-    itunesSeason: getAttribute(item, "itunes:season") as number,
+    itunesSeason: toNumber(getAttribute(item, "itunes:season") as string),
     itunesSubtitle: getAttribute(item, "itunes:subtitle") as string,
     itunesSummary: getAttribute(item, "itunes:summary") as string,
     itunesTitle: getAttribute(item, "itunes:title") as string,

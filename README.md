@@ -289,7 +289,7 @@ interface Podcast {
   };
   itunesAuthor: string;
   itunesCategory: string;
-  itunesExplicit: string;
+  itunesExplicit: boolean;
   itunesImage: string;
   itunesOwner: {
     name: string;
@@ -318,11 +318,11 @@ interface Episode {
   guid: string;
   itunesAuthor: string;
   itunesDuration: number;
-  itunesEpisode: number;
+  itunesEpisode: number | null;
   itunesEpisodeType: string;
-  itunesExplicit: string;
+  itunesExplicit: boolean;
   itunesImage: string;
-  itunesSeason: number;
+  itunesSeason: number | null;
   itunesSubtitle: string;
   itunesSummary: string;
   itunesTitle: string;
