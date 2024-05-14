@@ -11,6 +11,6 @@
     "sourceType": "module"
   },
   "plugins": ["@typescript-eslint", "tsdoc"],
-  "ignorePatterns": ["lib", "test"],
+  "ignorePatterns": ["demo", "lib", "test"],
   "rules": { "tsdoc/syntax": "warn" }
 }

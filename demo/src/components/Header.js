@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import podcastXmlParser from "podcast-xml-parser";
+import { podcastXmlParser } from "podcast-xml-parser";
 
 import Config from "./Config";
 
