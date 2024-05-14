@@ -24,7 +24,14 @@ function getText(element: Element, tagName: string): string {
 export function createPodcast(document: Document, source: string | URL | number): Podcast {
   const documentElement = removeItemsFromDocument(document).documentElement;
   const imageElem = documentElement.getElementsByTagName("image")[0];
-  let feedUrl = documentElement.getElementsByTagName("atom:link")[0]?.getAttribute("href") ?? "";
+  let feedUrl = "";
+  const atomLinks = documentElement.getElementsByTagName("atom:link") ?? [];
+  for (const atomLink of Array.from(atomLinks)) {
+    if (atomLink.getAttribute("rel") === "self") {
+      feedUrl = atomLink.getAttribute("href") ?? "";
+      break;
+    }
+  }
   if (feedUrl === "" && source instanceof URL) {
     feedUrl = source.toString();
   }
