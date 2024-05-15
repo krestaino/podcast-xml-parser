@@ -9,7 +9,7 @@ export interface Podcast {
     url: string;
   };
   itunesAuthor: string;
-  itunesCategory: string;
+  itunesCategory: string[] | null;
   itunesExplicit: boolean;
   itunesImage: string;
   itunesOwner: {
