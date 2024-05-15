@@ -301,7 +301,7 @@ describe("transformPodcast", () => {
           url: "",
         },
         itunesAuthor: "",
-        itunesCategory: "",
+        itunesCategory: null,
         itunesExplicit: false,
         itunesImage: "",
         itunesOwner: {

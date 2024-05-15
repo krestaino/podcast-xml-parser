@@ -8,6 +8,11 @@ export interface Enclosure {
   "@_type"?: string;
 }
 
+export interface ItunesCategory {
+  "@_text"?: string;
+  "itunes:category"?: ItunesCategory | ItunesCategory[];
+}
+
 export interface EpisodeItem {
   title?: string;
   description?: string;
@@ -36,7 +41,7 @@ export interface Channel {
   "content:encoded"?: string;
   copyright?: string;
   "itunes:author"?: string;
-  "itunes:category"?: { "@_href"?: string };
+  "itunes:category"?: ItunesCategory | ItunesCategory[];
   "itunes:explicit"?: string;
   "itunes:image"?: { "@_href"?: string };
   "itunes:owner"?: {

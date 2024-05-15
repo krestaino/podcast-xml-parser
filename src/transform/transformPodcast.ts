@@ -1,5 +1,5 @@
 import { ERROR_MESSAGES } from "../constants";
-import { Episode, ParsedXML, Podcast } from "../types";
+import { Episode, ParsedXML, Podcast, ItunesCategory } from "../types";
 import { getDuration, parseXml } from "../utils";
 
 /**
@@ -76,6 +76,24 @@ export function toNumber(value: string): number | null {
 }
 
 /**
+ * Retrieves all nested Itunes categories from the XML data.
+ *
+ * @param obj - The object to search for Itunes categories.
+ * @param set - The pointer to the set to store Itunes categories.
+ */
+export function getItunesCategories(obj: ItunesCategory, set: Set<string>): void {
+  if (obj["@_text"]) {
+    set.add(obj["@_text"]);
+  }
+  if (obj["itunes:category"]) {
+    const subCategories = Array.isArray(obj["itunes:category"]) ? obj["itunes:category"] : [obj["itunes:category"]];
+    subCategories.forEach((subCategory) => {
+      getItunesCategories(subCategory, set);
+    });
+  }
+}
+
+/**
  * Transforms parsed XML data into a Podcast object.
  *
  * @param parsedXML - The parsed XML data as an XmlDocument.
@@ -96,6 +114,16 @@ export function transformPodcast(xmlText: string): { podcast: Podcast; episodes:
   }
   const feedUrl = atomLink?.["@_href"] ?? "";
 
+  const uniqueCategories = new Set<string>();
+  const itunesCategoryObj = channel["itunes:category"];
+  if (itunesCategoryObj) {
+    if (Array.isArray(itunesCategoryObj)) {
+      itunesCategoryObj.forEach((category) => getItunesCategories(category, uniqueCategories));
+    } else {
+      getItunesCategories(itunesCategoryObj, uniqueCategories);
+    }
+  }
+
   const podcast: Podcast = {
     contentEncoded: getAttribute(channel, "content:encoded") as string,
     copyright: getAttribute(channel, "copyright") as string,
@@ -107,7 +135,7 @@ export function transformPodcast(xmlText: string): { podcast: Podcast; episodes:
       url: getAttribute(channel, "image.url") as string,
     },
     itunesAuthor: getAttribute(channel, "itunes:author") as string,
-    itunesCategory: getAttribute(channel, "itunes:category.@_text") as string,
+    itunesCategory: uniqueCategories.size > 0 ? Array.from(uniqueCategories) : null,
     itunesExplicit: toBoolean(getAttribute(channel, "itunes:explicit", false) as string | boolean),
     itunesImage: getAttribute(channel, "itunes:image.@_href") as string,
     itunesOwner: {
